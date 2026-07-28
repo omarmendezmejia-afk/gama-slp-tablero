@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMA SLP — Tablero</title>
+<style>
+  :root{--azul:#1A3C6E;--azul2:#2563EB;--sub:#64748B;--borde:#E2E8F0;--rojo:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#1A3C6E 0%,#2563EB 100%);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .box{background:#fff;border-radius:16px;padding:36px 32px;max-width:380px;width:100%;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);text-align:center}
+  .box h1{font-size:20px;color:var(--azul);font-weight:800;margin-bottom:4px}
+  .box p{font-size:13px;color:var(--sub);margin-bottom:22px}
+  input[type=password]{width:100%;padding:12px 14px;border:2px solid var(--borde);border-radius:10px;
+    font-size:15px;margin-bottom:12px;outline:none}
+  input[type=password]:focus{border-color:var(--azul2)}
+  button,.btn{display:block;width:100%;padding:12px 14px;border:none;border-radius:10px;
+    background:var(--azul2);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;
+    text-decoration:none;transition:.15s}
+  button:hover,.btn:hover{background:var(--azul)}
+  .err{color:var(--rojo);font-size:12px;min-height:16px;margin-top:2px}
+  #menu{display:none}
+  .btn.secondary{background:#F1F5F9;color:var(--azul)}
+  .btn.secondary:hover{background:#E2E8F0}
+  .tag{display:inline-block;background:#EFF6FF;color:var(--azul2);font-size:11px;font-weight:700;
+    padding:3px 10px;border-radius:12px;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<div id="gate" class="box">
+  <h1>GAMA SLP</h1>
+  <p>Tablero de Desempeño — acceso restringido</p>
+  <input type="password" id="pw" placeholder="Contraseña" autofocus>
+  <button onclick="checkPw()">Entrar</button>
+  <div class="err" id="err"></div>
+</div>
+
+<div id="menu" class="box">
+  <h1>GAMA SLP</h1>
+  <span class="tag" id="deviceTag">Vista</span>
+  <p>San Luis Potosí · Selecciona el tablero</p>
+  <a id="linkDesempeno" class="btn">📊 Desempeño General</a>
+  <a id="linkFinanciero" class="btn secondary">💰 Financiero</a>
+</div>
+
+<script>
+const PW = "Pegslp.2026";
+
+function isMobile(){
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 820;
+}
+
+function showMenu(){
+  document.getElementById('gate').style.display = 'none';
+  const menu = document.getElementById('menu');
+  menu.style.display = 'block';
+  const mobile = isMobile();
+  document.getElementById('deviceTag').textContent = mobile ? 'Vista móvil' : 'Vista escritorio';
+  if (mobile) {
+    document.getElementById('linkDesempeno').href = 'Tablero_Mobile_GAMA_SLP.html';
+    document.getElementById('linkFinanciero').href = 'Tablero_Financiero_Mobile_GAMA_SLP.html';
+  } else {
+    document.getElementById('linkDesempeno').href = 'Tablero_Desempeño_GAMA_SLP.html';
+    document.getElementById('linkFinanciero').href = 'Tablero_Financiero_GAMA_SLP.html';
+  }
+}
+
+function checkPw(){
+  const v = document.getElementById('pw').value;
+  if (v === PW) {
+    localStorage.setItem('gama_auth', '1');
+    showMenu();
+  } else {
+    document.getElementById('err').textContent = 'Contraseña incorrecta';
+  }
+}
+
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+
+if (localStorage.getItem('gama_auth') === '1') { showMenu(); }
+</script>
+</body>
+</html>

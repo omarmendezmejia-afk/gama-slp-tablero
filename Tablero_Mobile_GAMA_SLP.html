@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>if(localStorage.getItem("gama_auth")!=="1"){location.href="./index.html";}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1A3C6E">
+<title>GAMA SLP — Tablero</title>
+<style>
+:root {
+  --azul:#1A3C6E; --azul2:#2563EB; --verde:#16A34A; --rojo:#DC2626;
+  --naranja:#EA580C; --cian:#0891B2; --morado:#7C3AED;
+  --gris:#F1F5F9; --borde:#E2E8F0; --sub:#64748B; --texto:#0F172A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#F8FAFC;color:var(--texto);font-size:15px;max-width:480px;margin:0 auto}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1A3C6E,#2563EB);color:#fff;
+  padding:18px 16px 14px}
+.header h1{font-size:17px;font-weight:700;line-height:1.3}
+.header h2{font-size:12px;opacity:.75;margin-top:3px}
+.header-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.badge{background:rgba(255,255,255,.2);border-radius:14px;padding:4px 12px;
+  font-size:11px;font-weight:700;letter-spacing:.8px}
+.periodo-txt{font-size:11px;opacity:.7}
+
+/* MES SELECTOR */
+.mes-nav{background:#fff;border-bottom:1px solid var(--borde);
+  padding:10px 16px;overflow-x:auto;white-space:nowrap;
+  -webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:99;
+  box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.mes-nav::-webkit-scrollbar{display:none}
+.mes-btn{display:inline-block;padding:8px 18px;border-radius:20px;
+  border:2px solid var(--borde);background:transparent;font-size:13px;
+  font-weight:600;color:var(--sub);cursor:pointer;margin-right:8px;
+  transition:all .18s;white-space:nowrap;min-height:40px}
+.mes-btn.active{color:#fff;border-color:transparent}
+.mes-btn[data-mes="todos"].active  {background:var(--azul)}
+.mes-btn[data-mes="marzo"].active  {background:var(--morado)}
+.mes-btn[data-mes="abril"].active  {background:var(--naranja)}
+.mes-btn[data-mes="mayo"].active   {background:var(--verde)}
+.mes-btn[data-mes="junio"].active  {background:var(--cian)}
+.mes-btn[data-mes="julio"].active  {background:var(--morado)}
+
+/* PAGE */
+.page{padding:16px}
+
+/* SECTION TITLE */
+.sec{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--azul);
+  text-transform:uppercase;margin:20px 0 12px;padding-left:10px;
+  border-left:3px solid var(--azul2)}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:12px;padding:14px;
+  border:1px solid var(--borde);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi.verde::before  {background:var(--verde)}
+.kpi.azul::before   {background:var(--azul2)}
+.kpi.naranja::before{background:var(--naranja)}
+.kpi.rojo::before   {background:var(--rojo)}
+.kpi-label{font-size:10px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.6px}
+.kpi-value{font-size:22px;font-weight:800;margin:5px 0 3px;line-height:1}
+.kpi-value.verde  {color:var(--verde)}
+.kpi-value.azul   {color:var(--azul2)}
+.kpi-value.naranja{color:var(--naranja)}
+.kpi-value.rojo   {color:var(--rojo)}
+.kpi-sub{font-size:10px;color:var(--sub);line-height:1.4}
+.kpi-badge{display:inline-block;font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:8px;margin-top:4px}
+.up   {background:#DCFCE7;color:#16A34A}
+.warn {background:#FEF9C3;color:#B45309}
+.down {background:#FEE2E2;color:#DC2626}
+.info {background:#DBEAFE;color:#1D4ED8}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{background:#fff;border-radius:10px;padding:10px;border:1px solid var(--borde);text-align:center}
+.stat-label{font-size:9px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px}
+.stat-value{font-size:18px;font-weight:800;color:var(--azul);margin-top:3px}
+.stat-sub{font-size:10px;color:var(--sub);margin-top:1px}
+
+/* CARD */
+.card{background:#fff;border-radius:12px;padding:16px;
+  border:1px solid var(--borde);margin-bottom:12px}
+.card-title{font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+
+/* SVG CHARTS */
+.chart-svg{width:100%;display:block}
+
+/* PROGRESS BARS */
+.prog{margin-bottom:11px}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;
+  color:var(--sub);margin-bottom:4px}
+.prog-row span:last-child{font-weight:700;color:var(--texto)}
+.bar-bg{height:8px;background:var(--gris);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+
+/* DONUT LEGEND */
+.donut-wrap{display:flex;align-items:center;gap:16px}
+.donut-svg{flex-shrink:0;width:120px;height:120px}
+.legend{flex:1}
+.legend-item{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* CxC TABLE */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:320px}
+th{background:var(--gris);color:var(--sub);font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;padding:8px 10px;text-align:left}
+td{padding:8px 10px;border-bottom:1px solid var(--borde)}
+tr:last-child td{border-bottom:none}
+.badge-c{background:#DCFCE7;color:#16A34A;font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:8px;white-space:nowrap}
+.badge-pv{background:#FEF9C3;color:#B45309;font-size:10px;font-weight:600;
+  padding:2px 7px;border-radius:8px;white-space:nowrap}
+.td-r{font-weight:700;text-align:right}
+.total-row td{font-weight:700;background:var(--gris)}
+
+/* INSIGHTS */
+.insight{display:flex;gap:12px;align-items:flex-start;background:#fff;
+  border-radius:10px;padding:14px;border:1px solid var(--borde);
+  border-left:4px solid;margin-bottom:10px}
+.insight.verde  {border-left-color:var(--verde)}
+.insight.azul2  {border-left-color:var(--azul2)}
+.insight.naranja{border-left-color:var(--naranja)}
+.insight.rojo   {border-left-color:var(--rojo)}
+.insight.cian   {border-left-color:var(--cian)}
+.insight.morado {border-left-color:var(--morado)}
+.ins-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.ins-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.ins-desc{font-size:12px;color:var(--sub);line-height:1.5}
+
+/* NO DATA */
+.no-data{text-align:center;padding:24px;color:var(--sub);font-size:13px}
+.no-data-icon{font-size:28px;display:block;margin-bottom:6px}
+
+/* SALDOS */
+.saldos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.saldo-item{background:var(--gris);border-radius:10px;padding:12px;text-align:center}
+.saldo-label{font-size:9px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px}
+.saldo-value{font-size:17px;font-weight:800;color:var(--azul);margin-top:4px}
+
+/* CRECIMIENTO MoM */
+.growth-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.growth-item{background:var(--gris);border-radius:10px;padding:10px 6px;text-align:center}
+.growth-item.proy{background:#EDE9FE;border:1px dashed var(--morado);grid-column:span 3}
+.growth-mes{font-size:9px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px}
+.growth-val{font-size:14px;font-weight:800;color:var(--texto);margin:4px 0 3px}
+.growth-pct{font-size:10px;font-weight:700;display:inline-block;padding:2px 6px;border-radius:8px}
+.growth-pct.base{background:#E2E8F0;color:var(--sub)}
+.growth-pct.up{background:#DCFCE7;color:#16A34A}
+.growth-pct.down{background:#FEE2E2;color:#DC2626}
+.growth-note{font-size:9px;color:var(--sub);margin-top:5px;line-height:1.4}
+.proyeccion-box{border-top:1px solid var(--borde);padding-top:12px}
+.proyeccion-label{font-size:10px;font-weight:700;color:var(--morado);text-transform:uppercase;letter-spacing:.5px}
+.proyeccion-val{font-size:22px;font-weight:800;color:var(--morado);margin:4px 0 6px}
+.proyeccion-desc{font-size:11px;color:var(--sub);line-height:1.5}
+
+.footer{text-align:center;padding:20px 16px;font-size:11px;color:var(--sub)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GAMA SLP — Tablero de Desempeño</h1>
+  <h2>San Luis Potosí · Saneamiento &amp; Soluciones Ambientales</h2>
+  <div class="header-bottom">
+    <div class="badge" id="hBadge">MAR – JUL 2026</div>
+    <div class="periodo-txt">Para Dueños / Accionistas</div>
+  </div>
+</div>
+
+<div class="mes-nav">
+  <button class="mes-btn active" data-mes="todos"  onclick="setMes('todos')">📊 Todos</button>
+  <button class="mes-btn"        data-mes="marzo"  onclick="setMes('marzo')">Marzo</button>
+  <button class="mes-btn"        data-mes="abril"  onclick="setMes('abril')">Abril</button>
+  <button class="mes-btn"        data-mes="mayo"   onclick="setMes('mayo')">Mayo</button>
+  <button class="mes-btn"        data-mes="junio"  onclick="setMes('junio')">Junio</button>
+  <button class="mes-btn"        data-mes="julio"  onclick="setMes('julio')">Julio</button>
+</div>
+
+<div class="page">
+
+  <div class="sec" id="kpiTitle">Indicadores Clave</div>
+
+  <div class="kpi-grid">
+    <div class="kpi verde">
+      <div class="kpi-label">Ventas</div>
+      <div class="kpi-value verde" id="kV">$564K</div>
+      <div class="kpi-sub" id="kVs">119 órdenes</div>
+      <div class="kpi-badge warn" id="kVb">5 meses</div>
+    </div>
+    <div class="kpi azul">
+      <div class="kpi-label">Cobrado</div>
+      <div class="kpi-value azul" id="kC">$438K</div>
+      <div class="kpi-sub" id="kCs">Recuperado</div>
+      <div class="kpi-badge warn" id="kCb">$126K cartera</div>
+    </div>
+    <div class="kpi naranja">
+      <div class="kpi-label">Egresos</div>
+      <div class="kpi-value naranja" id="kE">$448K</div>
+      <div class="kpi-sub" id="kEs">Gastos totales</div>
+      <div class="kpi-badge warn" id="kEb">Acumulado</div>
+    </div>
+    <div class="kpi rojo">
+      <div class="kpi-label">Utilidad</div>
+      <div class="kpi-value rojo" id="kU">$116K</div>
+      <div class="kpi-sub" id="kUs">Ventas − Egresos</div>
+      <div class="kpi-badge warn" id="kUb">20.5% margen</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-label">Órdenes</div>
+      <div class="stat-value" id="sO">119</div>
+      <div class="stat-sub" id="sOs">Mar–Jul</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Clientes</div>
+      <div class="stat-value" id="sCl">59</div>
+      <div class="stat-sub">únicos</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Ticket</div>
+      <div class="stat-value" id="sTk">$4.7K</div>
+      <div class="stat-sub">promedio</div>
+    </div>
+  </div>
+
+  <!-- TENDENCIA -->
+  <div class="card">
+    <div class="card-title">Ventas &amp; Egresos por Mes</div>
+    <div id="chartTendencia"></div>
+    <div style="display:flex;gap:14px;margin-top:10px;font-size:11px">
+      <span><span style="display:inline-block;width:10px;height:10px;background:#2563EB;border-radius:2px;margin-right:4px"></span>Ventas</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#EA580C;border-radius:2px;margin-right:4px"></span>Egresos</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:#16A34A;border-radius:2px;margin-right:4px"></span>Utilidad</span>
+    </div>
+  </div>
+
+  <!-- CRECIMIENTO MoM + PROYECCIÓN -->
+  <div class="sec">Crecimiento Mes con Mes &amp; Proyección</div>
+  <div class="card">
+    <div class="growth-row">
+      <div class="growth-item">
+        <div class="growth-mes">Marzo</div>
+        <div class="growth-val">$30.5K</div>
+        <div class="growth-pct base">Base</div>
+      </div>
+      <div class="growth-item">
+        <div class="growth-mes">Abril</div>
+        <div class="growth-val">$75.3K</div>
+        <div class="growth-pct up">▲147%</div>
+      </div>
+      <div class="growth-item">
+        <div class="growth-mes">Mayo</div>
+        <div class="growth-val">$220.8K</div>
+        <div class="growth-pct up">▲193%</div>
+      </div>
+      <div class="growth-item">
+        <div class="growth-mes">Junio</div>
+        <div class="growth-val">$184.4K</div>
+        <div class="growth-pct down">▼16.5%</div>
+      </div>
+      <div class="growth-item" style="grid-column:span 3;background:#EDE9FE;border:1px dashed var(--morado)">
+        <div class="growth-mes">Julio (cierre al 28 jul)</div>
+        <div class="growth-val">$225.4K</div>
+        <div class="growth-pct up">▲22.3%</div>
+        <div class="growth-note">47 órdenes, 35 clientes — mejor mes del período</div>
+      </div>
+    </div>
+    <div class="proyeccion-box">
+      <div class="proyeccion-label">📊 Proyección Agosto 2026</div>
+      <div class="proyeccion-val">$210.2K</div>
+      <div class="proyeccion-desc">Promedio de mayo, junio y julio — nivel de actividad ya estabilizado (37-47 órdenes/mes). Si el ritmo de julio continúa, agosto rondaría $200K-$220K.</div>
+    </div>
+  </div>
+
+  <!-- MIX SERVICIOS -->
+  <div class="card">
+    <div class="card-title">Mix de Servicios</div>
+    <div class="donut-wrap">
+      <svg class="donut-svg" viewBox="0 0 120 120" id="donutSvg"></svg>
+      <div class="legend" id="donutLegend"></div>
+    </div>
+  </div>
+
+  <!-- EGRESOS POR CAT -->
+  <div class="card">
+    <div class="card-title">Egresos por Categoría</div>
+    <div id="egresosContent"></div>
+  </div>
+
+  <!-- TOP CLIENTES -->
+  <div class="card">
+    <div class="card-title">Top Clientes</div>
+    <div id="topContent"></div>
+  </div>
+
+  <!-- SALDOS BANCARIOS -->
+  <div class="card" id="saldosCard">
+    <div class="card-title">Saldos Bancarios — Julio 2026 (al 28 jul)</div>
+    <div class="saldos-grid">
+      <div class="saldo-item"><div class="saldo-label">Fiscal</div><div class="saldo-value">$37.8K</div></div>
+      <div class="saldo-item"><div class="saldo-label">No Fiscal</div><div class="saldo-value">$8.7K</div></div>
+      <div class="saldo-item"><div class="saldo-label">Efectivo</div><div class="saldo-value">$250</div></div>
+    </div>
+    <div style="border-top:1px solid var(--borde);padding-top:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Total Liquidez</div>
+      <div style="font-size:24px;font-weight:800;color:var(--azul)">$46,709</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">✅ Se recuperó desde $18,591 (23 jul) tras cobrar $142,798 de cartera</div>
+    </div>
+  </div>
+
+  <!-- CxC -->
+  <div class="sec" id="cxcTitle">Cuentas por Cobrar</div>
+  <div class="card" id="cxcCard">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>ID</th><th>Cliente</th><th>Días</th><th>Estado</th><th style="text-align:right">Saldo</th>
+        </tr></thead>
+        <tbody id="cxcBody"></tbody>
+      </table>
+    </div>
+    <div id="cxcBars" style="margin-top:12px"></div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="sec" id="insTitle">Insights Clave</div>
+  <div id="insGrid"></div>
+
+</div>
+
+<div class="footer">GAMA SLP · Tablero de Desempeño · Mar–Jul 2026 · Actualizado al 28 de julio</div>
+
+<script>
+// ============================================================
+// DATOS
+// ============================================================
+const MD = {
+  todos:{
+    label:'Acumulado Mar–Jul 2026',badge:'MAR – JUL 2026',
+    ventas:736449,egresos:573404,ordenes:153,clientes:72,
+    cobrado:589297,pendiente:152975,contado:205000,credito:531449,
+    utilidad:163045,margen:22.1,
+    vb:'5 meses acumulados',cb:'$152,975 cartera neta',eb:'Acumulado',
+    ub:'22.1% margen neto',
+    egCats:[['Nómina',191299],['Combustible',138316],['Infraestructura/Renta',110895],
+      ['Servicios/Admin',59965],['Comisiones/Otros',34312],['Herramienta',31455],
+      ['Viáticos',6466]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
+    servD:[68,26,22,26,11],
+    top:[['HEB (todas sucursales)',241600],['ASOC. COLONOS ALQUERIAS',37500],['JJ INDUSTRIES',30000],['Abastecedores Pecuarios',27500],['Cervecería Villacastel',27000]],
+    cxc:[
+      {id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:27,e:'Corriente'},
+      {id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:27,e:'Corriente'},
+      {id:'GPE-0111',cl:'VYNMSA',s:1800,d:25,e:'Corriente'},
+      {id:'GPE-0113',cl:"McDONALD'S CHALITA",s:15660,d:23,e:'Corriente'},
+      {id:'GPE-0145',cl:'HEB CARRETERA 57',s:11900,d:14,e:'Corriente'},
+      {id:'GPE-0146',cl:'HEB CARRETERA 57',s:3600,d:14,e:'Corriente'},
+      {id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:11,e:'Corriente'},
+      {id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:11,e:'Corriente'},
+      {id:'GPE-0133',cl:'POPEYES EL AVIÓN',s:2320,d:10,e:'Corriente'},
+      {id:'GPE-0147',cl:'HEB PINOS',s:11900,d:10,e:'Corriente'},
+      {id:'GPE-0148',cl:'HEB PINOS',s:3600,d:10,e:'Corriente'},
+      {id:'GPE-0134',cl:'POPEYES CLOUTHIER',s:2320,d:8,e:'Corriente'},
+      {id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:8,e:'Corriente'},
+      {id:'GPE-0149',cl:'HEB HIMNO NACIONAL',s:11900,d:7,e:'Corriente'},
+      {id:'GPE-0150',cl:'HEB HIMNO NACIONAL',s:3600,d:7,e:'Corriente'},
+      {id:'GPE-0151',cl:'HEB LOMAS',s:11900,d:5,e:'Corriente'},
+      {id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:5,e:'Corriente'},
+      {id:'GPE-0085',cl:'HEB CARRETERA 57',s:3525,d:47,e:'Por vencer'},
+      {id:'GPE-0091',cl:'HEB PINOS',s:3525,d:45,e:'Por vencer'},
+      {id:'GPE-0099',cl:'HEB',s:3525,d:41,e:'Por vencer'},
+      {id:'GPE-0098',cl:'HEB',s:3525,d:40,e:'Por vencer'},
+      {id:'GPE-0063',cl:'HEB',s:3625,d:64,e:'Por vencer'},
+      {id:'GPE-0065',cl:'HEB',s:3625,d:63,e:'Por vencer'},
+      {id:'GPE-0069',cl:"McDONALD'S TANGAMANGA",s:15660,d:62,e:'Por vencer'},
+      {id:'GPE-0057',cl:'HEB RÍO VERDE',s:3625,d:74,e:'Por vencer'},
+      {id:'GPE-0055',cl:'HEB CARRETERA 57',s:3625,d:75,e:'Por vencer'}
+    ],
+    ins:[
+      {c:'verde',i:'📈',t:'Ventas $736K — 153 Órdenes en 5 Meses',d:'Julio récord con $225,449 y 47 órdenes, superando a mayo ($220,800). El crecimiento es sostenible y la base operativa está consolidada.'},
+      {c:'verde',i:'💰',t:'Liquidez Se Recupera a $46,709',d:'Tras bajar a $18,591 el 23 de julio, se cobraron $142,798 de cartera en la última semana del mes.'},
+      {c:'naranja',i:'🏗️',t:'Sanitarios para Obra: Segmento en Expansión',d:'VYNMSA, DEACERO y otros clientes de construcción suman 22 órdenes acumuladas del servicio en 5 meses.'},
+      {c:'azul2',i:'🏦',t:'HEB Cliente Ancla: $241,600 (32.8%)',d:'Las sucursales de HEB representan casi un tercio de las ventas totales. Relación consolidada y cobranza efectiva.'},
+      {c:'naranja',i:'📋',t:'$152,975 en Cartera — 26 Órdenes Pendientes',d:'17 corrientes, 4 por vencer y 5 vencidas (todas HEB/McDonald\'s). La cobranza de julio redujo fuerte el riesgo de cartera.'},
+      {c:'morado',i:'💼',t:'Nómina $191K — Equipo Formalizado',d:'IMSS activo y nómina en orden en los 5 meses. La formalización laboral avanza correctamente.'}
+    ]
+  },
+  marzo:{
+    label:'Marzo 2026',badge:'MARZO 2026',
+    ventas:30500,egresos:35431,ordenes:9,clientes:9,
+    cobrado:30500,pendiente:0,contado:14000,credito:20996,
+    utilidad:-4931,margen:-16.2,
+    vb:'Primer mes',cb:'100% cobrado',eb:'Costos arranque',ub:'Mes de lanzamiento',
+    egCats:[['Infraestructura',21792],['Herramienta',5691],['Combustible',4560],['Viáticos',1964],['Consumible',1425]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo','Destape'],
+    servD:[5,1,2,1,0],
+    top:[['ASOC. COLONOS ALQUERIA',8700],['ENERGIA AMBIENTAL',5800],['CONSORCIO ANMARJO',5220],['CERVECERIA VILLACASTEL',3480],['PALSGAARD INDUSTRI',3248]],
+    cxc:[],
+    ins:[
+      {c:'morado',i:'🏁',t:'Mes de Arranque',d:'9 órdenes, 9 clientes. Todos cobrados al cierre. Base operativa establecida correctamente.'},
+      {c:'naranja',i:'🔧',t:'Infraestructura 61.5% de Egresos',d:'$21,792 en infraestructura — inversión inicial en equipo y activos para operar.'},
+      {c:'verde',i:'⚖️',t:'Equilibrio Financiero (-$435)',d:'Resultado casi neutro en el mes de lanzamiento. Arranque responsable sin pérdidas significativas.'},
+      {c:'azul2',i:'🤝',t:'3 Clientes que se Volvieron Recurrentes',d:'Asoc. Colonos, Energía Ambiental y Cervecería Villacastel iniciaron en marzo y siguieron activos en meses posteriores.'}
+    ]
+  },
+  abril:{
+    label:'Abril 2026',badge:'ABRIL 2026',
+    ventas:75300,egresos:108258,ordenes:22,clientes:19,
+    cobrado:75300,pendiente:0,contado:52808,credito:27260,
+    utilidad:-32958,margen:-43.8,
+    vb:'↑ 129% vs Marzo',cb:'100% cobrado',eb:'↑ 206% vs Marzo',ub:'Inversión en escala',
+    egCats:[['Nómina',35507],['Combustible',21108],['Publicidad',14586],['Infraestructura',10574],['Rep. Cliente',6902],['Herramienta',6117],['GPS',5800],['Gasto svc',2322],['G. Admin',1960],['Consumible',1311]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
+    servD:[15,0,4,1,2],
+    top:[['EJIDO PALOMAS',12000],['ASOC. COLONOS ALQUERIA',8700],['Bufette Desayunos',8000],['CERVECERIA VILLACASTEL',6960],['ENERGIA AMBIENTAL',5800]],
+    cxc:[],
+    ins:[
+      {c:'azul2',i:'📈',t:'Ventas +129% — 22 Órdenes',d:'Casi triplicó ventas en un mes ($35K→$80K). 10 clientes nuevos. Desazolve lidera con 15 órdenes (68%).'},
+      {c:'rojo',i:'💸',t:'Egresos $108K: Inversión en Capacidad',d:'Nómina ($35,507) + Publicidad ($14,586) explican el salto. Inversión que se recupera en mayo récord.'},
+      {c:'naranja',i:'📢',t:'Publicidad $14,586 — ROI Confirmado',d:'Mayor gasto en publicidad de los 4 meses. Se tradujo directamente en el mayo récord de $238K.'},
+      {c:'verde',i:'🤝',t:'+10 Clientes Nuevos',d:'De 9 en marzo a 19 en abril. Ejido Palomas y Bufette Desayunos entre los destacados.'}
+    ]
+  },
+  mayo:{
+    label:'Mayo 2026',badge:'MAYO 2026',
+    ventas:220800,egresos:123023,ordenes:38,clientes:26,
+    cobrado:194799,pendiente:30161,contado:56800,credito:164000,
+    utilidad:97777,margen:44.3,
+    vb:'↑ 198% vs Abril — Récord',cb:'$30,161 cartera neta',eb:'↑ 14% vs Abril',ub:'44.3% margen neto',
+    egCats:[['Nómina',52038],['Combustible',36242],['MAINSA',17400],['GPS',2900],['Honorario',2800],['Refacción',2625],['Comisión 3ro',2500],['Viáticos',2452],['Herramienta',2072],['CFE',706]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
+    servD:[17,9,4,6,2],
+    top:[['HEB (genérico)',45000],['JJ INDUSTRIES',34800],['HEB CARRETERA 57',22500],['HEB RÍO VERDE',22500],['McDONALD\'S TANGAMANGA',15660]],
+    cxc:[
+      {id:'GPE-0055',cl:'HEB CARRETERA 57',s:3625,d:75,e:'Vencido'},
+      {id:'GPE-0057',cl:'HEB RÍO VERDE',s:3625,d:74,e:'Vencido'},
+      {id:'GPE-0063',cl:'HEB',s:3625,d:64,e:'Vencido'},
+      {id:'GPE-0065',cl:'HEB',s:3625,d:63,e:'Vencido'},
+      {id:'GPE-0069',cl:"McDONALD'S TANGAMANGA",s:15660,d:62,e:'Vencido'}
+    ],
+    ins:[
+      {c:'verde',i:'🚀',t:'Mes Récord: $238,592',d:'38 órdenes. HEB, JJ Industries y McDonald\'s lideran. La inversión de abril en publicidad y nómina dio frutos.'},
+      {c:'naranja',i:'💰',t:'$132,932 Cobrado en Mayo',d:'Incluye pagos de créditos anteriores. La cobranza activa está funcionando correctamente.'},
+      {c:'azul2',i:'🏦',t:'MAINSA $17,400 — Nuevo Proveedor',d:'Aparece como egreso significativo. Posible proveedor estratégico para ampliar capacidad operativa.'},
+      {c:'rojo',i:'⛽',t:'Combustible $36,242 (29.5%)',d:'Con 38 órdenes, el combustible escala fuerte. Optimizar rutas impacta directo en margen.'},
+      {c:'verde',i:'🍳',t:'Trampa de Grasa en Auge',d:'Pasó de 0 en abril a 9 en mayo. HEB y restaurantes como McDonald\'s son los clientes principales.'},
+      {c:'morado',i:'🎯',t:'26 Clientes Activos',d:'McDonald\'s Tangamanga nuevo cliente corporativo. Base diversificándose más allá de HEB.'}
+    ]
+  },
+  junio:{
+    label:'Junio 2026',badge:'JUNIO 2026',
+    ventas:184400,egresos:154447,ordenes:37,clientes:29,
+    cobrado:194499,pendiente:14102,contado:42900,credito:141500,
+    utilidad:29953,margen:16.2,
+    vb:'37 órdenes — $184.4K ventas netas',cb:'$14,102 cartera neta',eb:'Renta $40K + Combustible $36.2K',ub:'16.2% margen neto',
+    egCats:[['Nómina',49573],['Infra/Renta',40000],['Combustible',36175],['Herramienta',12062],['Servicios/Admin',10893],['Comisiones/Otros',5350],['Otros',346],['Viáticos',48]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
+    servD:[15,7,4,7,4],
+    top:[['HEB',30800],['ABASTECEDORES PECUARIOS',24500],['HEB PINOS',15400],['HEB CARRETERA 57',15400],['COLONIA 21 DE MARZO',10000]],
+    cxc:[
+      {id:'GPE-0085',cl:'HEB CARRETERA 57',s:3525,d:47,e:'Por vencer'},
+      {id:'GPE-0091',cl:'HEB PINOS',s:3525,d:45,e:'Por vencer'},
+      {id:'GPE-0099',cl:'HEB',s:3525,d:41,e:'Por vencer'},
+      {id:'GPE-0098',cl:'HEB',s:3525,d:40,e:'Por vencer'}
+    ],
+    ins:[
+      {c:'verde',i:'🚀',t:'37 Órdenes, $184,400 — Junio',d:'Tercer mejor mes de la empresa. El crecimiento es real y sostenible.'},
+      {c:'naranja',i:'🏢',t:'Renta $40K Absorbida — 16.2% Margen Neto',d:'Con el volumen actual, el nuevo costo fijo está absorbido. El negocio opera rentablemente con ventas netas de $184K.'},
+      {c:'cian',i:'⛽',t:'Combustible $36,175 — Optimización Pendiente',d:'Crece con el volumen. Optimizar rutas y zonas podría mejorar el margen en 3-5 puntos directamente.'},
+      {c:'azul2',i:'💰',t:'Junio Cobró 105.5% de sus Ventas',d:'$194,499 cobrados en junio (incluye cobranza de mayo), superando las ventas netas del mes.'},
+      {c:'verde',i:'✅',t:'Cartera $14.1K — Solo 4 Por Vencer',d:'Las 4 órdenes pendientes de junio (todas HEB, 40-47 días) están por vencer, sin cuentas vencidas.'},
+      {c:'morado',i:'💼',t:'Nómina $49,573 — Equipo Estable',d:'Equipo consolidado que soporta 37 órdenes activas. Productividad equiparable a mayo récord.'}
+    ]
+  },
+  julio:{
+    label:'Julio 2026 (al 28 jul)',badge:'JULIO 2026 · AL 28 JUL',
+    ventas:225449,egresos:152244,ordenes:47,clientes:35,
+    cobrado:183898,pendiente:108712,contado:41100,credito:184349,
+    utilidad:73205,margen:32.5,
+    vb:'Mejor mes del período — 47 órdenes',cb:'$108.7K cartera julio',eb:'Nómina+Combustible+Renta=88%',ub:'32.5% margen neto',
+    egCats:[['Nómina',54182],['Combustible',40231],['Infra/Renta',38529],['Servicios/Admin',15022],['Herramienta',2887],['Comisiones/Otros',580],['Viáticos',463],['Otros',351]],
+    servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
+    servD:[16,9,8,11,3],
+    top:[['HEB CARRETERA 57',22500],['HEB PINOS',22500],['HEB HIMNO NACIONAL',22500],['HEB LOMAS',22500],['GRUPO ACERERO',13997]],
+    cxc:[
+      {id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:27,e:'Corriente'},
+      {id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:27,e:'Corriente'},
+      {id:'GPE-0111',cl:'VYNMSA',s:1800,d:25,e:'Corriente'},
+      {id:'GPE-0113',cl:"McDONALD'S CHALITA",s:15660,d:23,e:'Corriente'},
+      {id:'GPE-0145',cl:'HEB CARRETERA 57',s:11900,d:14,e:'Corriente'},
+      {id:'GPE-0146',cl:'HEB CARRETERA 57',s:3600,d:14,e:'Corriente'},
+      {id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:11,e:'Corriente'},
+      {id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:11,e:'Corriente'},
+      {id:'GPE-0133',cl:'POPEYES EL AVIÓN',s:2320,d:10,e:'Corriente'},
+      {id:'GPE-0147',cl:'HEB PINOS',s:11900,d:10,e:'Corriente'},
+      {id:'GPE-0148',cl:'HEB PINOS',s:3600,d:10,e:'Corriente'},
+      {id:'GPE-0134',cl:'POPEYES CLOUTHIER',s:2320,d:8,e:'Corriente'},
+      {id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:8,e:'Corriente'},
+      {id:'GPE-0149',cl:'HEB HIMNO NACIONAL',s:11900,d:7,e:'Corriente'},
+      {id:'GPE-0150',cl:'HEB HIMNO NACIONAL',s:3600,d:7,e:'Corriente'},
+      {id:'GPE-0151',cl:'HEB LOMAS',s:11900,d:5,e:'Corriente'},
+      {id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:5,e:'Corriente'}
+    ],
+    ins:[
+      {c:'verde',i:'🚀',t:'Julio: Mejor Mes del Período — $225,449',d:'47 órdenes y 35 clientes superan el récord anterior de mayo ($220,800).'},
+      {c:'verde',i:'💰',t:'Liquidez Se Recupera a $46,709',d:'Tras bajar a $18,591 el 23 de julio, la cobranza de la última semana ($142,798) llevó la caja a $46,709 al cierre.'},
+      {c:'azul2',i:'🏬',t:'HEB Suma 4 Sucursales Nuevas',d:'Himno Nacional, Lomas, Pinos y Carretera 57 empatan como top clientes con $22,500 cada una.'},
+      {c:'naranja',i:'📊',t:'Margen 32.5% — Ventas y Cobranza Alineadas',d:'$152,244 en egresos frente a $225,449 en ventas netas. El 81.6% de las ventas del mes ya se cobraron.'},
+      {c:'cian',i:'📋',t:'Cartera de Julio: $108.7K en 17 Órdenes',d:'Ninguna cuenta de julio está vencida (0-27 días) — buena señal de calidad de cartera nueva.'}
+    ]
+  }
+};
+
+// ============================================================
+// SVG CHARTS
+// ============================================================
+const COLS = ['#2563EB','#EA580C','#16A34A','#7C3AED','#0891B2','#F59E0B','#94A3B8','#EF4444','#10B981','#8B5CF6'];
+const LABELS = ['Mar','Abr','May','Jun','Jul'];
+const VENTAS = [30500,75300,220800,184400,225449];
+const EGRESOS_M = [35431,108258,123023,154447,152244];
+const UTIL_M = [-4931,-32958,97777,29953,73205];
+
+function fmtK(n){
+  const a=Math.abs(n);
+  if(a>=1000000) return '$'+(n/1000000).toFixed(1)+'M';
+  if(a>=1000) return (n<0?'-':'')+'$'+(a/1000).toFixed(0)+'K';
+  return '$'+n.toLocaleString('es-MX');
+}
+function fmt(n){
+  return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+function buildTendencia(selectedMes) {
+  const W=340,H=190,PL=40,PT=10,PB=28,PR=10;
+  const cW=W-PL-PR, cH=H-PT-PB;
+  const maxV=Math.max(...VENTAS,...EGRESOS_M.map(v=>v))*1.1;
+  const n=LABELS.length;
+  const grpW=cW/n;
+  const bW=(grpW-8)/2;
+  const idxMap={marzo:0,abril:1,mayo:2,junio:3,julio:4};
+  const sel=idxMap[selectedMes];
+
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="chart-svg">`;
+  // grid
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=PT+cH*t;
+    const v=maxV*(1-t);
+    s+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#E2E8F0" stroke-width="1"/>`;
+    s+=`<text x="${PL-4}" y="${y+4}" text-anchor="end" font-size="8" fill="#94A3B8">${fmtK(v)}</text>`;
+  });
+  // bars
+  LABELS.forEach((lbl,i)=>{
+    const highlight = sel===undefined || sel===i;
+    const x0=PL+i*grpW+4;
+    // ventas
+    const hV=(VENTAS[i]/maxV)*cH;
+    s+=`<rect x="${x0}" y="${PT+cH-hV}" width="${bW}" height="${hV}"
+      fill="${highlight?'#2563EB':'rgba(37,99,235,.2)'}" rx="3"/>`;
+    // egresos
+    const hE=(EGRESOS_M[i]/maxV)*cH;
+    s+=`<rect x="${x0+bW+2}" y="${PT+cH-hE}" width="${bW}" height="${hE}"
+      fill="${highlight?'#EA580C':'rgba(234,88,12,.2)'}" rx="3"/>`;
+    // label
+    s+=`<text x="${x0+bW}" y="${H-3}" text-anchor="middle" font-size="9" fill="${highlight?'#0F172A':'#94A3B8'}" font-weight="${highlight?'700':'400'}">${lbl}</text>`;
+  });
+  // utilidad line
+  const pts=UTIL_M.map((v,i)=>{
+    const x=PL+i*grpW+grpW/2;
+    const y=PT+cH-(Math.max(v,0)/maxV)*cH;
+    return `${x},${y}`;
+  }).join(' ');
+  s+=`<polyline points="${pts}" fill="none" stroke="#16A34A" stroke-width="2" stroke-dasharray="4,2"/>`;
+  UTIL_M.forEach((v,i)=>{
+    const x=PL+i*grpW+grpW/2;
+    const y=PT+cH-(Math.max(v,0)/maxV)*cH;
+    s+=`<circle cx="${x}" cy="${y}" r="4" fill="#16A34A"/>`;
+  });
+  s+='</svg>';
+  return s;
+}
+
+function buildDonut(values, labels) {
+  const colors=['#2563EB','#16A34A','#EA580C','#8B5CF6','#94A3B8'];
+  const total=values.reduce((a,b)=>a+b,0);
+  const CX=60,CY=60,R=42,SW=18;
+  const circ=2*Math.PI*R;
+  let svg=`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" class="donut-svg">`;
+  svg+=`<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="#F1F5F9" stroke-width="${SW}"/>`;
+  let cumPct=0;
+  values.forEach((v,i)=>{
+    const pct=v/total;
+    const da=(pct*circ).toFixed(2)+' '+circ.toFixed(2);
+    const rot=-90+(cumPct*360);
+    svg+=`<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="${colors[i]}"
+      stroke-width="${SW}" stroke-dasharray="${da}"
+      transform="rotate(${rot} ${CX} ${CY})"/>`;
+    cumPct+=pct;
+  });
+  svg+=`<text x="${CX}" y="${CY+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#0F172A">${total}</text>`;
+  svg+=`<text x="${CX}" y="${CY+15}" text-anchor="middle" font-size="8" fill="#64748B">servicios</text>`;
+  svg+='</svg>';
+  // Legend
+  let leg='';
+  values.forEach((v,i)=>{
+    const p=(v/total*100).toFixed(0);
+    leg+=`<div class="legend-item">
+      <div class="legend-dot" style="background:${colors[i]}"></div>
+      <span>${labels[i]}: <strong>${v}</strong> (${p}%)</span>
+    </div>`;
+  });
+  return {svg, leg};
+}
+
+function buildBars(cats, color) {
+  if(!cats||cats.length===0) return '<div class="no-data"><span class="no-data-icon">📊</span>No disponible</div>';
+  const max=cats[0][1];
+  return cats.map(([name,val])=>{
+    const p=(val/max*100).toFixed(0);
+    return `<div class="prog">
+      <div class="prog-row"><span>${name}</span><span>${fmt(val)}</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${p}%;background:${color||'#2563EB'}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function setMes(mes) {
+  // Buttons
+  document.querySelectorAll('.mes-btn').forEach(b=>b.classList.toggle('active',b.dataset.mes===mes));
+  const d=MD[mes];
+  // Header
+  document.getElementById('hBadge').textContent=d.badge;
+  document.getElementById('kpiTitle').textContent='Indicadores Clave — '+d.label;
+  // KPIs
+  document.getElementById('kV').textContent=fmtK(d.ventas);
+  document.getElementById('kVs').textContent=d.ordenes+' órdenes · '+d.clientes+' clientes';
+  document.getElementById('kVb').textContent=d.vb;
+  document.getElementById('kC').textContent=fmtK(d.cobrado);
+  document.getElementById('kCs').textContent=d.pendiente>0?'Recuperado en período':'Cobrado completo';
+  document.getElementById('kCb').textContent=d.cb;
+  document.getElementById('kE').textContent=fmtK(d.egresos);
+  document.getElementById('kEs').textContent='Gastos del período';
+  document.getElementById('kEb').textContent=d.eb;
+  document.getElementById('kU').textContent=fmtK(d.utilidad);
+  document.getElementById('kUs').textContent=d.utilidad>=0?'Potencial (V-E)':'Déficit (V-E)';
+  document.getElementById('kUb').textContent=d.ub;
+  // Stats
+  document.getElementById('sO').textContent=d.ordenes;
+  document.getElementById('sOs').textContent=d.label;
+  document.getElementById('sCl').textContent=d.clientes;
+  document.getElementById('sTk').textContent=fmtK(Math.round(d.ventas/d.ordenes));
+  // Charts
+  document.getElementById('chartTendencia').innerHTML=buildTendencia(mes==='todos'?undefined:mes);
+  const don=buildDonut(d.servD,d.servL);
+  document.getElementById('donutSvg').outerHTML=don.svg;
+  // re-get since outerHTML replaces the element
+  setTimeout(()=>{
+    const newSvg=document.querySelector('.donut-svg');
+    if(newSvg) newSvg.id='donutSvg';
+  },0);
+  document.getElementById('donutLegend').innerHTML=don.leg;
+  // Egresos bars
+  document.getElementById('egresosContent').innerHTML=buildBars(d.egCats,'#EA580C');
+  // Top clientes
+  const topMax=d.top[0][1];
+  const topColors=['#2563EB','#16A34A','#0891B2','#7C3AED','#EA580C'];
+  document.getElementById('topContent').innerHTML=d.top.map(([n,v],i)=>`
+    <div class="prog">
+      <div class="prog-row"><span style="font-weight:${i===0?'700':'400'}">${n}</span><span>${fmt(v)}</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${(v/topMax*100).toFixed(0)}%;background:${topColors[i]}"></div></div>
+    </div>`).join('');
+  // CxC
+  document.getElementById('cxcTitle').textContent='Cuentas por Cobrar — '+d.label;
+  if(!d.cxc||d.cxc.length===0){
+    document.getElementById('cxcBody').innerHTML=`<tr><td colspan="5">
+      <div class="no-data"><span class="no-data-icon">✅</span>Sin cartera pendiente en ${d.label}</div>
+    </td></tr>`;
+    document.getElementById('cxcBars').innerHTML='';
+  } else {
+    const tot=d.cxc.reduce((s,r)=>s+r.s,0);
+    document.getElementById('cxcBody').innerHTML=d.cxc.map(r=>`
+      <tr><td>${r.id}</td><td>${r.cl}</td><td>${r.d}d</td>
+      <td>${r.e==='Corriente'?'<span class="badge-c">✓</span>':'<span class="badge-pv">⏰</span>'}</td>
+      <td class="td-r">${fmt(r.s)}</td></tr>`).join('')+
+      `<tr class="total-row"><td colspan="4">Total</td><td class="td-r">${fmt(tot)}</td></tr>`;
+    const heb=d.cxc.filter(r=>r.cl.includes('HEB')).reduce((s,r)=>s+r.s,0);
+    const otros=tot-heb;
+    document.getElementById('cxcBars').innerHTML=`
+      <div class="prog"><div class="prog-row"><span>HEB</span><span>${fmt(heb)} · ${(heb/tot*100).toFixed(0)}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${(heb/tot*100).toFixed(0)}%;background:#2563EB"></div></div></div>
+      <div class="prog"><div class="prog-row"><span>Otros</span><span>${fmt(otros)} · ${(otros/tot*100).toFixed(0)}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${(otros/tot*100).toFixed(0)}%;background:#16A34A"></div></div></div>`;
+  }
+  // Insights
+  document.getElementById('insTitle').textContent='Insights — '+d.label;
+  document.getElementById('insGrid').innerHTML=d.ins.map(ins=>`
+    <div class="insight ${ins.c}">
+      <div class="ins-icon">${ins.i}</div>
+      <div><div class="ins-title">${ins.t}</div><div class="ins-desc">${ins.d}</div></div>
+    </div>`).join('');
+}
+
+// Init
+setMes('todos');
+</script>
+</body>
+</html>

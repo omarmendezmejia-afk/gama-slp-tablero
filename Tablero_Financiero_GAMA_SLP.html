@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>if(localStorage.getItem("gama_auth")!=="1"){location.href="./index.html";}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tablero Financiero — GAMA SLP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --azul:#1E40AF;--azul2:#3B82F6;--verde:#16A34A;--rojo:#DC2626;
+    --naranja:#D97706;--morado:#7C3AED;--cian:#0891B2;
+    --gris:#F1F5F9;--borde:#E2E8F0;--sub:#64748B;--texto:#0F172A;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--texto);min-height:100vh}
+  .header{background:linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 100%);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .header-left h1{color:#fff;font-size:20px;font-weight:800;letter-spacing:-.3px}
+  .header-left p{color:#93C5FD;font-size:12px;margin-top:2px}
+  .badge-periodo{background:rgba(255,255,255,.15);color:#E0F2FE;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+  .selector-bar{background:#fff;border-bottom:2px solid var(--borde);padding:0 28px;display:flex;gap:4px;overflow-x:auto}
+  .tab{padding:14px 18px;font-size:13px;font-weight:600;color:var(--sub);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s}
+  .tab.active,.tab:hover{color:var(--azul);border-bottom-color:var(--azul2)}
+  .main{padding:24px 28px;max-width:1300px;margin:0 auto}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
+  .kpi{background:var(--card);border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid var(--borde);position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--azul2))}
+  .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sub);margin-bottom:8px}
+  .kpi-val{font-size:26px;font-weight:800;color:var(--texto);letter-spacing:-.5px}
+  .kpi-sub{font-size:11px;color:var(--sub);margin-top:4px}
+  .kpi-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;margin-top:6px;display:inline-block}
+  .badge-verde{background:#DCFCE7;color:#16A34A}
+  .badge-rojo{background:#FEE2E2;color:#DC2626}
+  .badge-naranja{background:#FEF3C7;color:#D97706}
+  .badge-azul{background:#DBEAFE;color:#1D4ED8}
+  .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+  .charts-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+  @media(max-width:900px){.charts-grid,.charts-grid-3{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid var(--borde)}
+  .card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:16px}
+  .chart-wrap{position:relative;height:260px}
+  .bottom-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  @media(max-width:900px){.bottom-grid{grid-template-columns:1fr}}
+  .cxc-table{width:100%;border-collapse:collapse;font-size:12px}
+  .cxc-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);border-bottom:2px solid var(--borde)}
+  .cxc-table td{padding:9px 10px;border-bottom:1px solid var(--borde)}
+  .cxc-table .td-monto{text-align:right;font-weight:700}
+  .est-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+  .est-vencido{background:#FEE2E2;color:#DC2626}
+  .est-corriente{background:#DCFCE7;color:#16A34A}
+  .est-porvencer{background:#FEF3C7;color:#D97706}
+  .no-cxc{text-align:center;padding:24px;color:var(--sub);font-size:13px}
+  .banco-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .banco-item{background:var(--gris);border-radius:10px;padding:14px;text-align:center}
+  .banco-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub)}
+  .banco-val{font-size:19px;font-weight:800;color:var(--azul);margin-top:4px}
+  .banco-total{background:linear-gradient(135deg,#1E40AF,#3B82F6);border-radius:12px;padding:16px;text-align:center;color:#fff}
+  .banco-total-label{font-size:10px;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.6px}
+  .banco-total-val{font-size:28px;font-weight:900;margin-top:4px}
+  .flujo-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+  .flujo-table th{padding:7px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);border-bottom:2px solid var(--borde);text-align:right}
+  .flujo-table th:first-child{text-align:left}
+  .flujo-table td{padding:8px 10px;border-bottom:1px solid var(--borde);text-align:right;font-weight:600}
+  .flujo-table td:first-child{text-align:left;font-weight:400;color:var(--sub)}
+  .flujo-table .total-row td{font-weight:800;background:var(--gris);font-size:13px}
+  .pos{color:var(--verde)}.neg{color:var(--rojo)}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <h1>Tablero Financiero — GAMA SLP</h1>
+    <p>San Luis Potosí · Saneamiento Industrial · Análisis financiero por mes</p>
+  </div>
+  <div id="badgePeriodo" class="badge-periodo">ACUMULADO 4 MESES</div>
+</div>
+<div class="selector-bar">
+  <button class="tab active" onclick="setMes('todos')">Acumulado</button>
+  <button class="tab" onclick="setMes('marzo')">Marzo 2026</button>
+  <button class="tab" onclick="setMes('abril')">Abril 2026</button>
+  <button class="tab" onclick="setMes('mayo')">Mayo 2026</button>
+  <button class="tab" onclick="setMes('junio')">Junio 2026</button>
+  <button class="tab" onclick="setMes('julio')">Julio 2026</button>
+</div>
+<div class="main">
+  <div class="kpi-grid">
+    <div class="kpi" style="--accent:var(--azul2)">
+      <div class="kpi-label">Ventas Netas (sin IVA)</div>
+      <div class="kpi-val" id="kVentas"></div>
+      <div class="kpi-sub">sin IVA · ingreso real</div>
+      <span class="kpi-badge badge-azul" id="kVentasBadge"></span>
+    </div>
+    <div class="kpi" style="--accent:var(--verde)">
+      <div class="kpi-label">Cobrado Real</div>
+      <div class="kpi-val" id="kCobrado"></div>
+      <div class="kpi-sub">contado + crédito cobrado</div>
+      <span class="kpi-badge" id="kCobradoBadge"></span>
+    </div>
+    <div class="kpi" style="--accent:var(--rojo)">
+      <div class="kpi-label">Egresos</div>
+      <div class="kpi-val" id="kEgresos"></div>
+      <div class="kpi-sub">total gastos y costos</div>
+      <span class="kpi-badge badge-naranja" id="kEgresosBadge"></span>
+    </div>
+    <div class="kpi" style="--accent:var(--morado)">
+      <div class="kpi-label">Utilidad Bruta</div>
+      <div class="kpi-val" id="kUtilidad"></div>
+      <div class="kpi-sub">ventas netas − egresos</div>
+      <span class="kpi-badge" id="kUtilidadBadge"></span>
+    </div>
+    <div class="kpi" style="--accent:var(--cian)">
+      <div class="kpi-label">Flujo Neto Real</div>
+      <div class="kpi-val" id="kFlujo"></div>
+      <div class="kpi-sub">cobrado − egresos</div>
+      <span class="kpi-badge" id="kFlujoBadge"></span>
+    </div>
+    <div class="kpi" style="--accent:var(--naranja)">
+      <div class="kpi-label">CxC Pendiente</div>
+      <div class="kpi-val" id="kPendiente"></div>
+      <div class="kpi-sub">cartera por cobrar</div>
+      <span class="kpi-badge" id="kPendienteBadge"></span>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">Ventas Netas · Cobrado · Egresos · Flujo Neto</div>
+      <div class="chart-wrap"><canvas id="chartMain"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Composición de Egresos</div>
+      <div class="chart-wrap"><canvas id="chartEgresos"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid-3">
+    <div class="card">
+      <div class="card-title">Ventas: Contado vs Crédito</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chartMix"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Utilidad Bruta por Mes</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chartUtilidad"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">% Cobrado vs Ventas</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chartCobranza"></canvas></div>
+    </div>
+  </div>
+  <div class="bottom-grid">
+    <div class="card">
+      <div class="card-title">Cuentas por Cobrar — <span id="cxcTitle">Cartera Activa</span></div>
+      <div id="cxcContainer"></div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Saldos Bancarios · Al 28 Julio 2026</div>
+        <div class="banco-grid">
+          <div class="banco-item"><div class="banco-label">Cuenta Fiscal</div><div class="banco-val">$37,788</div></div>
+          <div class="banco-item"><div class="banco-label">No Fiscal</div><div class="banco-val">$8,671</div></div>
+          <div class="banco-item"><div class="banco-label">Efectivo Caja</div><div class="banco-val">$250</div></div>
+          <div class="banco-item" style="background:#EFF6FF">
+            <div class="banco-label" style="color:var(--azul)">Deuda Bancaria</div>
+            <div class="banco-val" style="font-size:13px;color:var(--verde)">✓ Sin deuda</div>
+          </div>
+        </div>
+        <div class="banco-total">
+          <div class="banco-total-label">Total Disponible</div>
+          <div style="font-size:28px;font-weight:900;margin-top:4px">$46,709</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">P&amp;L Simplificado</div>
+        <table class="flujo-table">
+          <thead><tr><th>Concepto</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th></tr></thead>
+          <tbody>
+            <tr><td>Ventas (sin IVA)</td><td>$30.5K</td><td>$75.3K</td><td>$221K</td><td>$184K</td><td>$225K</td></tr>
+            <tr><td>Egresos</td><td>$35K</td><td>$108K</td><td>$123K</td><td>$154K</td><td>$152K</td></tr>
+            <tr><td>Utilidad</td><td class="neg">-$4.9K</td><td class="neg">-$33K</td><td class="pos">+$98K</td><td class="pos">+$30K</td><td class="pos">+$73K</td></tr>
+            <tr><td>Margen</td><td class="neg">-16.2%</td><td class="neg">-43.8%</td><td class="pos">44.3%</td><td class="pos">16.2%</td><td class="pos">32.5%</td></tr>
+            <tr><td>Flujo Neto</td><td class="neg">-$9.9K</td><td class="neg">-$28K</td><td class="neg">-$17.9K</td><td class="pos">+$40.1K</td><td class="pos">+$31.7K</td></tr>
+          </tbody>
+          <tfoot><tr class="total-row"><td>ACUM.</td><td colspan="4" style="text-align:right;color:var(--azul)">$736.4K ventas netas</td><td class="pos">22.1%</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const FD={
+  todos:{label:'Acumulado',badge:'ACUMULADO MAR–JUL 2026',ventas:736449,cobrado:589297,egresos:573404,utilidad:163045,margen:22.1,flujo:15893,pendiente:152975,ventasBadge:'5 meses · 153 órdenes',cobradoBadge:'80.0% cobrado sin IVA',egresosBadge:'77.9% de ventas netas',utilBadge:'22.1% margen neto (facturado)',flujoBadge:'Flujo neto cash acumulado positivo',pendienteBadge:'26 cuentas · sin IVA',egCats:[['Nómina',191299],['Combustible',138316],['Infraestructura/Renta',110895],['Servicios/Admin',59965],['Comisiones/Otros',34312],['Herramienta',31455],['Viáticos',6466],['Otros',696]],cxc:[{id:'GPE-0055',cliente:'HEB CARRETERA 57',saldo:3625,dias:75,est:'Vencido'},{id:'GPE-0057',cliente:'HEB RÍO VERDE',saldo:3625,dias:74,est:'Vencido'},{id:'GPE-0063',cliente:'HEB',saldo:3625,dias:64,est:'Vencido'},{id:'GPE-0065',cliente:'HEB',saldo:3625,dias:63,est:'Vencido'},{id:'GPE-0069',cliente:"McDONALD'S TANGAMANGA",saldo:15660,dias:62,est:'Vencido'},{id:'GPE-0085',cliente:'HEB CARRETERA 57',saldo:3525,dias:47,est:'Por vencer'},{id:'GPE-0091',cliente:'HEB PINOS',saldo:3525,dias:45,est:'Por vencer'},{id:'GPE-0099',cliente:'HEB',saldo:3525,dias:41,est:'Por vencer'},{id:'GPE-0098',cliente:'HEB',saldo:3525,dias:40,est:'Por vencer'},{id:'GPE-0107',cliente:'GRUPO ACERERO',saldo:4640,dias:27,est:'Corriente'},{id:'GPE-0109',cliente:'GRUPO ACERERO',saldo:4640,dias:27,est:'Corriente'},{id:'GPE-0111',cliente:'VYNMSA',saldo:1800,dias:25,est:'Corriente'},{id:'GPE-0113',cliente:"McDONALD'S CHALITA",saldo:15660,dias:23,est:'Corriente'},{id:'GPE-0145',cliente:'HEB CARRETERA 57',saldo:11900,dias:14,est:'Corriente'},{id:'GPE-0146',cliente:'HEB CARRETERA 57',saldo:3600,dias:14,est:'Corriente'},{id:'GPE-0130',cliente:'DEACERO RECYCLING',saldo:3480,dias:11,est:'Corriente'},{id:'GPE-0132',cliente:'GRUPO ACERERO',saldo:5472,dias:11,est:'Corriente'},{id:'GPE-0133',cliente:'POPEYES GASOLINERA EL AVIÓN',saldo:2320,dias:10,est:'Corriente'},{id:'GPE-0147',cliente:'HEB PINOS',saldo:11900,dias:10,est:'Corriente'},{id:'GPE-0148',cliente:'HEB PINOS',saldo:3600,dias:10,est:'Corriente'},{id:'GPE-0134',cliente:'POPEYES CLOUTHIER',saldo:2320,dias:8,est:'Corriente'},{id:'GPE-0137',cliente:'GA TRANSPORTES (GRUPO ACERERO)',saldo:6380,dias:8,est:'Corriente'},{id:'GPE-0149',cliente:'HEB HIMNO NACIONAL',saldo:11900,dias:7,est:'Corriente'},{id:'GPE-0150',cliente:'HEB HIMNO NACIONAL',saldo:3600,dias:7,est:'Corriente'},{id:'GPE-0151',cliente:'HEB LOMAS',saldo:11900,dias:5,est:'Corriente'},{id:'GPE-0152',cliente:'HEB LOMAS',saldo:3600,dias:5,est:'Corriente'}]},
+  marzo:{label:'Marzo 2026',badge:'MARZO 2026',ventas:30500,cobrado:25500,egresos:35431,utilidad:-4931,margen:-16.2,flujo:-9931,pendiente:0,ventasBadge:'9 órdenes · 9 clientes',cobradoBadge:'83.6% cobrado sin IVA',egresosBadge:'116.2% de ventas netas',utilBadge:'-16.2% margen neto',flujoBadge:'Déficit de arranque',pendienteBadge:'Sin cartera',egCats:[['Infraestructura/Renta',21792],['Herramienta',5691],['Combustible',4560],['Viáticos',1964],['Servicios/Admin',1425]],cxc:[]},
+  abril:{label:'Abril 2026',badge:'ABRIL 2026',ventas:75300,cobrado:80300,egresos:108258,utilidad:-32958,margen:-43.8,flujo:-27958,pendiente:0,ventasBadge:'22 órdenes · 19 clientes',cobradoBadge:'106.6% (inc. cobranza marzo)',egresosBadge:'143.8% de ventas netas',utilBadge:'-43.8% margen neto',flujoBadge:'Déficit por inversión',pendienteBadge:'Sin cartera',egCats:[['Nómina',35507],['Servicios/Admin',25979],['Combustible',21108],['Infraestructura/Renta',10574],['Comisiones/Otros',7902],['Herramienta',6117],['Viáticos',1070]],cxc:[]},
+  mayo:{label:'Mayo 2026',badge:'MAYO 2026',ventas:220800,cobrado:105100,egresos:123023,utilidad:97777,margen:44.3,flujo:-17923,pendiente:30161,ventasBadge:'38 órdenes · 26 clientes',cobradoBadge:'47.6% cobrado sin IVA',egresosBadge:'55.7% de ventas netas',utilBadge:'44.3% margen neto',flujoBadge:'-$17.9K (crédito por cobrar)',pendienteBadge:'5 cuentas vencidas · sin IVA',egCats:[['Nómina',52038],['Combustible',36242],['Comisiones/Otros',20480],['Servicios/Admin',6645],['Herramienta',4698],['Viáticos',2921]],cxc:[{id:'GPE-0055',cliente:'HEB CARRETERA 57',saldo:3625,dias:75,est:'Vencido'},{id:'GPE-0057',cliente:'HEB RÍO VERDE',saldo:3625,dias:74,est:'Vencido'},{id:'GPE-0063',cliente:'HEB',saldo:3625,dias:64,est:'Vencido'},{id:'GPE-0065',cliente:'HEB',saldo:3625,dias:63,est:'Vencido'},{id:'GPE-0069',cliente:"McDONALD'S TANGAMANGA",saldo:15660,dias:62,est:'Vencido'}]},
+  junio:{label:'Junio 2026',badge:'JUNIO 2026',ventas:184400,cobrado:194499,egresos:154447,utilidad:29953,margen:16.2,flujo:40051,pendiente:14102,ventasBadge:'37 órdenes · 29 clientes',cobradoBadge:'105.5% (inc. cobranza mayo)',egresosBadge:'83.7% de ventas netas',utilBadge:'16.2% margen neto',flujoBadge:'+$40.1K flujo operativo',pendienteBadge:'4 cuentas por vencer · sin IVA',egCats:[['Nómina',49573],['Infraestructura/Renta',40000],['Combustible',36175],['Herramienta',12062],['Servicios/Admin',10893],['Comisiones/Otros',5350],['Otros',346],['Viáticos',48]],cxc:[{id:'GPE-0085',cliente:'HEB CARRETERA 57',saldo:3525,dias:47,est:'Por vencer'},{id:'GPE-0091',cliente:'HEB PINOS',saldo:3525,dias:45,est:'Por vencer'},{id:'GPE-0099',cliente:'HEB',saldo:3525,dias:41,est:'Por vencer'},{id:'GPE-0098',cliente:'HEB',saldo:3525,dias:40,est:'Por vencer'}]},
+  julio:{label:'Julio 2026',badge:'JULIO 2026 · AL 28 JUL',ventas:225449,cobrado:183898,egresos:152244,utilidad:73205,margen:32.5,flujo:31654,pendiente:108712,ventasBadge:'47 órdenes · 35 clientes',cobradoBadge:'81.6% cobrado sin IVA (cash del mes)',egresosBadge:'67.5% de ventas netas',utilBadge:'32.5% margen neto (facturado)',flujoBadge:'+$31.7K flujo operativo del mes',pendienteBadge:'17 cuentas corrientes · sin IVA',egCats:[['Nómina',54182],['Combustible',40231],['Infraestructura/Renta',38529],['Servicios/Admin',15022],['Herramienta',2887],['Comisiones/Otros',580],['Viáticos',463],['Otros',351]],cxc:[{id:'GPE-0107',cliente:'GRUPO ACERERO',saldo:4640,dias:27,est:'Corriente'},{id:'GPE-0109',cliente:'GRUPO ACERERO',saldo:4640,dias:27,est:'Corriente'},{id:'GPE-0111',cliente:'VYNMSA',saldo:1800,dias:25,est:'Corriente'},{id:'GPE-0113',cliente:"McDONALD'S CHALITA",saldo:15660,dias:23,est:'Corriente'},{id:'GPE-0145',cliente:'HEB CARRETERA 57',saldo:11900,dias:14,est:'Corriente'},{id:'GPE-0146',cliente:'HEB CARRETERA 57',saldo:3600,dias:14,est:'Corriente'},{id:'GPE-0130',cliente:'DEACERO RECYCLING',saldo:3480,dias:11,est:'Corriente'},{id:'GPE-0132',cliente:'GRUPO ACERERO',saldo:5472,dias:11,est:'Corriente'},{id:'GPE-0133',cliente:'POPEYES GASOLINERA EL AVIÓN',saldo:2320,dias:10,est:'Corriente'},{id:'GPE-0147',cliente:'HEB PINOS',saldo:11900,dias:10,est:'Corriente'},{id:'GPE-0148',cliente:'HEB PINOS',saldo:3600,dias:10,est:'Corriente'},{id:'GPE-0134',cliente:'POPEYES CLOUTHIER',saldo:2320,dias:8,est:'Corriente'},{id:'GPE-0137',cliente:'GA TRANSPORTES (GRUPO ACERERO)',saldo:6380,dias:8,est:'Corriente'},{id:'GPE-0149',cliente:'HEB HIMNO NACIONAL',saldo:11900,dias:7,est:'Corriente'},{id:'GPE-0150',cliente:'HEB HIMNO NACIONAL',saldo:3600,dias:7,est:'Corriente'},{id:'GPE-0151',cliente:'HEB LOMAS',saldo:11900,dias:5,est:'Corriente'},{id:'GPE-0152',cliente:'HEB LOMAS',saldo:3600,dias:5,est:'Corriente'}]}
+};
+
+function fmt(n){const a=Math.abs(Math.round(n));const s='$'+a.toLocaleString('es-MX');return n<0?'-'+s:s;}
+
+let chartMain,chartEgresos,chartMix,chartUtilidad,chartCobranza;
+const ML=['Marzo','Abril','Mayo','Junio','Julio'];
+const C=['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4','#6B7280'];
+
+function initCharts(){
+  chartMain=new Chart(document.getElementById('chartMain'),{data:{labels:ML,datasets:[{type:'bar',label:'Ventas',data:[30500,75300,220800,184400,225449],backgroundColor:'rgba(59,130,246,.75)',borderRadius:6},{type:'bar',label:'Cobrado',data:[25500,80300,105100,194499,183898],backgroundColor:'rgba(16,185,129,.75)',borderRadius:6},{type:'bar',label:'Egresos',data:[35431,108258,123023,154447,152244],backgroundColor:'rgba(239,68,68,.7)',borderRadius:6},{type:'line',label:'Flujo Neto',data:[-9931,-27958,-17923,40051,31654],borderColor:'#7C3AED',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#7C3AED',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{y:{ticks:{callback:v=>fmt(v)},grid:{color:'#F1F5F9'}},x:{grid:{display:false}}}}});
+
+  chartEgresos=new Chart(document.getElementById('chartEgresos'),{type:'doughnut',data:{labels:FD.todos.egCats.map(e=>e[0]),datasets:[{data:FD.todos.egCats.map(e=>e[1]),backgroundColor:C,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${fmt(c.raw)}`}}}}});
+
+  chartMix=new Chart(document.getElementById('chartMix'),{type:'bar',data:{labels:ML,datasets:[{label:'Contado',data:[12400,51800,56800,42900,41100],backgroundColor:'rgba(59,130,246,.8)',borderRadius:4},{label:'Crédito',data:[18100,23500,164000,141500,184349],backgroundColor:'rgba(139,92,246,.8)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>fmt(v)},grid:{color:'#F1F5F9'}}}}});
+
+  chartUtilidad=new Chart(document.getElementById('chartUtilidad'),{type:'bar',data:{labels:ML,datasets:[{label:'Utilidad',data:[-4931,-32958,97777,29953,73205],backgroundColor:[-4931,-32958,97777,29953,73205].map(v=>v>=0?'rgba(16,185,129,.8)':'rgba(239,68,68,.8)'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.raw)}`}}},scales:{y:{ticks:{callback:v=>fmt(v)},grid:{color:'#F1F5F9'}},x:{grid:{display:false}}}}});
+
+  const cp=[25500/30500*100,80300/75300*100,105100/220800*100,194499/184400*100,183898/225449*100];
+  chartCobranza=new Chart(document.getElementById('chartCobranza'),{type:'bar',data:{labels:ML,datasets:[{label:'% Cobrado',data:cp.map(v=>Math.round(v*10)/10),backgroundColor:cp.map(v=>v>=100?'rgba(16,185,129,.8)':'rgba(59,130,246,.8)'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toFixed(1)}%`}}},scales:{y:{min:0,ticks:{callback:v=>v+'%'},grid:{color:'#F1F5F9'}},x:{grid:{display:false}}}}});
+}
+
+function setMes(mes){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['todos','marzo','abril','mayo','junio','julio'][i]===mes);});
+  const d=FD[mes];
+  document.getElementById('badgePeriodo').textContent=d.badge;
+  document.getElementById('kVentas').textContent=fmt(d.ventas);
+  document.getElementById('kVentasBadge').textContent=d.ventasBadge;
+  document.getElementById('kCobrado').textContent=fmt(d.cobrado);
+  document.getElementById('kCobradoBadge').textContent=d.cobradoBadge;
+  document.getElementById('kCobradoBadge').className='kpi-badge '+(d.cobrado>=d.ventas?'badge-verde':'badge-azul');
+  document.getElementById('kEgresos').textContent=fmt(d.egresos);
+  document.getElementById('kEgresosBadge').textContent=d.egresosBadge;
+  document.getElementById('kUtilidad').textContent=fmt(d.utilidad);
+  document.getElementById('kUtilidadBadge').textContent=d.utilBadge;
+  document.getElementById('kUtilidadBadge').className='kpi-badge '+(d.utilidad>=0?'badge-verde':'badge-rojo');
+  document.getElementById('kFlujo').textContent=fmt(d.flujo);
+  document.getElementById('kFlujoBadge').textContent=d.flujoBadge;
+  document.getElementById('kFlujoBadge').className='kpi-badge '+(d.flujo>=0?'badge-verde':'badge-naranja');
+  document.getElementById('kPendiente').textContent=fmt(d.pendiente);
+  document.getElementById('kPendienteBadge').textContent=d.pendienteBadge;
+  document.getElementById('kPendienteBadge').className='kpi-badge '+(d.pendiente===0?'badge-verde':'badge-naranja');
+
+  chartEgresos.data.labels=d.egCats.map(e=>e[0]);
+  chartEgresos.data.datasets[0].data=d.egCats.map(e=>e[1]);
+  chartEgresos.update();
+
+  if(mes!=='todos'){
+    const idx=['marzo','abril','mayo','junio','julio'].indexOf(mes);
+    chartMain.data.datasets[0].backgroundColor=[0,1,2,3,4].map(i=>i===idx?'rgba(59,130,246,.9)':'rgba(59,130,246,.15)');
+    chartMain.data.datasets[1].backgroundColor=[0,1,2,3,4].map(i=>i===idx?'rgba(16,185,129,.9)':'rgba(16,185,129,.15)');
+    chartMain.data.datasets[2].backgroundColor=[0,1,2,3,4].map(i=>i===idx?'rgba(239,68,68,.85)':'rgba(239,68,68,.15)');
+  } else {
+    chartMain.data.datasets[0].backgroundColor='rgba(59,130,246,.75)';
+    chartMain.data.datasets[1].backgroundColor='rgba(16,185,129,.75)';
+    chartMain.data.datasets[2].backgroundColor='rgba(239,68,68,.7)';
+  }
+  chartMain.update();
+
+  document.getElementById('cxcTitle').textContent=mes==='todos'?'Cartera Activa Total':d.label;
+  const container=document.getElementById('cxcContainer');
+  if(!d.cxc||d.cxc.length===0){container.innerHTML='<div class="no-cxc">✅ Sin cartera pendiente en '+d.label+'</div>';return;}
+  const total=d.cxc.reduce((s,r)=>s+r.saldo,0);
+  container.innerHTML=`<table class="cxc-table"><thead><tr><th>Orden</th><th>Cliente</th><th style="text-align:center">Días</th><th>Estado</th><th style="text-align:right">Saldo</th></tr></thead><tbody>${d.cxc.map(r=>`<tr><td style="font-size:11px;color:var(--sub)">${r.id}</td><td style="font-weight:600">${r.cliente}</td><td style="text-align:center">${r.dias}d</td><td><span class="est-tag ${r.est==='Vencido'?'est-vencido':r.est==='Por vencer'?'est-porvencer':'est-corriente'}">${r.est}</span></td><td class="td-monto">${fmt(r.saldo)}</td></tr>`).join('')}</tbody><tfoot><tr style="font-weight:800;background:var(--gris)"><td colspan="4" style="padding:9px 10px">TOTAL PENDIENTE</td><td class="td-monto" style="padding:9px 10px;font-size:14px">${fmt(total)}</td></tr></tfoot></table>`;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{initCharts();setMes('todos');});
+</script>
+</body>
+</html>
