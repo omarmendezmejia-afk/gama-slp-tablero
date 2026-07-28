@@ -64,7 +64,7 @@
   }
 
   /* KPI */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
   .kpi {
     background: #fff; border-radius: 12px; padding: 18px 20px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid var(--borde);
@@ -191,7 +191,6 @@
   <div class="fecha">
     <div class="badge" id="headerBadge">MAR – JUL 2026</div>
     <div>Período: Marzo – Julio 2026</div>
-    <div style="margin-top:4px">Preparado para Dueños / Accionistas</div>
   </div>
 </div>
 
@@ -229,10 +228,16 @@
       <span class="kpi-badge warn" id="kEgresosBadge">Acumulado 5 meses</span>
     </div>
     <div class="kpi rojo">
-      <div class="kpi-label">Utilidad / Margen</div>
+      <div class="kpi-label">Utilidad Operativa</div>
       <div class="kpi-value rojo" id="kUtilidad">$115,904</div>
       <div class="kpi-sub" id="kUtilidadSub">Ventas netas (sin IVA) − Egresos</div>
       <span class="kpi-badge warn" id="kUtilidadBadge">20.5% margen neto acumulado</span>
+    </div>
+    <div class="kpi cian">
+      <div class="kpi-label">Utilidad Neta</div>
+      <div class="kpi-value cian" id="kUtilidadNeta">$0</div>
+      <div class="kpi-sub" id="kUtilidadNetaSub">Cobrado real − Egresos</div>
+      <span class="kpi-badge info" id="kUtilidadNetaBadge">—</span>
     </div>
   </div>
 
@@ -842,6 +847,10 @@ function updateKPIs(mes) {
   document.getElementById('kUtilidad').textContent    = fmt(d.utilidad);
   document.getElementById('kUtilidadSub').textContent = d.utilLabel;
   document.getElementById('kUtilidadBadge').textContent= d.utilBadge;
+  const utilNeta = d.cobrado - d.egresos;
+  document.getElementById('kUtilidadNeta').textContent = fmt(utilNeta);
+  document.getElementById('kUtilidadNetaBadge').textContent = (utilNeta>=0?'+':'')+fmt(utilNeta)+' flujo de caja del período';
+  document.getElementById('kUtilidadNetaBadge').className = 'kpi-badge '+(utilNeta>=0?'up':'down');
   document.getElementById('kpiTitle').textContent = 'Indicadores Clave — '+d.label;
   // Mini stats
   document.getElementById('sOrdenes').textContent  = d.ordenes;

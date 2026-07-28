@@ -62,6 +62,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .kpi.azul::before   {background:var(--azul2)}
 .kpi.naranja::before{background:var(--naranja)}
 .kpi.rojo::before   {background:var(--rojo)}
+.kpi.cian::before   {background:var(--cian)}
 .kpi-label{font-size:10px;font-weight:700;color:var(--sub);
   text-transform:uppercase;letter-spacing:.6px}
 .kpi-value{font-size:22px;font-weight:800;margin:5px 0 3px;line-height:1}
@@ -69,6 +70,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .kpi-value.azul   {color:var(--azul2)}
 .kpi-value.naranja{color:var(--naranja)}
 .kpi-value.rojo   {color:var(--rojo)}
+.kpi-value.cian   {color:var(--cian)}
 .kpi-sub{font-size:10px;color:var(--sub);line-height:1.4}
 .kpi-badge{display:inline-block;font-size:10px;font-weight:600;
   padding:2px 7px;border-radius:8px;margin-top:4px}
@@ -172,7 +174,6 @@ tr:last-child td{border-bottom:none}
   <h2>San Luis Potosí · Saneamiento &amp; Soluciones Ambientales</h2>
   <div class="header-bottom">
     <div class="badge" id="hBadge">MAR – JUL 2026</div>
-    <div class="periodo-txt">Para Dueños / Accionistas</div>
   </div>
 </div>
 
@@ -209,10 +210,16 @@ tr:last-child td{border-bottom:none}
       <div class="kpi-badge warn" id="kEb">Acumulado</div>
     </div>
     <div class="kpi rojo">
-      <div class="kpi-label">Utilidad</div>
+      <div class="kpi-label">Utilidad Operativa</div>
       <div class="kpi-value rojo" id="kU">$116K</div>
       <div class="kpi-sub" id="kUs">Ventas − Egresos</div>
       <div class="kpi-badge warn" id="kUb">20.5% margen</div>
+    </div>
+    <div class="kpi cian" style="grid-column:span 2">
+      <div class="kpi-label">Utilidad Neta</div>
+      <div class="kpi-value cian" id="kUN">$0</div>
+      <div class="kpi-sub" id="kUNs">Cobrado real − Egresos</div>
+      <div class="kpi-badge warn" id="kUNb">—</div>
     </div>
   </div>
 
@@ -657,6 +664,10 @@ function setMes(mes) {
   document.getElementById('kU').textContent=fmtK(d.utilidad);
   document.getElementById('kUs').textContent=d.utilidad>=0?'Potencial (V-E)':'Déficit (V-E)';
   document.getElementById('kUb').textContent=d.ub;
+  const utilNeta = d.cobrado - d.egresos;
+  document.getElementById('kUN').textContent=fmtK(utilNeta);
+  document.getElementById('kUNs').textContent='Cobrado real − Egresos';
+  document.getElementById('kUNb').textContent=(utilNeta>=0?'+':'')+fmtK(utilNeta)+' flujo de caja';
   // Stats
   document.getElementById('sO').textContent=d.ordenes;
   document.getElementById('sOs').textContent=d.label;
