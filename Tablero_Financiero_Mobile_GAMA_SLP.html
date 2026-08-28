@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><script>if(localStorage.getItem("gama_auth")!=="1"){location.href="./index.html";}</script>
+<head>
+<script>if(localStorage.getItem("gama_auth")!=="1"){location.href="./index.html";}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Tablero Financiero Móvil — GAMA SLP</title>
@@ -67,7 +68,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
 <body>
 <div class="header">
   <div><h1>Financiero — GAMA SLP</h1><p>Saneamiento Industrial · SLP</p></div>
-  <div id="badgePeriodo" class="badge">MAR–JUL 2026</div>
+  <div id="badgePeriodo" class="badge">MAR–AGO 2026</div>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="setMes('todos')">Acumulado</button>
@@ -76,6 +77,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
   <button class="tab" onclick="setMes('mayo')">Mayo</button>
   <button class="tab" onclick="setMes('junio')">Junio</button>
   <button class="tab" onclick="setMes('julio')">Julio</button>
+  <button class="tab" onclick="setMes('agosto')">Agosto</button>
 </div>
 <div class="main">
   <!-- KPIs -->
@@ -134,16 +136,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
   <div class="card">
     <div class="card-title">P&amp;L Simplificado</div>
     <table class="pl-table">
-      <thead><tr><th>Concepto</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th></tr></thead>
+      <thead><tr><th>Concepto</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th><th>Ago</th></tr></thead>
       <tbody>
-        <tr><td>Ventas</td><td>$30.5K</td><td>$75.3K</td><td>$221K</td><td>$184K</td><td>$230K</td></tr>
-        <tr><td>Cobrado</td><td>$25.5K</td><td>$80.3K</td><td>$105K</td><td>$194K</td><td>$184K</td></tr>
-        <tr><td>Egresos</td><td>$35K</td><td>$108K</td><td>$123K</td><td>$154K</td><td>$152K</td></tr>
-        <tr><td>Utilidad</td><td class="neg">-$4.9K</td><td class="neg">-$33K</td><td class="pos">+$98K</td><td class="pos">+$30K</td><td class="pos">+$77K</td></tr>
-        <tr><td>Flujo</td><td class="neg">-$10K</td><td class="neg">-$28K</td><td class="neg">-$18K</td><td class="pos">+$40K</td><td class="pos">+$32K</td></tr>
-        <tr><td>Margen</td><td class="neg">-16.2%</td><td class="neg">-43.8%</td><td class="pos">44.3%</td><td class="pos">16.2%</td><td class="pos">33.7%</td></tr>
+        <tr><td>Ventas</td><td>$30.5K</td><td>$75.3K</td><td>$221K</td><td>$184K</td><td>$237K</td><td>$225K</td></tr>
+        <tr><td>Cobrado</td><td>$25.5K</td><td>$80.3K</td><td>$105K</td><td>$194K</td><td>$190K</td><td>$168K</td></tr>
+        <tr><td>Egresos</td><td>$35K</td><td>$108K</td><td>$123K</td><td>$154K</td><td>$174K</td><td>$161K</td></tr>
+        <tr><td>Utilidad</td><td class="neg">-$4.9K</td><td class="neg">-$33K</td><td class="pos">+$98K</td><td class="pos">+$30K</td><td class="pos">+$64K</td><td class="pos">+$63K</td></tr>
+        <tr><td>Flujo</td><td class="neg">-$10K</td><td class="neg">-$28K</td><td class="neg">-$18K</td><td class="pos">+$40K</td><td class="pos">+$17K</td><td class="pos">+$6K</td></tr>
+        <tr><td>Margen</td><td class="neg">-16.2%</td><td class="neg">-43.8%</td><td class="pos">44.3%</td><td class="pos">16.2%</td><td class="pos">26.8%</td><td class="pos">28.2%</td></tr>
       </tbody>
-      <tfoot><tr class="total-row"><td>ACUM.</td><td colspan="3" style="text-align:right;color:var(--azul);font-size:10px">$740.6K ventas</td><td class="pos" style="font-size:11px">22.6%</td></tr></tfoot>
+      <tfoot><tr class="total-row"><td>ACUM.</td><td colspan="4" style="text-align:right;color:var(--azul);font-size:10px">$972.8K ventas</td><td class="pos" style="font-size:11px">22.3%</td></tr></tfoot>
     </table>
   </div>
 
@@ -155,11 +157,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
 
   <!-- BANCOS -->
   <div class="card">
-    <div class="card-title">Saldos Bancarios · Al 20 Agosto</div>
+    <div class="card-title">Saldos Bancarios · Al 25 Agosto</div>
     <div class="banco-grid">
-      <div class="banco-item"><div class="banco-label">Fiscal</div><div class="banco-val">$37.8K</div></div>
+      <div class="banco-item"><div class="banco-label">Fiscal</div><div class="banco-val">$39.7K</div></div>
       <div class="banco-item"><div class="banco-label">No Fiscal</div><div class="banco-val">$8.7K</div></div>
-      <div class="banco-item"><div class="banco-label">Efectivo</div><div class="banco-val">$250</div></div>
+      <div class="banco-item"><div class="banco-label">Efectivo</div><div class="banco-val">$1K</div></div>
       <div class="banco-item" style="background:#EFF6FF">
         <div class="banco-label" style="color:var(--azul)">Deuda</div>
         <div class="banco-val" style="font-size:13px;color:var(--verde)">✓ Cero</div>
@@ -167,21 +169,22 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
     </div>
     <div class="banco-total">
       <div class="banco-total-label">Total Disponible</div>
-      <div class="banco-total-val">$46,709</div>
+      <div class="banco-total-val">$49,412</div>
     </div>
   </div>
 </div>
 
 <script>
 const FD={
-  todos:{badge:'MAR–JUL 2026',v:740649,c:589297,e:573404,u:167245,mg:22.6,f:15893,p:157844,vb:'154 órdenes · 5 meses',cb:'79.8% cobrado',eb:'77.6% de ventas',ub:'22.6% margen',fb:'Flujo acumulado positivo',pb:'27 cuentas',
-    eg:[['Nómina',191299],['Combustible',138316],['Infraestructura/Renta',110895],['Servicios/Admin',59965],['Comisiones/Otros',34312],['Herramienta',31455],['Viáticos',6466],['Otros',696]],
-    cxc:[{id:'GPE-0151',cl:'HEB LOMAS',s:11900,d:28,e:'Corriente'},{id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:28,e:'Corriente'},{id:'GPE-0154',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:29,e:'Corriente'},{id:'GPE-0149',cl:'HEB HIMNO NAL.',s:11900,d:30,e:'Corriente'},{id:'GPE-0150',cl:'HEB HIMNO NAL.',s:3600,d:30,e:'Corriente'},{id:'GPE-0134',cl:'POPEYES CLOUTHIER',s:2320,d:31,e:'Por vencer'},{id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:31,e:'Por vencer'},{id:'GPE-0133',cl:'POPEYES EL AVIÓN',s:2320,d:33,e:'Por vencer'},{id:'GPE-0147',cl:'HEB PINOS',s:11900,d:33,e:'Por vencer'},{id:'GPE-0148',cl:'HEB PINOS',s:3600,d:33,e:'Por vencer'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:34,e:'Por vencer'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:34,e:'Por vencer'},{id:'GPE-0145',cl:'HEB CARR. 57',s:11900,d:37,e:'Por vencer'},{id:'GPE-0146',cl:'HEB CARR. 57',s:3600,d:37,e:'Por vencer'},{id:'GPE-0113',cl:'McDONALDS CHALITA',s:15660,d:46,e:'Por vencer'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:48,e:'Por vencer'},{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:50,e:'Por vencer'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:50,e:'Por vencer'},{id:'GPE-0098',cl:'HEB',s:3525,d:63,e:'Vencido'},{id:'GPE-0099',cl:'HEB',s:3525,d:64,e:'Vencido'},{id:'GPE-0091',cl:'HEB PINOS',s:3525,d:68,e:'Vencido'},{id:'GPE-0085',cl:'HEB CARR. 57',s:3525,d:70,e:'Vencido'},{id:'GPE-0069',cl:'McDONALDS TGMA',s:15660,d:85,e:'Vencido'},{id:'GPE-0065',cl:'HEB',s:3625,d:86,e:'Vencido'},{id:'GPE-0063',cl:'HEB',s:3625,d:87,e:'Vencido'},{id:'GPE-0057',cl:'HEB RÍO VERDE',s:3625,d:97,e:'Vencido'},{id:'GPE-0055',cl:'HEB CARR. 57',s:3625,d:98,e:'Vencido'}]},
+  todos:{badge:'MAR–AGO 2026',v:972773,c:763396,e:756172,u:216602,mg:22.3,f:7224,p:225060,vb:'203 órdenes · 6 meses',cb:'78.5% cobrado',eb:'77.7% de ventas',ub:'22.3% margen',fb:'Flujo acumulado positivo',pb:'33 cuentas',
+    eg:[['Nómina',266621],['Combustible',169999],['Servicios/Admin',126835],['Infraestructura/Renta',110895],['Comisiones/Otros',34892],['Herramienta',33869],['Viáticos',8652],['Otros',4408]],
+    cxc:[{id:'GPE-0069',cl:'McDONALDS TGMA',s:15660,d:92,e:'Vencido'},{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:57,e:'Por vencer'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:57,e:'Por vencer'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:55,e:'Por vencer'},{id:'GPE-0113',cl:'McDONALDS CHALITA',s:15660,d:53,e:'Por vencer'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:41,e:'Por vencer'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:41,e:'Por vencer'},{id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:38,e:'Por vencer'},{id:'GPE-0151',cl:'HEB LOMAS',s:11504,d:35,e:'Por vencer'},{id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:35,e:'Por vencer'},{id:'GPE-0157',cl:'J. DOMINGO SEGURA',s:2552,d:33,e:'Por vencer'},{id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:26,e:'Corriente'},{id:'GPE-0161',cl:'PALSGAARD INDUSTRI MX',s:2320,d:24,e:'Corriente'},{id:'GPE-0166',cl:'PIE EDIFICACIONES',s:4408,d:17,e:'Corriente'},{id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:17,e:'Corriente'},{id:'GPE-0170',cl:'HEB CARR. 57',s:15400,d:16,e:'Corriente'},{id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:16,e:'Corriente'},{id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:15,e:'Corriente'},{id:'GPE-0171',cl:'HEB PINOS',s:15400,d:14,e:'Corriente'},{id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:14,e:'Corriente'},{id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:13,e:'Corriente'},{id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:13,e:'Corriente'},{id:'GPE-0169',cl:'CONSORCIO ANMARJO',s:9860,d:12,e:'Corriente'},{id:'GPE-0181',cl:'SOBRINA GPE. TIEKIT',s:1740,d:10,e:'Corriente'},{id:'GPE-0172',cl:'HEB',s:15400,d:9,e:'Corriente'},{id:'GPE-0179',cl:'LLANTAS Y SERV. MAZA',s:5220,d:8,e:'Corriente'},{id:'GPE-0183',cl:'TESLA',s:2784,d:8,e:'Corriente'},{id:'GPE-0173',cl:'HEB',s:15400,d:7,e:'Corriente'},{id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:6,e:'Corriente'},{id:'GPE-0200',cl:'POPEYES EL AVIÓN',s:2320,d:6,e:'Corriente'},{id:'GPE-0201',cl:'POPEYES CLOUTHIER',s:2320,d:5,e:'Corriente'},{id:'GPE-0202',cl:'POPEYES CARR. 57',s:2320,d:3,e:'Corriente'},{id:'GPE-0203',cl:'PSCO ARQ. Y OBRAS',s:928,d:2,e:'Corriente'}]},
   marzo:{badge:'MARZO 2026',v:30500,c:25500,e:35431,u:-4931,mg:-16.2,f:-9931,p:0,vb:'9 órdenes · 9 clientes',cb:'83.6% cobrado',eb:'116% de ventas',ub:'-16.2% margen',fb:'Déficit arranque',pb:'Sin cartera',eg:[['Infraestructura/Renta',21792],['Herramienta',5691],['Combustible',4560],['Viáticos',1964],['Servicios/Admin',1425]],cxc:[]},
   abril:{badge:'ABRIL 2026',v:75300,c:80300,e:108258,u:-32958,mg:-43.8,f:-27958,p:0,vb:'22 órdenes · 19 clientes',cb:'106.6% (inc. marzo)',eb:'143.8% de ventas',ub:'-43.8% margen',fb:'Déficit inversión',pb:'Sin cartera',eg:[['Nómina',35507],['Servicios/Admin',25979],['Combustible',21108],['Infraestructura/Renta',10574],['Comisiones/Otros',7902],['Herramienta',6117],['Viáticos',1070]],cxc:[]},
-  mayo:{badge:'MAYO 2026',v:220800,c:105100,e:123023,u:97777,mg:44.3,f:-17923,p:30160,vb:'38 órdenes · 26 clientes',cb:'47.6% cobrado',eb:'55.7% de ventas',ub:'44.3% margen',fb:'-$17.9K pendiente cobro',pb:'5 cuentas vencidas',eg:[['Nómina',52038],['Combustible',36242],['Comisiones/Otros',20480],['Servicios/Admin',6645],['Herramienta',4698],['Viáticos',2921]],cxc:[{id:'GPE-0069',cl:'McDONALDS TGMA',s:15660,d:85,e:'Vencido'},{id:'GPE-0065',cl:'HEB',s:3625,d:86,e:'Vencido'},{id:'GPE-0063',cl:'HEB',s:3625,d:87,e:'Vencido'},{id:'GPE-0057',cl:'HEB RÍO VERDE',s:3625,d:97,e:'Vencido'},{id:'GPE-0055',cl:'HEB CARR. 57',s:3625,d:98,e:'Vencido'}]},
-  junio:{badge:'JUNIO 2026',v:184400,c:194499,e:154447,u:29953,mg:16.2,f:40051,p:14100,vb:'37 órdenes · 29 clientes',cb:'105.5% (inc. mayo)',eb:'83.7% de ventas',ub:'16.2% margen',fb:'+$40.1K flujo',pb:'4 cuentas vencidas',eg:[['Nómina',49573],['Infraestructura/Renta',40000],['Combustible',36175],['Herramienta',12062],['Servicios/Admin',10893],['Comisiones/Otros',5350],['Otros',346],['Viáticos',48]],cxc:[{id:'GPE-0098',cl:'HEB',s:3525,d:63,e:'Vencido'},{id:'GPE-0099',cl:'HEB',s:3525,d:64,e:'Vencido'},{id:'GPE-0091',cl:'HEB PINOS',s:3525,d:68,e:'Vencido'},{id:'GPE-0085',cl:'HEB CARR. 57',s:3525,d:70,e:'Vencido'}]},
-  julio:{badge:'JULIO 2026 · AL 23 JUL',v:229649,c:183898,e:152244,u:77405,mg:33.7,f:31654,p:113584,vb:'48 órdenes · 36 clientes',cb:'80.8% cobrado (cash del mes)',eb:'66.9% de ventas',ub:'33.7% margen',fb:'+$31.7K flujo operativo',pb:'18 cuentas (5 corr., 13 por vencer)',eg:[['Nómina',54182],['Combustible',40231],['Infraestructura/Renta',38529],['Servicios/Admin',15022],['Herramienta',2887],['Comisiones/Otros',580],['Viáticos',463],['Otros',351]],cxc:[{id:'GPE-0151',cl:'HEB LOMAS',s:11900,d:28,e:'Corriente'},{id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:28,e:'Corriente'},{id:'GPE-0154',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:29,e:'Corriente'},{id:'GPE-0149',cl:'HEB HIMNO NAL.',s:11900,d:30,e:'Corriente'},{id:'GPE-0150',cl:'HEB HIMNO NAL.',s:3600,d:30,e:'Corriente'},{id:'GPE-0134',cl:'POPEYES CLOUTHIER',s:2320,d:31,e:'Por vencer'},{id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:31,e:'Por vencer'},{id:'GPE-0133',cl:'POPEYES EL AVIÓN',s:2320,d:33,e:'Por vencer'},{id:'GPE-0147',cl:'HEB PINOS',s:11900,d:33,e:'Por vencer'},{id:'GPE-0148',cl:'HEB PINOS',s:3600,d:33,e:'Por vencer'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:34,e:'Por vencer'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:34,e:'Por vencer'},{id:'GPE-0145',cl:'HEB CARR. 57',s:11900,d:37,e:'Por vencer'},{id:'GPE-0146',cl:'HEB CARR. 57',s:3600,d:37,e:'Por vencer'},{id:'GPE-0113',cl:'McDONALDS CHALITA',s:15660,d:46,e:'Por vencer'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:48,e:'Por vencer'},{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:50,e:'Por vencer'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:50,e:'Por vencer'}]}
+  mayo:{badge:'MAYO 2026',v:220800,c:105100,e:123023,u:97777,mg:44.3,f:-17923,p:15660,vb:'38 órdenes · 26 clientes',cb:'47.6% cobrado',eb:'55.7% de ventas',ub:'44.3% margen',fb:'-$17.9K pendiente cobro',pb:'1 cuenta vencida',eg:[['Nómina',52038],['Combustible',36242],['Comisiones/Otros',20480],['Servicios/Admin',6645],['Herramienta',4698],['Viáticos',2921]],cxc:[{id:'GPE-0069',cl:'McDONALDS TGMA',s:15660,d:92,e:'Vencido'}]},
+  junio:{badge:'JUNIO 2026',v:184400,c:194499,e:154447,u:29953,mg:16.2,f:40051,p:0,vb:'37 órdenes · 29 clientes',cb:'105.5% (inc. mayo)',eb:'83.7% de ventas',ub:'16.2% margen',fb:'+$40.1K flujo',pb:'Sin cartera',eg:[['Nómina',49573],['Infraestructura/Renta',40000],['Combustible',36175],['Herramienta',12062],['Servicios/Admin',10893],['Comisiones/Otros',5350],['Otros',346],['Viáticos',48]],cxc:[]},
+  julio:{badge:'JULIO 2026',v:237149,c:190198,e:173629,u:63520,mg:26.8,f:16569,p:59728,vb:'51 órdenes · 39 clientes',cb:'80.2% cobrado (cash del mes)',eb:'73.2% de ventas',ub:'26.8% margen',fb:'+$16.6K flujo operativo',pb:'10 cuentas (todas por vencer)',eg:[['Nómina',68665],['Combustible',42466],['Infraestructura/Renta',38529],['Servicios/Admin',19689],['Herramienta',2887],['Comisiones/Otros',580],['Viáticos',463],['Otros',351]],cxc:[{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:57,e:'Por vencer'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:57,e:'Por vencer'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:55,e:'Por vencer'},{id:'GPE-0113',cl:'McDONALDS CHALITA',s:15660,d:53,e:'Por vencer'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:41,e:'Por vencer'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:41,e:'Por vencer'},{id:'GPE-0137',cl:'GA TRANSPORTES',s:6380,d:38,e:'Por vencer'},{id:'GPE-0151',cl:'HEB LOMAS',s:11504,d:35,e:'Por vencer'},{id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:35,e:'Por vencer'},{id:'GPE-0157',cl:'J. DOMINGO SEGURA',s:2552,d:33,e:'Por vencer'}]},
+  agosto:{badge:'AGOSTO 2026 · AL 25 AGO',v:224624,c:167799,e:161383,u:63241,mg:28.2,f:6416,p:149672,vb:'46 órdenes · 29 clientes',cb:'74.7% cobrado (corte 25 ago)',eb:'71.8% de ventas',ub:'28.2% margen',fb:'+$6.4K flujo operativo',pb:'22 cuentas (todas corrientes)',eg:[['Servicios/Admin',62204],['Nómina',60839],['Combustible',29448],['Otros',3712],['Herramienta',2414],['Viáticos',2186],['Comisiones/Otros',580]],cxc:[{id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:26,e:'Corriente'},{id:'GPE-0161',cl:'PALSGAARD INDUSTRI MX',s:2320,d:24,e:'Corriente'},{id:'GPE-0166',cl:'PIE EDIFICACIONES',s:4408,d:17,e:'Corriente'},{id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:17,e:'Corriente'},{id:'GPE-0170',cl:'HEB CARR. 57',s:15400,d:16,e:'Corriente'},{id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:16,e:'Corriente'},{id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:15,e:'Corriente'},{id:'GPE-0171',cl:'HEB PINOS',s:15400,d:14,e:'Corriente'},{id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:14,e:'Corriente'},{id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:13,e:'Corriente'},{id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:13,e:'Corriente'},{id:'GPE-0169',cl:'CONSORCIO ANMARJO',s:9860,d:12,e:'Corriente'},{id:'GPE-0181',cl:'SOBRINA GPE. TIEKIT',s:1740,d:10,e:'Corriente'},{id:'GPE-0172',cl:'HEB',s:15400,d:9,e:'Corriente'},{id:'GPE-0179',cl:'LLANTAS Y SERV. MAZA',s:5220,d:8,e:'Corriente'},{id:'GPE-0183',cl:'TESLA',s:2784,d:8,e:'Corriente'},{id:'GPE-0173',cl:'HEB',s:15400,d:7,e:'Corriente'},{id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:6,e:'Corriente'},{id:'GPE-0200',cl:'POPEYES EL AVIÓN',s:2320,d:6,e:'Corriente'},{id:'GPE-0201',cl:'POPEYES CLOUTHIER',s:2320,d:5,e:'Corriente'},{id:'GPE-0202',cl:'POPEYES CARR. 57',s:2320,d:3,e:'Corriente'},{id:'GPE-0203',cl:'PSCO ARQ. Y OBRAS',s:928,d:2,e:'Corriente'}]}
 };
 
 function fmt(n){const a=Math.abs(Math.round(n));const s='$'+a.toLocaleString('es-MX');return n<0?'-'+s:s;}
@@ -190,12 +193,12 @@ function fmtK(n){const a=Math.abs(n);const s=a>=1000?'$'+(a/1000).toFixed(0)+'K'
 // SVG bar chart
 function drawBars(){
   const svg=document.getElementById('svgMain');
-  const ML=['Mar','Abr','May','Jun','Jul'];
-  const vData=[30500,75300,220800,184400,229649];
-  const cData=[25500,80300,105100,194499,183898];
-  const eData=[35431,108258,123023,154447,152244];
+  const ML=['Mar','Abr','May','Jun','Jul','Ago'];
+  const vData=[30500,75300,220800,184400,237149,224624];
+  const cData=[25500,80300,105100,194499,190198,167799];
+  const eData=[35431,108258,123023,154447,173629,161383];
   const maxV=Math.max(...vData,...eData)*1.1;
-  const w=360,h=160,pad=30,bw=14,gap=44;
+  const w=360,h=160,pad=30,bw=12,gap=38;
   svg.innerHTML='';
   const ns='http://www.w3.org/2000/svg';
   // grid lines
@@ -239,7 +242,7 @@ function drawBars(){
 }
 
 function setMes(mes){
-  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['todos','marzo','abril','mayo','junio','julio'][i]===mes);});
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['todos','marzo','abril','mayo','junio','julio','agosto'][i]===mes);});
   const d=FD[mes];
   document.getElementById('badgePeriodo').textContent=d.badge;
   document.getElementById('kV').textContent=fmtK(d.v);
