@@ -320,16 +320,16 @@ tr:last-child td{border-bottom:none}
 
   <!-- SALDOS BANCARIOS -->
   <div class="card" id="saldosCard">
-    <div class="card-title">Saldos Bancarios — Al 25 de Agosto 2026</div>
+    <div class="card-title">Saldos Bancarios — Al 3 de Septiembre 2026</div>
     <div class="saldos-grid">
-      <div class="saldo-item"><div class="saldo-label">Fiscal</div><div class="saldo-value">$44.1K</div></div>
+      <div class="saldo-item"><div class="saldo-label">Fiscal</div><div class="saldo-value">$54K</div></div>
       <div class="saldo-item"><div class="saldo-label">No Fiscal</div><div class="saldo-value">$8.7K</div></div>
       <div class="saldo-item"><div class="saldo-label">Efectivo</div><div class="saldo-value">$1K</div></div>
     </div>
     <div style="border-top:1px solid var(--borde);padding-top:12px">
       <div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Total Liquidez</div>
-      <div style="font-size:24px;font-weight:800;color:var(--azul)">$53,820</div>
-      <div style="font-size:11px;color:var(--sub);margin-top:4px">✅ Liquidez estable y sin deuda bancaria; la cartera activa ($220,652) creció y requiere seguimiento de cobranza</div>
+      <div style="font-size:24px;font-weight:800;color:var(--azul)">$63,680</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">✅ Liquidez sube y sin deuda bancaria; la cartera activa ($210,792) requiere seguimiento de cobranza</div>
     </div>
   </div>
 
@@ -353,7 +353,7 @@ tr:last-child td{border-bottom:none}
 
 </div>
 
-<div class="footer">GAMA SLP · Tablero de Desempeño · Mar–Ago 2026 · Actualizado al 2 de septiembre 2026</div>
+<div class="footer">GAMA SLP · Tablero de Desempeño · Mar–Ago 2026 · Actualizado al 3 de septiembre 2026</div>
 
 <script>
 // ============================================================
@@ -363,55 +363,54 @@ const MD = {
   todos:{
     label:'Acumulado Mar–Ago 2026',badge:'MAR – AGO 2026',
     ventas:972773,egresos:756172,ordenes:203,clientes:85,
-    cobrado:763396,pendiente:220652,contado:247800,credito:724973,
+    cobrado:779196,pendiente:210792,contado:247800,credito:724973,
     utilidad:216602,margen:22.3,
-    vb:'6 meses acumulados',cb:'$220,652 cartera neta',eb:'Acumulado',
+    vb:'6 meses acumulados',cb:'$210,792 cartera neta',eb:'Acumulado',
     ub:'22.3% margen neto',
     egCats:[['Nómina',266621],['Combustible',169999],['Servicios/Admin',126835],['Infraestructura/Renta',110895],['Comisiones/Otros',34892],['Herramienta',33869],['Viáticos',8652],['Otros',4408]],
     servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
     servD:[85,44,29,34,11],
     top:[['HEB (todas sucursales)',303200],['GRUPO ACERERO',67797],['ASOC. COLONOS ALQUERIAS',45000],['ENERGIA AMBIENTAL VEHIC.',34000],['JJ INDUSTRIES',30000]],
     cxc:[
-      {id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:97,e:'Vencido'},
-      {id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:62,e:'Vencido'},
-      {id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:62,e:'Vencido'},
-      {id:'GPE-0111',cl:'VYNMSA',s:1800,d:60,e:'Por vencer'},
-      {id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:58,e:'Por vencer'},
-      {id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:46,e:'Por vencer'},
-      {id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:46,e:'Por vencer'},
-      {id:'GPE-0137',cl:'GA TRANSPORTES (GRUPO ACERERO)',s:6380,d:43,e:'Por vencer'},
-      {id:'GPE-0151',cl:'HEB LOMAS',s:11504,d:40,e:'Por vencer'},
-      {id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:40,e:'Por vencer'},
-      {id:'GPE-0157',cl:'JESUS DOMINGO SEGURA (LIMPIA PLUS)',s:2552,d:38,e:'Por vencer'},
-      {id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:31,e:'Por vencer'},
-      {id:'GPE-0161',cl:'PALSGAARD INDUSTRI DE MEXICO',s:2320,d:29,e:'Corriente'},
-      
-      {id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:22,e:'Corriente'},
-      {id:'GPE-0170',cl:'HEB CARRETERA 57',s:15400,d:21,e:'Corriente'},
-      {id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:21,e:'Corriente'},
-      {id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:20,e:'Corriente'},
-      {id:'GPE-0171',cl:'HEB PINOS',s:15400,d:19,e:'Corriente'},
-      {id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:19,e:'Corriente'},
-      {id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:18,e:'Corriente'},
-      {id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:18,e:'Corriente'},
-      {id:'GPE-0169',cl:'CONSORCIO ANMARJO',s:9860,d:17,e:'Corriente'},
-      {id:'GPE-0181',cl:'SOBRINA GUADALUPE TIEKIT',s:1740,d:15,e:'Corriente'},
-      {id:'GPE-0172',cl:'HEB',s:15400,d:14,e:'Corriente'},
-      {id:'GPE-0179',cl:'LLANTAS Y SERVICIOS MAZA',s:5220,d:13,e:'Corriente'},
-      {id:'GPE-0183',cl:'TESLA',s:2784,d:13,e:'Corriente'},
-      {id:'GPE-0173',cl:'HEB',s:15400,d:12,e:'Corriente'},
-      {id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:11,e:'Corriente'},
-      {id:'GPE-0200',cl:'POPEYES SUCURSAL EL AVION',s:2320,d:11,e:'Corriente'},
-      {id:'GPE-0201',cl:'POPEYES SUCURSAL CLOUTHIER',s:2320,d:10,e:'Corriente'},
-      {id:'GPE-0202',cl:'POPEYES SUCURSAL CARR 57',s:2320,d:8,e:'Corriente'},
-      {id:'GPE-0203',cl:'PSCO ARQUITECTURA Y OBRAS',s:928,d:7,e:'Corriente'}
+      {id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:98,e:'Vencido'},
+      {id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:63,e:'Vencido'},
+      {id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:63,e:'Vencido'},
+      {id:'GPE-0111',cl:'VYNMSA',s:1800,d:61,e:'Vencido'},
+      {id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:59,e:'Por vencer'},
+      {id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:47,e:'Por vencer'},
+      {id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:47,e:'Por vencer'},
+      {id:'GPE-0137',cl:'GA TRANSPORTES (GRUPO ACERERO)',s:6380,d:44,e:'Por vencer'},
+      {id:'GPE-0151',cl:'HEB LOMAS',s:11504,d:41,e:'Por vencer'},
+      {id:'GPE-0152',cl:'HEB LOMAS',s:3600,d:41,e:'Por vencer'},
+      {id:'GPE-0157',cl:'JESUS DOMINGO SEGURA (LIMPIA PLUS)',s:2552,d:39,e:'Por vencer'},
+      {id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:32,e:'Por vencer'},
+      {id:'GPE-0161',cl:'PALSGAARD INDUSTRI DE MEXICO',s:2320,d:30,e:'Corriente'},
+
+      {id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:23,e:'Corriente'},
+      {id:'GPE-0170',cl:'HEB CARRETERA 57',s:15400,d:22,e:'Corriente'},
+      {id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:22,e:'Corriente'},
+      {id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:21,e:'Corriente'},
+      {id:'GPE-0171',cl:'HEB PINOS',s:15400,d:20,e:'Corriente'},
+      {id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:20,e:'Corriente'},
+      {id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:19,e:'Corriente'},
+      {id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:19,e:'Corriente'},
+      {id:'GPE-0181',cl:'SOBRINA GUADALUPE TIEKIT',s:1740,d:16,e:'Corriente'},
+      {id:'GPE-0172',cl:'HEB',s:15400,d:15,e:'Corriente'},
+      {id:'GPE-0179',cl:'LLANTAS Y SERVICIOS MAZA',s:5220,d:14,e:'Corriente'},
+      {id:'GPE-0183',cl:'TESLA',s:2784,d:14,e:'Corriente'},
+      {id:'GPE-0173',cl:'HEB',s:15400,d:13,e:'Corriente'},
+      {id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:12,e:'Corriente'},
+      {id:'GPE-0200',cl:'POPEYES SUCURSAL EL AVION',s:2320,d:12,e:'Corriente'},
+      {id:'GPE-0201',cl:'POPEYES SUCURSAL CLOUTHIER',s:2320,d:11,e:'Corriente'},
+      {id:'GPE-0202',cl:'POPEYES SUCURSAL CARR 57',s:2320,d:9,e:'Corriente'},
+      {id:'GPE-0203',cl:'PSCO ARQUITECTURA Y OBRAS',s:928,d:8,e:'Corriente'}
     ],
     ins:[
       {c:'verde',i:'📈',t:'Ventas $972.8K — 203 Órdenes en 6 Meses',d:'Julio récord con $237,149 y 51 órdenes, superando a mayo ($220,800). El crecimiento es sostenible y la base operativa está consolidada.'},
-      {c:'verde',i:'💰',t:'Liquidez Sube a $53,820, Sin Deuda',d:'Al 1 de septiembre la caja se fortalece (fiscal $44,149, no fiscal $8,671, efectivo $1,000), sin deuda bancaria.'},
+      {c:'verde',i:'💰',t:'Liquidez Sube a $63,680, Sin Deuda',d:'Al 3 de septiembre la caja se fortalece (fiscal $54,009, no fiscal $8,671, efectivo $1,000), sin deuda bancaria.'},
       {c:'naranja',i:'🏗️',t:'Sanitarios para Obra: Segmento en Expansión',d:'VYNMSA, DEACERO y otros clientes de construcción suman 29 órdenes acumuladas del servicio en 6 meses.'},
       {c:'azul2',i:'🏦',t:'HEB Cliente Ancla: $303,200 (31.2%)',d:'Las sucursales de HEB representan casi un tercio de las ventas totales. Relación consolidada y cobranza efectiva.'},
-      {c:'naranja',i:'📋',t:'$220,652 en Cartera — 32 Órdenes Pendientes',d:'20 corrientes, 9 por vencer y 3 vencidas (McDonald\'s Tangamanga desde mayo y 2 cuentas de Grupo Acerero desde julio). Requiere seguimiento activo de cobranza, en particular Grupo Acerero.'},
+      {c:'naranja',i:'📋',t:'$210,792 en Cartera — 31 Órdenes Pendientes',d:'19 corrientes, 8 por vencer y 4 vencidas (McDonald\'s Tangamanga desde mayo, VYNMSA recién vencida y 2 cuentas de Grupo Acerero desde julio). Requiere seguimiento activo de cobranza, en particular Grupo Acerero.'},
       {c:'morado',i:'💼',t:'Grupo Acerero: Segundo Cliente del Período',d:'Con $67,797 acumulados, Grupo Acerero se consolida como el segundo cliente más importante, después de HEB.'}
     ]
   },
@@ -525,43 +524,42 @@ const MD = {
   agosto:{
     label:'Agosto 2026 (al 25 ago)',badge:'AGOSTO 2026 · AL 25 AGO',
     ventas:224624,egresos:161383,ordenes:46,clientes:29,
-    cobrado:167799,pendiente:145264,contado:42000,credito:182624,
+    cobrado:167799,pendiente:135404,contado:42000,credito:182624,
     utilidad:63241,margen:28.2,
-    vb:'46 órdenes · corte al 25 ago',cb:'$145.3K cartera agosto',eb:'Servicios/Admin+Nómina=76%',ub:'28.2% margen neto',
+    vb:'46 órdenes · corte al 25 ago',cb:'$135.4K cartera agosto',eb:'Servicios/Admin+Nómina=76%',ub:'28.2% margen neto',
     egCats:[['Servicios/Admin',62204],['Nómina',60839],['Combustible',29448],['Otros',3712],['Herramienta',2414],['Viáticos',2186],['Comisiones/Otros',580]],
     servL:['Desazolve','Trampa Grasa','Renta San.','Sondeo/Otros','Destape'],
     servD:[15,17,7,7,0],
     top:[['HEB (todas sucursales)',61600],['GRUPO ACERERO',53800],['CAFENNIO (LIMSY)',14224],['MINERVA COL. MARAVILLAS',11300],['COLONIA CERRITO',9000]],
     cxc:[
-      {id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:31,e:'Por vencer'},
-      {id:'GPE-0161',cl:'PALSGAARD INDUSTRI MX',s:2320,d:29,e:'Corriente'},
-      
-      {id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:22,e:'Corriente'},
-      {id:'GPE-0170',cl:'HEB CARRETERA 57',s:15400,d:21,e:'Corriente'},
-      {id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:21,e:'Corriente'},
-      {id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:20,e:'Corriente'},
-      {id:'GPE-0171',cl:'HEB PINOS',s:15400,d:19,e:'Corriente'},
-      {id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:19,e:'Corriente'},
-      {id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:18,e:'Corriente'},
-      {id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:18,e:'Corriente'},
-      {id:'GPE-0169',cl:'CONSORCIO ANMARJO',s:9860,d:17,e:'Corriente'},
-      {id:'GPE-0181',cl:'SOBRINA GUADALUPE TIEKIT',s:1740,d:15,e:'Corriente'},
-      {id:'GPE-0172',cl:'HEB',s:15400,d:14,e:'Corriente'},
-      {id:'GPE-0179',cl:'LLANTAS Y SERV. MAZA',s:5220,d:13,e:'Corriente'},
-      {id:'GPE-0183',cl:'TESLA',s:2784,d:13,e:'Corriente'},
-      {id:'GPE-0173',cl:'HEB',s:15400,d:12,e:'Corriente'},
-      {id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:11,e:'Corriente'},
-      {id:'GPE-0200',cl:'POPEYES EL AVIÓN',s:2320,d:11,e:'Corriente'},
-      {id:'GPE-0201',cl:'POPEYES CLOUTHIER',s:2320,d:10,e:'Corriente'},
-      {id:'GPE-0202',cl:'POPEYES CARR. 57',s:2320,d:8,e:'Corriente'},
-      {id:'GPE-0203',cl:'PSCO ARQ. Y OBRAS',s:928,d:7,e:'Corriente'}
+      {id:'GPE-0160',cl:'CERVECERIA VILLACASTEL',s:3480,d:32,e:'Por vencer'},
+      {id:'GPE-0161',cl:'PALSGAARD INDUSTRI MX',s:2320,d:30,e:'Corriente'},
+
+      {id:'GPE-0174',cl:'CAFENNIO (LIMSY)',s:3300,d:23,e:'Corriente'},
+      {id:'GPE-0170',cl:'HEB CARRETERA 57',s:15400,d:22,e:'Corriente'},
+      {id:'GPE-0175',cl:'CAFENNIO (LIMSY)',s:3300,d:22,e:'Corriente'},
+      {id:'GPE-0176',cl:'CAFENNIO (LIMSY)',s:3300,d:21,e:'Corriente'},
+      {id:'GPE-0171',cl:'HEB PINOS',s:15400,d:20,e:'Corriente'},
+      {id:'GPE-0177',cl:'CAFENNIO (LIMSY)',s:3300,d:20,e:'Corriente'},
+      {id:'GPE-0168',cl:'PAILERIA Y ESTRUCTURA D TORRES',s:4872,d:19,e:'Corriente'},
+      {id:'GPE-0178',cl:'CAFENNIO (LIMSY)',s:3300,d:19,e:'Corriente'},
+      {id:'GPE-0181',cl:'SOBRINA GUADALUPE TIEKIT',s:1740,d:16,e:'Corriente'},
+      {id:'GPE-0172',cl:'HEB',s:15400,d:15,e:'Corriente'},
+      {id:'GPE-0179',cl:'LLANTAS Y SERV. MAZA',s:5220,d:14,e:'Corriente'},
+      {id:'GPE-0183',cl:'TESLA',s:2784,d:14,e:'Corriente'},
+      {id:'GPE-0173',cl:'HEB',s:15400,d:13,e:'Corriente'},
+      {id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:12,e:'Corriente'},
+      {id:'GPE-0200',cl:'POPEYES EL AVIÓN',s:2320,d:12,e:'Corriente'},
+      {id:'GPE-0201',cl:'POPEYES CLOUTHIER',s:2320,d:11,e:'Corriente'},
+      {id:'GPE-0202',cl:'POPEYES CARR. 57',s:2320,d:9,e:'Corriente'},
+      {id:'GPE-0203',cl:'PSCO ARQ. Y OBRAS',s:928,d:8,e:'Corriente'}
     ],
     ins:[
       {c:'azul2',i:'📊',t:'Agosto: $224,624 al Corte del Día 25',d:'46 órdenes y 29 clientes. Agosto va 5.3% debajo de julio, pero el mes aún no cierra.'},
       {c:'naranja',i:'🔧',t:'Trampa de Grasa Lidera: 17 Órdenes',d:'Por primera vez supera a desazolve (15) como el servicio más solicitado, con Grupo Acerero y HEB como clientes principales.'},
       {c:'rojo',i:'💼',t:'Grupo Acerero Duplica su Gasto: $53,800',d:'Pasa a ser el segundo cliente del mes, casi igualando a HEB ($61,600).'},
-      {c:'naranja',i:'📋',t:'Cartera en $145.3K sobre 21 Órdenes — Casi Toda Corriente',d:'20 cuentas corrientes y 1 por vencer (Cervecería Villacastel, 31 días). Cartera sana en general, requiere seguimiento en septiembre.'},
-      {c:'verde',i:'💰',t:'Liquidez Estable en $53,820, Sin Deuda',d:'El saldo bancario se mantiene sólido pese al aumento de cartera a crédito.'}
+      {c:'naranja',i:'📋',t:'Cartera Baja a $135.4K sobre 20 Órdenes — Casi Toda Corriente',d:'19 cuentas corrientes y 1 por vencer (Cervecería Villacastel, 32 días), tras cobrarse Consorcio Anmarjo. Cartera sana en general, requiere seguimiento en septiembre.'},
+      {c:'verde',i:'💰',t:'Liquidez Sube a $63,680, Sin Deuda',d:'El saldo bancario se fortalece tras nueva cobranza de agosto, sin deuda bancaria.'}
     ]
   }
 };
