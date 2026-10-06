@@ -46,6 +46,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .mes-btn[data-mes="julio"].active  {background:var(--morado)}
 .mes-btn[data-mes="agosto"].active {background:var(--azul2)}
 .mes-btn[data-mes="septiembre"].active {background:var(--rojo)}
+.mes-btn[data-mes="octubre"].active {background:var(--naranja)}
 
 /* PAGE */
 .page{padding:16px}
@@ -175,7 +176,7 @@ tr:last-child td{border-bottom:none}
   <h1>GAMA SLP — Tablero de Desempeño</h1>
   <h2>San Luis Potosí · Saneamiento &amp; Soluciones Ambientales</h2>
   <div class="header-bottom">
-    <div class="badge" id="hBadge">MAR – SEP 2026</div>
+    <div class="badge" id="hBadge">MAR – OCT 2026</div>
   </div>
 </div>
 
@@ -188,6 +189,7 @@ tr:last-child td{border-bottom:none}
   <button class="mes-btn"        data-mes="julio"  onclick="setMes('julio')">Julio</button>
   <button class="mes-btn"        data-mes="agosto" onclick="setMes('agosto')">Agosto</button>
   <button class="mes-btn"        data-mes="septiembre" onclick="setMes('septiembre')">Septiembre</button>
+  <button class="mes-btn"        data-mes="octubre" onclick="setMes('octubre')">Octubre</button>
 </div>
 
 <div class="page">
@@ -197,31 +199,31 @@ tr:last-child td{border-bottom:none}
   <div class="kpi-grid">
     <div class="kpi verde">
       <div class="kpi-label">Ventas</div>
-      <div class="kpi-value verde" id="kV">$1.21M</div>
-      <div class="kpi-sub" id="kVs">241 órdenes</div>
-      <div class="kpi-badge warn" id="kVb">7 meses</div>
+      <div class="kpi-value verde" id="kV">$1.23M</div>
+      <div class="kpi-sub" id="kVs">250 órdenes</div>
+      <div class="kpi-badge warn" id="kVb">8 meses</div>
     </div>
     <div class="kpi azul">
       <div class="kpi-label">Cobrado</div>
-      <div class="kpi-value azul" id="kC">$938K</div>
+      <div class="kpi-value azul" id="kC">$970K</div>
       <div class="kpi-sub" id="kCs">Recuperado</div>
-      <div class="kpi-badge warn" id="kCb">$309K cartera</div>
+      <div class="kpi-badge warn" id="kCb">$347K cartera</div>
     </div>
     <div class="kpi naranja">
       <div class="kpi-label">Egresos</div>
-      <div class="kpi-value naranja" id="kE">$942K</div>
+      <div class="kpi-value naranja" id="kE">$949K</div>
       <div class="kpi-sub" id="kEs">Gastos totales</div>
       <div class="kpi-badge warn" id="kEb">Acumulado</div>
     </div>
     <div class="kpi rojo">
       <div class="kpi-label">Utilidad Operativa</div>
-      <div class="kpi-value rojo" id="kU">$269K</div>
+      <div class="kpi-value rojo" id="kU">$280K</div>
       <div class="kpi-sub" id="kUs">Ventas − Egresos</div>
-      <div class="kpi-badge warn" id="kUb">22.2% margen</div>
+      <div class="kpi-badge warn" id="kUb">27.4% margen</div>
     </div>
     <div class="kpi cian" style="grid-column:span 2">
       <div class="kpi-label">Utilidad Neta</div>
-      <div class="kpi-value cian" id="kUN">-$4.1K</div>
+      <div class="kpi-value cian" id="kUN">$21.0K</div>
       <div class="kpi-sub" id="kUNs">Cobrado real − Egresos</div>
       <div class="kpi-badge warn" id="kUNb">—</div>
     </div>
@@ -230,17 +232,17 @@ tr:last-child td{border-bottom:none}
   <div class="stats-row">
     <div class="stat">
       <div class="stat-label">Órdenes</div>
-      <div class="stat-value" id="sO">241</div>
-      <div class="stat-sub" id="sOs">Mar–Ago</div>
+      <div class="stat-value" id="sO">250</div>
+      <div class="stat-sub" id="sOs">Mar–Oct</div>
     </div>
     <div class="stat">
       <div class="stat-label">Clientes</div>
-      <div class="stat-value" id="sCl">91</div>
+      <div class="stat-value" id="sCl">92</div>
       <div class="stat-sub">únicos</div>
     </div>
     <div class="stat">
       <div class="stat-label">Ticket</div>
-      <div class="stat-value" id="sTk">$5.0K</div>
+      <div class="stat-value" id="sTk">$4.9K</div>
       <div class="stat-sub">promedio</div>
     </div>
   </div>
@@ -287,24 +289,29 @@ tr:last-child td{border-bottom:none}
       </div>
       <div class="growth-item">
         <div class="growth-mes">Agosto</div>
-        <div class="growth-val">$227K</div>
-        <div class="growth-pct down">▼4.3%</div>
+        <div class="growth-val">$229K</div>
+        <div class="growth-pct down">▼3.4%</div>
       </div>
       <div class="growth-item">
         <div class="growth-mes">Septiembre</div>
-        <div class="growth-val">$237K</div>
-        <div class="growth-pct up">▲4.3%</div>
+        <div class="growth-val">$246K</div>
+        <div class="growth-pct up">▲7.6%</div>
+      </div>
+      <div class="growth-item">
+        <div class="growth-mes">Octubre</div>
+        <div class="growth-val">$113K</div>
+        <div class="growth-pct base">En curso</div>
       </div>
       <div class="growth-item proy">
         <div class="growth-mes">Proyección Octubre 2026</div>
-        <div class="growth-val">$234K</div>
+        <div class="growth-val">$238K</div>
         <div class="growth-pct base">Estimado</div>
       </div>
     </div>
     <div class="proyeccion-box">
       <div class="proyeccion-label">📊 Proyección Octubre 2026</div>
-      <div class="proyeccion-val">$234K</div>
-      <div class="proyeccion-desc">Promedio de julio, agosto y septiembre (ya completos): $237K, $227K y $237K. Prioridad: cobranza de cartera ($276,614); la liquidez bancaria total es de $27,901, positiva tras la mejora del corte.</div>
+      <div class="proyeccion-val">$238K</div>
+      <div class="proyeccion-desc">Promedio de julio, agosto y septiembre (ya completos): $237K, $229K y $246K. Octubre lleva $113K al 5 de octubre (mes en curso). Prioridad: cobranza de cartera ($347,276); la liquidez bancaria total es de $58,115, positiva y sin cambio vs. la actualización anterior.</div>
     </div>
   </div>
 
@@ -333,14 +340,14 @@ tr:last-child td{border-bottom:none}
   <div class="card" id="saldosCard">
     <div class="card-title">Saldos Bancarios — Septiembre 2026</div>
     <div class="saldos-grid">
-      <div class="saldo-item"><div class="saldo-label">Fiscal</div><div class="saldo-value">$16.7K</div></div>
+      <div class="saldo-item"><div class="saldo-label">Fiscal</div><div class="saldo-value">$45.8K</div></div>
       <div class="saldo-item"><div class="saldo-label">No Fiscal</div><div class="saldo-value">$11.2K</div></div>
-      <div class="saldo-item"><div class="saldo-label">Efectivo</div><div class="saldo-value">$0</div></div>
+      <div class="saldo-item"><div class="saldo-label">Efectivo</div><div class="saldo-value">$1.1K</div></div>
     </div>
     <div style="border-top:1px solid var(--borde);padding-top:12px">
       <div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Total Liquidez</div>
-      <div style="font-size:24px;font-weight:800;color:var(--verde)">$27,901</div>
-      <div style="font-size:11px;color:var(--sub);margin-top:4px">🟢 Liquidez mejora $142,568 vs. corte anterior; la cuenta fiscal sale del descubierto, cartera activa de $276,614 aún pendiente</div>
+      <div style="font-size:24px;font-weight:800;color:var(--verde)">$58,115</div>
+      <div style="font-size:11px;color:var(--sub);margin-top:4px">🟢 Liquidez sin cambio vs. actualización anterior; cartera activa de $347,276 aún pendiente</div>
     </div>
   </div>
 
@@ -364,7 +371,7 @@ tr:last-child td{border-bottom:none}
 
 </div>
 
-<div class="footer">GAMA SLP · Tablero de Desempeño · Mar–Sep 2026 · Actualizado al 28 de septiembre 2026</div>
+<div class="footer">GAMA SLP · Tablero de Desempeño · Mar–Oct 2026 · Actualizado al 6 de octubre 2026</div>
 
 <script>
 // ============================================================
@@ -372,17 +379,17 @@ tr:last-child td{border-bottom:none}
 // ============================================================
 const MD = {
   todos:{
-    label:'Acumulado Mar–Sep 2026',badge:'MAR – SEP 2026',
-    ventas:1211739,egresos:942389,ordenes:241,clientes:91,
-    cobrado:958398,pendiente:276614,contado:267000,credito:944739,
-    utilidad:269349,margen:22.2,
-    vb:'Acumulado 7 meses',cb:'$276,614 en cartera',eb:'77.8% de ventas',ub:'22.2% margen neto',
-    egCats:[['Nómina',323980],['Combustible',219793],['Servicios/Admin',164687],['Infraestructura/Renta',149695],['Comisiones/Otros',35472],['Herramienta',34976],['Viáticos',9379],['Otros',4408]],
+    label:'Acumulado Mar–Oct 2026',badge:'MAR – OCT 2026',
+    ventas:1336772,egresos:970546,ordenes:263,clientes:97,
+    cobrado:1024028,pendiente:347276,contado:279000,credito:1057771,
+    utilidad:366226,margen:27.4,
+    vb:'Acumulado 8 meses',cb:'$347,276 en cartera',eb:'72.6% de ventas',ub:'27.4% margen neto',
+    egCats:[['Nómina',348352],['Combustible',223133],['Servicios/Admin',165088],['Infraestructura/Renta',149695],['Comisiones/Otros',35472],['Herramienta',34976],['Viáticos',9423],['Otros',4408]],
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
-    servD:[100, 50, 39, 41, 11],
-    top:[['HEB (todas sucursales)',393200],['GRUPO ACERERO',91487],['ASOCIACION DE COLONOS ALQUERIAS',52500],['ENERGIA AMBIENTAL VEHICULAR',41000],['CERVECERIA VILLACASTEL',37000]],
-    cxc:[{id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:124,e:'Vencido'},{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:89,e:'Vencido'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:89,e:'Vencido'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:87,e:'Vencido'},{id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:85,e:'Vencido'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:73,e:'Vencido'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:73,e:'Vencido'},{id:'GPE-0179',cl:'LLANTAS Y SERVICIOS MAZA',s:5220,d:40,e:'Por vencer'},{id:'GPE-0183',cl:'TESLA',s:2784,d:40,e:'Por vencer'},{id:'GPE-0173',cl:'HEB',s:8602,d:39,e:'Por vencer'},{id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:38,e:'Por vencer'},{id:'GPE-0204',cl:'YOGGO DE MEXICO',s:9280,d:27,e:'Corriente'},{id:'GPE-0210',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:26,e:'Corriente'},{id:'GPE-0212',cl:'AUTOTRANSPORTES EL BISONTE',s:5800,d:25,e:'Corriente'},{id:'GPE-0213',cl:'PIE EDIFICACIONES',s:4408,d:25,e:'Corriente'},{id:'GPE-0214',cl:'GRUPO ACERERO',s:27480,d:25,e:'Corriente'},{id:'GPE-0217',cl:'ABASTECEDORES PECUARIOS LOZANO',s:9280,d:23,e:'Corriente'},{id:'GPE-0218',cl:'MICROCERVECERIA LA LEGENDARIA',s:5220,d:18,e:'Corriente'},{id:'GPE-0220',cl:'HEB CARRETERA 57',s:15400,d:14,e:'Corriente'},{id:'GPE-0221',cl:'HEB CARRETERA 57',s:7100,d:14,e:'Corriente'},{id:'GPE-0222',cl:'HEB PINOS',s:15400,d:11,e:'Corriente'},{id:'GPE-0223',cl:'HEB PINOS',s:7100,d:11,e:'Corriente'},{id:'GPE-0224',cl:'HEB HIMNO NACIONAL',s:15400,d:11,e:'Corriente'},{id:'GPE-0225',cl:'HEB HIMNO NACIONAL',s:7100,d:11,e:'Corriente'},{id:'GPE-0228',cl:'TRATADO DE AGUAS MACRO',s:7540,d:10,e:'Corriente'},{id:'GPE-0229',cl:'TRATADO DE AGUAS MACRO',s:3480,d:10,e:'Corriente'},{id:'GPE-0226',cl:'HEB LOMAS',s:15400,d:9,e:'Corriente'},{id:'GPE-0227',cl:'HEB LOMAS',s:7100,d:9,e:'Corriente'},{id:'GPE-0235',cl:'PIE EDIFICACIONES',s:5568,d:6,e:'Corriente'},{id:'GPE-0236',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:6,e:'Corriente'},{id:'GPE-0237',cl:'PALSGAARD INDUSTRI DE MEXICO',s:3480,d:6,e:'Corriente'}],
-    ins:[{c:'verde',i:'📈',t:'Ventas Netas Acumuladas $1,211,739 — 241 Órdenes en 7 Meses',d:'La empresa generó $1,211,739 en ventas netas (sin IVA) desde su arranque en marzo, con 91 clientes únicos atendidos en el período.'},{c:'verde',i:'✅',t:'Liquidez Bancaria se Recupera',d:'El saldo bancario total es positivo, $27,901 (fiscal $16,678, no fiscal $11,223, efectivo $0), una mejora de $142,568 respecto al corte anterior (-$114,667).'},{c:'naranja',i:'📋',t:'$276,614 en Cartera Activa — 31 Órdenes Pendientes',d:'La cartera por cobrar (sin IVA) es de $276,614, con 20 corrientes, 4 por vencer y 7 vencidas. Requiere seguimiento activo de cobranza, sobre todo en las cuentas vencidas.'},{c:'azul2',i:'🏬',t:'HEB: Cliente Ancla con $393,200 en Ventas (32.4%)',d:'Las sucursales de HEB representan el mayor cliente del período. La relación es sólida pero concentra una parte relevante de la facturación.'},{c:'morado',i:'🚗',t:'GRUPO ACERERO se Consolida como Segundo Cliente ($91,487)',d:'GRUPO ACERERO acumula $91,487 en el período, confirmando la diversificación de la cartera de clientes más allá de HEB.'}]
+    servD:[106, 56, 42, 46, 13],
+    top:[['HEB (todas sucursales)',393200],['GRUPO ACERERO',111487],['ASOCIACION DE COLONOS ALQUERIAS',52500],['ENERGIA AMBIENTAL VEHICULAR',41000],['CERVECERIA VILLACASTEL',37000]],
+    cxc:[{id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:131,e:'Vencido'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:94,e:'Vencido'},{id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:92,e:'Vencido'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:80,e:'Vencido'},{id:'GPE-0179',cl:'LLANTAS  Y SERVICIOS MAZA',s:5220,d:47,e:'Por vencer'},{id:'GPE-0183',cl:'TESLA',s:2784,d:47,e:'Por vencer'},{id:'GPE-0173',cl:'HEB',s:8602,d:46,e:'Por vencer'},{id:'GPE-0204',cl:'YOGGO DE MEXICO',s:9280,d:34,e:'Por vencer'},{id:'GPE-0210',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:33,e:'Por vencer'},{id:'GPE-0212',cl:'AUTOTRANSPORTES EL BISONTE',s:5800,d:32,e:'Por vencer'},{id:'GPE-0214',cl:'GRUPO ACERERO',s:27480,d:32,e:'Por vencer'},{id:'GPE-0217',cl:'ABASTECEDORES  PECUARIOS LOZANO',s:9280,d:30,e:'Corriente'},{id:'GPE-0218',cl:'MICROCERVECERIA LA LEGENDARIA',s:5220,d:25,e:'Corriente'},{id:'GPE-0220',cl:'HEB CARRETERA 57',s:15400,d:21,e:'Corriente'},{id:'GPE-0221',cl:'HEB CARRETERA 57',s:7100,d:21,e:'Corriente'},{id:'GPE-0222',cl:'HEB PINOS',s:15400,d:18,e:'Corriente'},{id:'GPE-0223',cl:'HEB PINOS',s:7100,d:18,e:'Corriente'},{id:'GPE-0224',cl:'HEB HIMNO NACIONAL',s:15400,d:18,e:'Corriente'},{id:'GPE-0225',cl:'HEB HIMNO NACIONAL',s:7100,d:18,e:'Corriente'},{id:'GPE-0228',cl:'TRATADO DE AGUAS MACRO',s:7540,d:17,e:'Corriente'},{id:'GPE-0229',cl:'TRATADO DE AGUAS MACRO',s:3480,d:17,e:'Corriente'},{id:'GPE-0226',cl:'HEB LOMAS',s:15400,d:16,e:'Corriente'},{id:'GPE-0227',cl:'HEB LOMAS',s:7100,d:16,e:'Corriente'},{id:'GPE-0236',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:13,e:'Corriente'},{id:'GPE-0247',cl:'CAPITEL',s:1450,d:4,e:'Corriente'},{id:'GPE-0248',cl:'POPEYES SUCURSAL CLOUTHIER',s:5220,d:4,e:'Corriente'},{id:'GPE-0250',cl:'TRATADO DE AGUAS MACRO',s:3500,d:4,e:'Corriente'},{id:'GPE-0251',cl:'GRUPO ACERERO',s:11600,d:4,e:'Corriente'},{id:'GPE-0252',cl:'GRUPO ACERERO',s:11600,d:4,e:'Corriente'},{id:'GPE-0253',cl:'CONSTRUCTORA AMESUA',s:23200,d:3,e:'Corriente'},{id:'GPE-0254',cl:'DEPORTIVO 2000',s:10400,d:3,e:'Corriente'},{id:'GPE-0255',cl:'POPEYES SUCURSAL EL AVION',s:2320,d:3,e:'Corriente'},{id:'GPE-0256',cl:'CHEDRAUI (LAZARO DANIEL LOPEZ MARTINEZ)',s:22620,d:3,e:'Corriente'},{id:'GPE-0257',cl:'SOBRINA GUADALUPE TIEKIT (LAZARO DANIEL LOPEZ MARTINEZ)',s:1740,d:2,e:'Corriente'},{id:'GPE-0258',cl:'POPEYES SUCURSAL CLOUTHIER',s:2320,d:2,e:'Corriente'},{id:'GPE-0259',cl:'MUNICIPIO CERRO DE SANPEDRO',s:18560,d:2,e:'Corriente'},{id:'GPE-0260',cl:'POPEYES SUC CARR 57',s:2320,d:0,e:'Corriente'},{id:'GPE-0261',cl:'PETROPIPE DE MEXICO',s:7424,d:0,e:'Corriente'},{id:'GPE-0262',cl:'CONSULTORIA EMPRESARIAL ALISEG',s:1856,d:0,e:'Corriente'},{id:'GPE-0263',cl:'SOBRINA GUADALUPE TIEKIT (LAZARO DANIEL LOPEZ MARTINEZ)',s:1740,d:0,e:'Corriente'}],
+    ins:[{c:'verde',i:'📈',t:'Ventas Netas Acumuladas $1,336,772 — 263 Órdenes en 8 Meses',d:'La empresa generó $1,336,772 en ventas netas (sin IVA) desde su arranque en marzo, con 97 clientes únicos atendidos en el período (octubre en curso al 5 de octubre).'},{c:'verde',i:'✅',t:'Liquidez Bancaria Estable',d:'El saldo bancario total es positivo, $58,115 (fiscal $45,772, no fiscal $11,223, efectivo $1,121), sin cambio vs. la actualización anterior; octubre aún no tiene saldo bancario capturado.'},{c:'naranja',i:'📋',t:'$347,276 en Cartera Activa — 40 Órdenes Pendientes',d:'La cartera por cobrar es de $347,276, con 4 vencidas, 7 por vencer, 29 corrientes. Requiere seguimiento activo de cobranza, sobre todo en las cuentas vencidas.'},{c:'azul2',i:'🏬',t:'HEB: Cliente Ancla con $393,200 en Ventas (29.4%)',d:'Las sucursales de HEB representan el mayor cliente del período. La relación es sólida pero concentra una parte relevante de la facturación.'},{c:'morado',i:'🚗',t:'GRUPO ACERERO se Consolida como Segundo Cliente ($111,487)',d:'GRUPO ACERERO acumula $111,487 en el período, confirmando la diversificación de la cartera de clientes más allá de HEB.'}]
   },
   marzo:{
     label:'Marzo 2026',badge:'MARZO 2026',
@@ -395,7 +402,7 @@ const MD = {
     servD:[5, 1, 2, 1, 0],
     top:[['ASOCIACION DE COLONOS ALQUERIAS',7500],['ENERGIA AMBIENTAL VEHICULAR',5000],['CONSORCIO ANMARJO',4500],['CERVECERIA VILLACASTEL',3000],['PALSGAARD INDUSTRI DE MEXICO',2800]],
     cxc:[],
-    ins:[{c:'rojo',i:'📊',t:'Marzo: 9 Órdenes, $30,500 en Ventas Netas',d:'9 clientes atendidos en el mes. Margen de -16.2% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Infraestructura/Renta: 62% de los Egresos del Mes',d:'Egresos totales de $35,431, liderados por Infraestructura/Renta ($21,792).'},{c:'verde',i:'✅',t:'Cartera de Marzo 100% Cobrada',d:'Todas las órdenes a crédito de marzo ya fueron cobradas. No queda saldo pendiente de ese mes.'},{c:'azul2',i:'🏆',t:'ASOCIACION DE COLONOS ALQUERIAS: Cliente Principal del Mes ($7,500)',d:'ASOCIACION DE COLONOS ALQUERIAS lideró las ventas de marzo con $7,500.'}]
+    ins:[{c:'rojo',i:'📊',t:'Marzo: 9 Órdenes, $30,500 en Ventas Netas',d:'9 clientes atendidos en el mes. Margen de -16.2% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Infraestructura/Renta: 62% de los Egresos del Mes',d:'Egresos totales de $35,431, liderados por Infraestructura/Renta ($21,792).'},{c:'verde',i:'✅',t:'Sin cartera pendiente en Marzo',d:'Todas las órdenes del mes están cobradas.'},{c:'azul2',i:'🏆',t:'ASOCIACION DE COLONOS ALQUERIAS: Cliente Principal del Mes ($7,500)',d:'ASOCIACION DE COLONOS ALQUERIAS lideró las ventas de marzo con $7,500.'}]
   },
   abril:{
     label:'Abril 2026',badge:'ABRIL 2026',
@@ -408,7 +415,7 @@ const MD = {
     servD:[15, 0, 4, 1, 2],
     top:[['EJIDO PALOMAS',12000],['Bufette Desayunos',8000],['ASOCIACION DE COLONOS ALQUERIAS',7500],['CERVECERIA VILLACASTEL',6000],['Rancho Estanque',5000]],
     cxc:[],
-    ins:[{c:'rojo',i:'📊',t:'Abril: 22 Órdenes, $75,300 en Ventas Netas',d:'19 clientes atendidos en el mes. Margen de -43.8% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 33% de los Egresos del Mes',d:'Egresos totales de $108,258, liderados por Nómina ($35,507).'},{c:'verde',i:'✅',t:'Cartera de Abril 100% Cobrada',d:'Todas las órdenes a crédito de abril ya fueron cobradas. No queda saldo pendiente de ese mes.'},{c:'azul2',i:'🏆',t:'EJIDO PALOMAS: Cliente Principal del Mes ($12,000)',d:'EJIDO PALOMAS lideró las ventas de abril con $12,000.'}]
+    ins:[{c:'rojo',i:'📊',t:'Abril: 22 Órdenes, $75,300 en Ventas Netas',d:'19 clientes atendidos en el mes. Margen de -43.8% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 33% de los Egresos del Mes',d:'Egresos totales de $108,258, liderados por Nómina ($35,507).'},{c:'verde',i:'✅',t:'Sin cartera pendiente en Abril',d:'Todas las órdenes del mes están cobradas.'},{c:'azul2',i:'🏆',t:'EJIDO PALOMAS: Cliente Principal del Mes ($12,000)',d:'EJIDO PALOMAS lideró las ventas de abril con $12,000.'}]
   },
   mayo:{
     label:'Mayo 2026',badge:'MAYO 2026',
@@ -420,8 +427,8 @@ const MD = {
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
     servD:[17, 9, 4, 6, 2],
     top:[['HEB (todas sucursales)',90000],['JJ INDUSTIRES',30000],['McDONALD\'S TANGAMANGA',13500],['ENERGIA AMBIENTAL VEHICULAR',10000],['CERVECERIA VILLACASTEL',9000]],
-    cxc:[{id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:120,e:'Vencido'}],
-    ins:[{c:'verde',i:'📊',t:'Mayo: 38 Órdenes, $220,800 en Ventas Netas',d:'26 clientes atendidos en el mes. Margen positivo de 44.3% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 42% de los Egresos del Mes',d:'Egresos totales de $123,023, liderados por Nómina ($52,038).'},{c:'rojo',i:'📋',t:'Cartera de Mayo: $15,660 en 1 Órdenes',d:'Cartera activa de mayo: 1 vencidas. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de mayo con $90,000.'}]
+    cxc:[{id:'GPE-0069',cl:'McDONALD\'S TANGAMANGA',s:15660,d:131,e:'Vencido'}],
+    ins:[{c:'verde',i:'📊',t:'Mayo: 38 Órdenes, $220,800 en Ventas Netas',d:'26 clientes atendidos en el mes. Margen positivo de 44.3% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 42% de los Egresos del Mes',d:'Egresos totales de $123,023, liderados por Nómina ($52,038).'},{c:'naranja',i:'📋',t:'Cartera de Mayo: $15,660 en 1 Órdenes',d:'Cartera activa de mayo: 1 vencidas. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de mayo con $90,000.'}]
   },
   junio:{
     label:'Junio 2026',badge:'JUNIO 2026',
@@ -432,48 +439,61 @@ const MD = {
     egCats:[['Nómina',49573],['Infraestructura/Renta',40000],['Combustible',36175],['Herramienta',12062],['Servicios/Admin',10893],['Comisiones/Otros',5350],['Otros',346],['Viáticos',48]],
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
     servD:[15, 7, 5, 6, 4],
-    top:[['HEB (todas sucursales)',61600],['ABASTECEDORES PECUARIOS LOZANO',24500],['COLONIA 21 DE MARZO',10000],['TRATADO DE AGUAS MACRO',10000],['CONSORCIO ANMARJO',8500]],
+    top:[['HEB (todas sucursales)',61600],['ABASTECEDORES  PECUARIOS LOZANO',24500],['COLONIA 21 DE MARZO',10000],['TRATADO DE AGUAS MACRO',10000],['CONSORCIO ANMARJO',8500]],
     cxc:[],
-    ins:[{c:'verde',i:'📊',t:'Junio: 37 Órdenes, $184,400 en Ventas Netas',d:'29 clientes atendidos en el mes. Margen positivo de 16.2% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 32% de los Egresos del Mes',d:'Egresos totales de $154,447, liderados por Nómina ($49,573).'},{c:'verde',i:'✅',t:'Cartera de Junio 100% Cobrada',d:'Todas las órdenes a crédito de junio ya fueron cobradas. No queda saldo pendiente de ese mes.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($61,600)',d:'HEB (todas sucursales) lideró las ventas de junio con $61,600.'}]
+    ins:[{c:'verde',i:'📊',t:'Junio: 37 Órdenes, $184,400 en Ventas Netas',d:'29 clientes atendidos en el mes. Margen positivo de 16.2% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 32% de los Egresos del Mes',d:'Egresos totales de $154,447, liderados por Nómina ($49,573).'},{c:'verde',i:'✅',t:'Sin cartera pendiente en Junio',d:'Todas las órdenes del mes están cobradas.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($61,600)',d:'HEB (todas sucursales) lideró las ventas de junio con $61,600.'}]
   },
   julio:{
     label:'Julio 2026',badge:'JULIO 2026',
     ventas:237149,egresos:173629,ordenes:51,clientes:39,
-    cobrado:192398,pendiente:35692,contado:41900,credito:195249,
+    cobrado:185398,pendiente:20940,contado:41900,credito:195249,
     utilidad:63520,margen:26.8,
-    vb:'51 órdenes en el mes',cb:'$35,692 en cartera',eb:'73.2% de ventas',ub:'26.8% margen neto',
+    vb:'51 órdenes en el mes',cb:'$20,940 en cartera',eb:'73.2% de ventas',ub:'26.8% margen neto',
     egCats:[['Nómina',68665],['Combustible',42466],['Infraestructura/Renta',38529],['Servicios/Admin',19689],['Herramienta',2887],['Comisiones/Otros',580],['Viáticos',463],['Otros',351]],
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
     servD:[18, 10, 9, 11, 3],
-    top:[['HEB (todas sucursales)',90000],['GRUPO ACERERO',13997],['McDONALD\'S CHALITA',13500],['LLANTAS Y SERVICIOS MAZA',10000],['Sanitarios Evento',9500]],
-    cxc:[{id:'GPE-0107',cl:'GRUPO ACERERO',s:4640,d:85,e:'Vencido'},{id:'GPE-0109',cl:'GRUPO ACERERO',s:4640,d:85,e:'Vencido'},{id:'GPE-0111',cl:'VYNMSA',s:1800,d:83,e:'Vencido'},{id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:81,e:'Vencido'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:69,e:'Vencido'},{id:'GPE-0132',cl:'GRUPO ACERERO',s:5472,d:69,e:'Vencido'}],
-    ins:[{c:'verde',i:'📊',t:'Julio: 51 Órdenes, $237,149 en Ventas Netas',d:'39 clientes atendidos en el mes. Margen positivo de 26.8% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 40% de los Egresos del Mes',d:'Egresos totales de $173,629, liderados por Nómina ($68,665).'},{c:'rojo',i:'📋',t:'Cartera de Julio: $35,692 en 6 Órdenes',d:'Cartera activa de julio: 6 vencidas. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de julio con $90,000.'}]
+    top:[['HEB (todas sucursales)',90000],['GRUPO ACERERO',13997],['McDONALD\'S CHALITA',13500],['LLANTAS  Y SERVICIOS MAZA',10000],['Sanitarios Evento',9500]],
+    cxc:[{id:'GPE-0111',cl:'VYNMSA',s:1800,d:94,e:'Vencido'},{id:'GPE-0113',cl:'McDONALD\'S CHALITA',s:15660,d:92,e:'Vencido'},{id:'GPE-0130',cl:'DEACERO RECYCLING',s:3480,d:80,e:'Vencido'}],
+    ins:[{c:'verde',i:'📊',t:'Julio: 51 Órdenes, $237,149 en Ventas Netas',d:'39 clientes atendidos en el mes. Margen positivo de 26.8% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 40% de los Egresos del Mes',d:'Egresos totales de $173,629, liderados por Nómina ($68,665).'},{c:'naranja',i:'📋',t:'Cartera de Julio: $20,940 en 3 Órdenes',d:'Cartera activa de julio: 3 vencidas. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de julio con $90,000.'}]
   },
   agosto:{
     label:'Agosto 2026',badge:'AGOSTO 2026',
-    ventas:226900,egresos:172951,ordenes:46,clientes:29,
-    cobrado:167799,pendiente:45606,contado:42000,credito:184900,
-    utilidad:53949,margen:23.8,
-    vb:'46 órdenes en el mes',cb:'$45,606 en cartera',eb:'76.2% de ventas',ub:'23.8% margen neto',
-    egCats:[['Nómina',72407],['Servicios/Admin',62204],['Combustible',29448],['Otros',3712],['Herramienta',2414],['Viáticos',2186],['Comisiones/Otros',580]],
+    ventas:229100,egresos:187016,ordenes:47,clientes:30,
+    cobrado:186403,pendiente:16606,contado:44200,credito:184900,
+    utilidad:42084,margen:18.4,
+    vb:'47 órdenes en el mes',cb:'$16,606 en cartera',eb:'81.6% de ventas',ub:'18.4% margen neto',
+    egCats:[['Nómina',72137],['Servicios/Admin',70039],['Combustible',35948],['Otros',3712],['Herramienta',2414],['Viáticos',2186],['Comisiones/Otros',580]],
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
-    servD:[15, 17, 7, 7, 0],
+    servD:[16, 17, 7, 7, 0],
     top:[['HEB (todas sucursales)',61600],['GRUPO ACERERO',53800],['CAFENNIO (LIMSY)',16500],['MINERVA COLONIA MARAVILLAS',11300],['COLONIA CERRITO',9000]],
-    cxc:[{id:'GPE-0179',cl:'LLANTAS Y SERVICIOS MAZA',s:5220,d:36,e:'Por vencer'},{id:'GPE-0183',cl:'TESLA',s:2784,d:36,e:'Por vencer'},{id:'GPE-0173',cl:'HEB',s:8602,d:35,e:'Por vencer'},{id:'GPE-0184',cl:'GRUPO ACERERO',s:29000,d:34,e:'Por vencer'}],
-    ins:[{c:'verde',i:'📊',t:'Agosto: 46 Órdenes, $226,900 en Ventas Netas',d:'29 clientes atendidos en el mes. Margen positivo de 23.8% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 42% de los Egresos del Mes',d:'Egresos totales de $172,951, liderados por Nómina ($72,407).'},{c:'naranja',i:'📋',t:'Cartera de Agosto: $45,606 en 4 Órdenes',d:'Cartera activa de agosto: 4 por vencer. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($61,600)',d:'HEB (todas sucursales) lideró las ventas de agosto con $61,600.'}]
+    cxc:[{id:'GPE-0179',cl:'LLANTAS  Y SERVICIOS MAZA',s:5220,d:47,e:'Por vencer'},{id:'GPE-0183',cl:'TESLA',s:2784,d:47,e:'Por vencer'},{id:'GPE-0173',cl:'HEB',s:8602,d:46,e:'Por vencer'}],
+    ins:[{c:'verde',i:'📊',t:'Agosto: 47 Órdenes, $229,100 en Ventas Netas',d:'30 clientes atendidos en el mes. Margen positivo de 18.4% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 39% de los Egresos del Mes',d:'Egresos totales de $187,016, liderados por Nómina ($72,137).'},{c:'naranja',i:'📋',t:'Cartera de Agosto: $16,606 en 3 Órdenes',d:'Cartera activa de agosto: 3 por vencer. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($61,600)',d:'HEB (todas sucursales) lideró las ventas de agosto con $61,600.'}]
   },
   septiembre:{
     label:'Septiembre 2026',badge:'SEPTIEMBRE 2026',
-    ventas:236690,egresos:174650,ordenes:38,clientes:27,
-    cobrado:200198,pendiente:179656,contado:19200,credito:217490,
-    utilidad:62040,margen:26.2,
-    vb:'38 órdenes en el mes',cb:'$179,656 en cartera',eb:'73.8% de ventas',ub:'26.2% margen neto',
-    egCats:[['Combustible',49793],['Nómina',45791],['Infraestructura/Renta',38800],['Servicios/Admin',37852],['Herramienta',1107],['Viáticos',726],['Comisiones/Otros',580]],
+    ventas:246490,egresos:167615,ordenes:42,clientes:27,
+    cobrado:193198,pendiente:166200,contado:29000,credito:217490,
+    utilidad:78875,margen:32.0,
+    vb:'42 órdenes en el mes',cb:'$166,200 en cartera',eb:'68.0% de ventas',ub:'32.0% margen neto',
+    egCats:[['Nómina',53591],['Combustible',43793],['Infraestructura/Renta',38800],['Servicios/Admin',29017],['Herramienta',1107],['Viáticos',726],['Comisiones/Otros',580]],
     servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
-    servD:[15, 6, 8, 9, 0],
-    top:[['HEB (todas sucursales)',90000],['GRUPO ACERERO',23690],['SUMINISTROS Y SERVICIOS (JOSE ALFREDO RIVERA)',13000],['TIERRA NUEVA',12500],['TRATADO DE AGUAS MACRO',9500]],
-    cxc:[{id:'GPE-0204',cl:'YOGGO DE MEXICO',s:9280,d:27,e:'Corriente'},{id:'GPE-0210',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:26,e:'Corriente'},{id:'GPE-0212',cl:'AUTOTRANSPORTES EL BISONTE',s:5800,d:25,e:'Corriente'},{id:'GPE-0213',cl:'PIE EDIFICACIONES',s:4408,d:25,e:'Corriente'},{id:'GPE-0214',cl:'GRUPO ACERERO',s:27480,d:25,e:'Corriente'},{id:'GPE-0217',cl:'ABASTECEDORES PECUARIOS LOZANO',s:9280,d:23,e:'Corriente'},{id:'GPE-0218',cl:'MICROCERVECERIA LA LEGENDARIA',s:5220,d:18,e:'Corriente'},{id:'GPE-0220',cl:'HEB CARRETERA 57',s:15400,d:14,e:'Corriente'},{id:'GPE-0221',cl:'HEB CARRETERA 57',s:7100,d:14,e:'Corriente'},{id:'GPE-0222',cl:'HEB PINOS',s:15400,d:11,e:'Corriente'},{id:'GPE-0223',cl:'HEB PINOS',s:7100,d:11,e:'Corriente'},{id:'GPE-0224',cl:'HEB HIMNO NACIONAL',s:15400,d:11,e:'Corriente'},{id:'GPE-0225',cl:'HEB HIMNO NACIONAL',s:7100,d:11,e:'Corriente'},{id:'GPE-0228',cl:'TRATADO DE AGUAS MACRO',s:7540,d:10,e:'Corriente'},{id:'GPE-0229',cl:'TRATADO DE AGUAS MACRO',s:3480,d:10,e:'Corriente'},{id:'GPE-0226',cl:'HEB LOMAS',s:15400,d:9,e:'Corriente'},{id:'GPE-0227',cl:'HEB LOMAS',s:7100,d:9,e:'Corriente'},{id:'GPE-0235',cl:'PIE EDIFICACIONES',s:5568,d:6,e:'Corriente'},{id:'GPE-0236',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:6,e:'Corriente'},{id:'GPE-0237',cl:'PALSGAARD INDUSTRI DE MEXICO',s:3480,d:6,e:'Corriente'}],
-    ins:[{c:'verde',i:'📊',t:'Septiembre: 38 Órdenes, $236,690 en Ventas Netas',d:'27 clientes atendidos en el mes. Margen positivo de 26.2% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Combustible: 29% de los Egresos del Mes',d:'Egresos totales de $174,650, liderados por Combustible ($49,793).'},{c:'naranja',i:'📋',t:'Cartera de Septiembre: $179,656 en 20 Órdenes',d:'Cartera activa de septiembre: 20 corrientes. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de septiembre con $90,000.'}]
+    servD:[14, 8, 8, 11, 1],
+    top:[['HEB (todas sucursales)',90000],['GRUPO ACERERO',23690],['SUMINISTROS Y SERVICIOS (JOSE ALFREDO RIVERA)',13000],['TIERRA NUEVA',12500],['SERVICIO PARTICULAR',12000]],
+    cxc:[{id:'GPE-0204',cl:'YOGGO DE MEXICO',s:9280,d:34,e:'Por vencer'},{id:'GPE-0210',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:33,e:'Por vencer'},{id:'GPE-0212',cl:'AUTOTRANSPORTES EL BISONTE',s:5800,d:32,e:'Por vencer'},{id:'GPE-0214',cl:'GRUPO ACERERO',s:27480,d:32,e:'Por vencer'},{id:'GPE-0217',cl:'ABASTECEDORES  PECUARIOS LOZANO',s:9280,d:30,e:'Corriente'},{id:'GPE-0218',cl:'MICROCERVECERIA LA LEGENDARIA',s:5220,d:25,e:'Corriente'},{id:'GPE-0220',cl:'HEB CARRETERA 57',s:15400,d:21,e:'Corriente'},{id:'GPE-0221',cl:'HEB CARRETERA 57',s:7100,d:21,e:'Corriente'},{id:'GPE-0222',cl:'HEB PINOS',s:15400,d:18,e:'Corriente'},{id:'GPE-0223',cl:'HEB PINOS',s:7100,d:18,e:'Corriente'},{id:'GPE-0224',cl:'HEB HIMNO NACIONAL',s:15400,d:18,e:'Corriente'},{id:'GPE-0225',cl:'HEB HIMNO NACIONAL',s:7100,d:18,e:'Corriente'},{id:'GPE-0228',cl:'TRATADO DE AGUAS MACRO',s:7540,d:17,e:'Corriente'},{id:'GPE-0229',cl:'TRATADO DE AGUAS MACRO',s:3480,d:17,e:'Corriente'},{id:'GPE-0226',cl:'HEB LOMAS',s:15400,d:16,e:'Corriente'},{id:'GPE-0227',cl:'HEB LOMAS',s:7100,d:16,e:'Corriente'},{id:'GPE-0236',cl:'ENERGIA AMBIENTAL VEHICULAR',s:4060,d:13,e:'Corriente'}],
+    ins:[{c:'verde',i:'📊',t:'Septiembre: 42 Órdenes, $246,490 en Ventas Netas',d:'27 clientes atendidos en el mes. Margen positivo de 32.0% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 32% de los Egresos del Mes',d:'Egresos totales de $167,615, liderados por Nómina ($53,591).'},{c:'naranja',i:'📋',t:'Cartera de Septiembre: $166,200 en 17 Órdenes',d:'Cartera activa de septiembre: 4 por vencer, 13 corrientes. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'HEB (todas sucursales): Cliente Principal del Mes ($90,000)',d:'HEB (todas sucursales) lideró las ventas de septiembre con $90,000.'}]
+  },
+  octubre:{
+    label:'Octubre 2026',badge:'OCTUBRE 2026',
+    ventas:113033,egresos:21127,ordenes:17,clientes:14,
+    cobrado:53630,pendiente:127870,contado:0,credito:113033,
+    utilidad:91906,margen:81.3,
+    vb:'17 órdenes en el mes (al 5-oct)',cb:'$127,870 en cartera',eb:'18.7% de ventas',ub:'81.3% margen neto',
+    egCats:[['Nómina',16842],['Combustible',2841],['Servicios/Admin',1400],['Viáticos',44]],
+    servL:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
+    servD:[6, 4, 3, 3, 1],
+    top:[['GRUPO ACERERO',20000],['CONSTRUCTORA AMESUA',20000],['CHEDRAUI (LAZARO DANIEL LOPEZ MARTINEZ)',19500],['MUNICIPIO CERRO DE SANPEDRO',16000],['DEPORTIVO 2000',8966]],
+    cxc:[{id:'GPE-0247',cl:'CAPITEL',s:1450,d:4,e:'Corriente'},{id:'GPE-0248',cl:'POPEYES SUCURSAL CLOUTHIER',s:5220,d:4,e:'Corriente'},{id:'GPE-0250',cl:'TRATADO DE AGUAS MACRO',s:3500,d:4,e:'Corriente'},{id:'GPE-0251',cl:'GRUPO ACERERO',s:11600,d:4,e:'Corriente'},{id:'GPE-0252',cl:'GRUPO ACERERO',s:11600,d:4,e:'Corriente'},{id:'GPE-0253',cl:'CONSTRUCTORA AMESUA',s:23200,d:3,e:'Corriente'},{id:'GPE-0254',cl:'DEPORTIVO 2000',s:10400,d:3,e:'Corriente'},{id:'GPE-0255',cl:'POPEYES SUCURSAL EL AVION',s:2320,d:3,e:'Corriente'},{id:'GPE-0256',cl:'CHEDRAUI (LAZARO DANIEL LOPEZ MARTINEZ)',s:22620,d:3,e:'Corriente'},{id:'GPE-0257',cl:'SOBRINA GUADALUPE TIEKIT (LAZARO DANIEL LOPEZ MARTINEZ)',s:1740,d:2,e:'Corriente'},{id:'GPE-0258',cl:'POPEYES SUCURSAL CLOUTHIER',s:2320,d:2,e:'Corriente'},{id:'GPE-0259',cl:'MUNICIPIO CERRO DE SANPEDRO',s:18560,d:2,e:'Corriente'},{id:'GPE-0260',cl:'POPEYES SUC CARR 57',s:2320,d:0,e:'Corriente'},{id:'GPE-0261',cl:'PETROPIPE DE MEXICO',s:7424,d:0,e:'Corriente'},{id:'GPE-0262',cl:'CONSULTORIA EMPRESARIAL ALISEG',s:1856,d:0,e:'Corriente'},{id:'GPE-0263',cl:'SOBRINA GUADALUPE TIEKIT (LAZARO DANIEL LOPEZ MARTINEZ)',s:1740,d:0,e:'Corriente'}],
+    ins:[{c:'verde',i:'📊',t:'Octubre: 17 Órdenes, $113,033 en Ventas Netas (mes en curso, al 5 de octubre)',d:'14 clientes atendidos en el mes. Margen positivo de 81.3% sobre ventas netas.'},{c:'naranja',i:'💸',t:'Nómina: 80% de los Egresos del Mes',d:'Egresos totales de $21,127, liderados por Nómina ($16,842).'},{c:'naranja',i:'📋',t:'Cartera de Octubre: $127,870 en 16 Órdenes',d:'Cartera activa de octubre: 16 corrientes. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},{c:'azul2',i:'🏆',t:'GRUPO ACERERO: Cliente Principal del Mes ($20,000)',d:'GRUPO ACERERO lideró las ventas de octubre con $20,000.'}]
   }
 };
 
@@ -481,10 +501,10 @@ const MD = {
 // SVG CHARTS
 // ============================================================
 const COLS = ['#2563EB','#EA580C','#16A34A','#7C3AED','#0891B2','#F59E0B','#94A3B8','#EF4444','#10B981','#8B5CF6'];
-const LABELS = ['Mar','Abr','May','Jun','Jul','Ago','Sep'];
-const VENTAS = [30500,75300,220800,184400,237149,226900,236690];
-const EGRESOS_M = [35431,108258,123023,154447,173629,172951,174650];
-const UTIL_M = [-4931,-32958,97777,29953,63520,53949,62040];
+const LABELS = ['Mar','Abr','May','Jun','Jul','Ago','Sep','Oct'];
+const VENTAS = [30500,75300,220800,184400,237149,229100,246490,113033];
+const EGRESOS_M = [35431,108258,123023,154447,173629,187016,167615,21127];
+const UTIL_M = [-4931,-32958,97777,29953,63520,42084,78875,91906];
 
 function fmtK(n){
   const a=Math.abs(n);
@@ -503,7 +523,7 @@ function buildTendencia(selectedMes) {
   const n=LABELS.length;
   const grpW=cW/n;
   const bW=(grpW-8)/2;
-  const idxMap={marzo:0,abril:1,mayo:2,junio:3,julio:4,agosto:5,septiembre:6};
+  const idxMap={marzo:0,abril:1,mayo:2,junio:3,julio:4,agosto:5,septiembre:6,octubre:7};
   const sel=idxMap[selectedMes];
 
   let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="chart-svg">`;
