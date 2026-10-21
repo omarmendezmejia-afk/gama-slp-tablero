@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMA — Tablero Cierre</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<style>
+  :root{ color-scheme: light;
+    --gris:#F1F5F9;--borde:#E2E8F0;--sub:#64748B;--texto:#0F172A;--card:#FFFFFF;
+    --verde:#16A34A;--rojo:#DC2626;--naranja:#D97706;--morado:#7C3AED;--teal:#0D9488;--cian:#0891B2;--azul:#2563EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--texto);}
+  .wrap{max-width:1200px;margin:0 auto;padding:14px}
+
+  /* Password gate */
+  .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:linear-gradient(135deg,#0D3B6E 0%,#1D4ED8 60%,#7C3AED 100%);}
+  .gate-card{background:#fff;border-radius:16px;padding:32px 28px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .gate-card h1{font-size:18px;font-weight:800;margin-bottom:6px}
+  .gate-card p{font-size:12px;color:var(--sub);margin-bottom:18px;line-height:1.5}
+  .gate-card input{width:100%;padding:12px 14px;border:2px solid var(--borde);border-radius:10px;font-size:15px;margin-bottom:10px}
+  .gate-card input:focus{outline:none;border-color:var(--azul)}
+  .gate-card button{width:100%;padding:12px;border:none;border-radius:10px;background:var(--azul);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+  .gate-card button:active{opacity:.85}
+  .gate-err{color:var(--rojo);font-size:12px;margin-top:8px;min-height:16px}
+
+  .header{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-radius:14px;color:#fff;margin-bottom:14px}
+  .header h1{font-size:17px;font-weight:800}
+  .header p{font-size:11px;opacity:.85;margin-top:2px}
+  .bu-switch{display:flex;gap:6px;background:rgba(255,255,255,.15);padding:4px;border-radius:12px;flex-wrap:wrap}
+  .bu-btn{padding:7px 12px;border-radius:9px;border:none;background:transparent;color:#fff;font-size:12px;font-weight:700;cursor:pointer;opacity:.75}
+  .bu-btn.active{background:rgba(255,255,255,.25);opacity:1}
+  .tabbar{display:flex;gap:4px;background:#fff;border:1px solid var(--borde);border-radius:12px;padding:4px;margin-bottom:14px;width:fit-content}
+  .tab-btn{padding:8px 16px;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer}
+  .tab-btn.active{background:var(--texto);color:#fff}
+  .mes-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;-webkit-overflow-scrolling:touch}
+  .mes-btn{padding:7px 14px;border-radius:20px;border:2px solid var(--borde);background:#fff;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer}
+  .mes-btn.active{background:var(--texto);color:#fff;border-color:var(--texto)}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+  .kpi{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--borde);position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--azul))}
+  .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub)}
+  .kpi-val{font-size:19px;font-weight:800;margin-top:6px;word-break:break-word}
+  .kpi-sub{font-size:10px;color:var(--sub);margin-top:3px}
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px}
+  .grid-eq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:800px){.grid-2,.grid-eq{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--borde)}
+  .card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:12px}
+  .chart-wrap{position:relative;height:220px}
+  .chart-wrap-sm{position:relative;height:180px}
+  .table-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px;min-width:420px}
+  th{background:var(--gris);color:var(--sub);font-size:10px;font-weight:700;text-transform:uppercase;padding:8px 10px;text-align:left;white-space:nowrap}
+  td{padding:8px 10px;border-bottom:1px solid var(--borde)}
+  .td-r{text-align:right;font-weight:700}
+  .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+  .badge-vencido{background:#FEE2E2;color:#DC2626}
+  .badge-porvencer{background:#FEF3C7;color:#B45309}
+  .badge-corriente{background:#DCFCE7;color:#16A34A}
+  .saldos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  .saldo-item{background:var(--gris);border-radius:10px;padding:10px 6px;text-align:center}
+  .saldo-label{font-size:8.5px;font-weight:700;color:var(--sub);text-transform:uppercase}
+  .saldo-val{font-size:14px;font-weight:800;color:var(--azul);margin-top:4px;word-break:break-word}
+  .total-box{background:linear-gradient(135deg,#1E40AF,#3B82F6);border-radius:10px;padding:14px;text-align:center;color:#fff}
+  .total-box .v{font-size:22px;font-weight:900;margin-top:2px}
+  .empty-note{padding:26px;text-align:center;color:var(--sub);font-size:13px}
+  .pnl-table td:first-child{font-weight:600;color:var(--sub)}
+  .pnl-table tr.total td{font-weight:800;background:var(--gris)}
+  .pos{color:var(--verde)}.neg{color:var(--rojo)}
+  .top-cliente-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--borde);font-size:12px;gap:8px}
+  .footer{text-align:center;padding:16px;font-size:10px;color:var(--sub)}
+  .loading{padding:60px 20px;text-align:center;color:var(--sub)}
+  .err{padding:16px;background:#FEE2E2;color:#DC2626;border-radius:10px;font-size:12px;margin-bottom:14px}
+  .insights-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+  .insight-item{display:flex;gap:10px;padding:10px 12px;border-radius:8px;font-size:12.5px;line-height:1.5;align-items:flex-start}
+  .insight-icon{font-size:16px;flex-shrink:0}
+  .insight-text{color:var(--texto)}
+  .egr-pct-list{display:flex;flex-direction:column;gap:9px}
+  .egr-pct-head{display:grid;grid-template-columns:130px 1fr 58px 58px;gap:8px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--sub);padding-bottom:2px;border-bottom:1px solid var(--borde);margin-bottom:2px}
+  .egr-pct-head span:last-child, .egr-pct-head span:nth-last-child(2){text-align:right}
+  .egr-pct-row{display:grid;grid-template-columns:130px 1fr 58px 58px;align-items:center;gap:8px;font-size:11.5px}
+  .egr-pct-label{color:var(--sub);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .egr-pct-bar-wrap{background:var(--gris);border-radius:6px;height:14px;overflow:hidden}
+  .egr-pct-bar{height:100%;border-radius:6px}
+  .egr-pct-val{text-align:right;font-weight:800}
+  .egr-pct-val-sub{text-align:right;font-weight:600;color:var(--sub)}
+  .egr-pct-total{margin-top:8px;padding-top:9px;border-top:1px solid var(--borde);font-size:11.5px;color:var(--sub)}
+  .lock-btn{position:fixed;bottom:14px;right:14px;background:#fff;border:1px solid var(--borde);border-radius:20px;
+    padding:8px 14px;font-size:11px;color:var(--sub);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  @media(max-width:480px){
+    .header h1{font-size:15px}
+    .kpi-val{font-size:17px}
+    .saldos-grid{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <h1>GAMA — Tablero Cierre</h1>
+    <p>Acceso restringido. Ingresa la contraseña que te compartieron para ver los indicadores de GAMA QRO y GAMA SLP.</p>
+    <input type="password" id="pwInput" placeholder="Contraseña" autocomplete="off">
+    <button id="pwBtn">Entrar</button>
+    <div class="gate-err" id="pwErr"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="loading" id="loadingMsg">Cargando datos…</div>
+</div>
+
+<script>
+// ============================================================
+// ACCESO (contraseña compartida — no es seguridad fuerte, es un filtro simple)
+// ============================================================
+const PW_HASH = 'c301ec146e494e9917be95c0835b29cab1a7579566f12908a3d80418207169a3';
+const SESSION_KEY = 'gama_unlocked';
+
+async function sha256Hex(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function trySession(){ try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch(e){ return false; } }
+function markSession(){ try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){} }
+
+async function attemptUnlock(){
+  const val = document.getElementById('pwInput').value;
+  const hash = await sha256Hex(val);
+  if (hash === PW_HASH) {
+    markSession();
+    unlock();
+  } else {
+    document.getElementById('pwErr').textContent = 'Contraseña incorrecta.';
+  }
+}
+
+function unlock(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  boot();
+}
+
+document.getElementById('pwBtn').addEventListener('click', attemptUnlock);
+document.getElementById('pwInput').addEventListener('keydown', e=>{ if (e.key === 'Enter') attemptUnlock(); });
+
+// Se difiere con setTimeout para que las const declaradas más abajo (SUPABASE_URL, etc.)
+// ya estén inicializadas cuando boot() las use — evita "Cannot access before initialization".
+if (trySession()) { setTimeout(unlock, 0); }
+
+// ============================================================
+// CONEXIÓN A SUPABASE (API REST pública de solo lectura)
+// ============================================================
+const SUPABASE_URL = 'https://zveljbzgyumsvgkwjcqi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_6ecWkQ8pQl3EdgqGbHb2GQ_ka3NsAMq';
+
+async function pgFetch(path, params){
+  const url = `${SUPABASE_URL}/rest/v1/${path}${params ? '?' + params : ''}`;
+  const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+  if (!res.ok) throw new Error(`Error consultando ${path} (${res.status})`);
+  return res.json();
+}
+
+// ============================================================
+// ESTADO Y DATOS
+// ============================================================
+const BU_META = {
+  queretaro:{label:'GAMA QRO', sub:'Querétaro · Servicios de Saneamiento y Soluciones Ambientales', grad:'linear-gradient(135deg,#0D3B6E 0%,#0891B2 100%)', accent:'#0891B2'},
+  san_luis:{label:'GAMA SLP', sub:'San Luis Potosí · Saneamiento Industrial', grad:'linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 100%)', accent:'#1D4ED8'},
+  combinado:{label:'GAMA QRO + SLP', sub:'Vista combinada de las 2 unidades de negocio', grad:'linear-gradient(135deg,#1E293B 0%,#7C3AED 100%)', accent:'#7C3AED'}
+};
+const MES_NOMBRES = ['', 'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function keyOf(anio, mes){ return anio*100 + mes; }
+function mesLabel(bu, key){
+  if (key === 0) return 'Todos';
+  const src = bu === 'combinado' ? (RESUMEN.queretaro[key] || RESUMEN.san_luis[key]) : (RESUMEN[bu] && RESUMEN[bu][key]);
+  if (src) return src.mes_label || MES_NOMBRES[src.mes];
+  return String(key);
+}
+const C = {
+  azul:'#2563EB',azulL:'rgba(37,99,235,.15)',verde:'#16A34A',verdeL:'rgba(22,163,74,.15)',
+  naranja:'#D97706',naranjaL:'rgba(217,119,6,.15)',rojo:'#DC2626',rojoL:'rgba(220,38,38,.15)',
+  cian:'#0891B2',cianL:'rgba(8,145,178,.15)',morado:'#7C3AED',moradoL:'rgba(124,58,237,.15)',
+  teal:'#0D9488',tealL:'rgba(13,148,136,.15)',gris:'#94A3B8'
+};
+const EGRESO_COLORS = [C.naranja,C.azul,C.verde,C.morado,C.cian,C.rojo,C.teal,'#F59E0B','#06B6D4','#10B981','#EC4899',C.gris];
+
+let RESUMEN = {queretaro:{}, san_luis:{}};
+let EGRESOS = {queretaro:{}, san_luis:{}};
+let CXC_HIST = [];
+let CXC_LIVE = [];
+let SALDOS = [];
+let charts = {};
+
+function safeGet(key, fallback){ try { return localStorage.getItem(key) ?? fallback; } catch(e){ return fallback; } }
+function safeSet(key, val){ try { localStorage.setItem(key, val); } catch(e){} }
+
+let state = {
+  bu: safeGet('gama_bu', 'queretaro'),
+  tab: safeGet('gama_tab', 'financiero'),
+  mes: parseInt(safeGet('gama_mes', '0'), 10)
+};
+
+function fmt(n){
+  if (n == null) return '—';
+  const abs = Math.abs(n);
+  const s = n < 0 ? '-' : '';
+  if (abs >= 1000000) return s + '$' + (abs/1000000).toFixed(2) + 'M';
+  if (abs >= 1000) return s + '$' + Math.round(abs).toLocaleString('es-MX');
+  return s + '$' + abs.toLocaleString('es-MX');
+}
+function fmtK(n){ return '$' + (n/1000).toFixed(0) + 'K'; }
+
+async function loadData(){
+  const [histRows, egresosRows, cxcHistRows, saldosRows, liveRows, liveCxcRows] = await Promise.all([
+    pgFetch('resumen_historico_mensual', 'select=*&order=sucursal,mes'),
+    pgFetch('public_egresos_categoria', 'select=*&order=sucursal,anio,mes'),
+    pgFetch('cuentas_por_cobrar_historico', 'select=*&order=dias.desc'),
+    pgFetch('public_saldos_actuales', 'select=*'),
+    pgFetch('public_resumen_vivo', 'select=*&order=sucursal,anio,mes'),
+    pgFetch('public_cxc_vivo', 'select=*&order=dias.desc')
+  ]);
+
+  const numFields = ['ventas','cobrado_mes','recupero_ant','cobrado_total','egresos_total','utilidad','margen','flujo_neto','cxc_saldo','ventas_contado','ventas_credito'];
+  const intFields = ['mes','anio','ordenes_count','clientes_count'];
+  const coerce = (r) => {
+    numFields.forEach(f=>{ if (f in r) r[f] = (r[f]===null||r[f]===undefined) ? null : Number(r[f]); });
+    intFields.forEach(f=>{ if (f in r) r[f] = (r[f]===null||r[f]===undefined) ? null : parseInt(r[f],10); });
+    return r;
+  };
+
+  (histRows||[]).forEach(r=>{
+    coerce(r);
+    RESUMEN[r.sucursal] = RESUMEN[r.sucursal] || {};
+    const key = r.mes === 0 ? 0 : keyOf(r.anio, r.mes);
+    RESUMEN[r.sucursal][key] = r;
+  });
+
+  const liveBySucursalKey = {};
+  (liveRows||[]).forEach(r=>{
+    coerce(r);
+    if (r.anio == null || r.mes == null) return;
+    const key = keyOf(r.anio, r.mes);
+    const ventas = r.ventas || 0, egresos_total = r.egresos_total || 0, cobrado_total = r.cobrado_total || 0;
+    liveBySucursalKey[r.sucursal] = liveBySucursalKey[r.sucursal] || {};
+    liveBySucursalKey[r.sucursal][key] = {
+      sucursal:r.sucursal, anio:r.anio, mes:r.mes, mes_label: MES_NOMBRES[r.mes],
+      ventas, egresos_total, cobrado_total,
+      utilidad: cobrado_total - egresos_total,
+      margen: ventas > 0 ? (ventas - egresos_total) / ventas * 100 : 0,
+      ordenes_count: r.ordenes_count || 0, clientes_count: r.clientes_count || 0,
+      ventas_contado: r.ventas_contado || 0, ventas_credito: r.ventas_credito || 0,
+      cxc_saldo: null, cobrado_mes: null, recupero_ant: null, top_clientes: null, servicios: null
+    };
+  });
+
+  // Tablero Cierre: solo meses con cierre definitivo (resumen_historico_mensual), sin meses parciales en vivo
+  const SOLO_CIERRES = true;
+  ['queretaro','san_luis'].forEach(bu=>{
+    RESUMEN[bu] = RESUMEN[bu] || {};
+    const live = SOLO_CIERRES ? {} : (liveBySucursalKey[bu] || {});
+    let extraVentas=0, extraEgresos=0, extraCobrado=0, extraOrdenes=0, hayNuevos=false;
+    Object.keys(live).forEach(k=>{
+      const key = Number(k);
+      if (!(key in RESUMEN[bu])) {
+        RESUMEN[bu][key] = live[k];
+        extraVentas += live[k].ventas; extraEgresos += live[k].egresos_total; extraCobrado += live[k].cobrado_total;
+        extraOrdenes += live[k].ordenes_count;
+        hayNuevos = true;
+      }
+    });
+    if (RESUMEN[bu][0] && hayNuevos) {
+      const base = RESUMEN[bu][0];
+      base.ventas = (base.ventas||0) + extraVentas;
+      base.egresos_total = (base.egresos_total||0) + extraEgresos;
+      base.cobrado_total = (base.cobrado_total||0) + extraCobrado;
+      base.utilidad = base.cobrado_total - base.egresos_total;
+      base.margen = base.ventas > 0 ? (base.ventas - base.egresos_total)/base.ventas*100 : 0;
+      base.ordenes_count = (base.ordenes_count||0) + extraOrdenes;
+    }
+  });
+
+  (egresosRows||[]).forEach(r=>{
+    coerce(r);
+    const key = keyOf(r.anio, r.mes);
+    EGRESOS[r.sucursal] = EGRESOS[r.sucursal] || {};
+    EGRESOS[r.sucursal][key] = EGRESOS[r.sucursal][key] || [];
+    EGRESOS[r.sucursal][key].push({categoria:r.categoria, monto:Number(r.monto)});
+  });
+
+  CXC_HIST = cxcHistRows || [];
+  CXC_LIVE = (SOLO_CIERRES ? [] : (liveCxcRows||[])).map(r=>{
+    const dias = parseInt(r.dias,10) || 0;
+    return {
+      sucursal:r.sucursal, orden_ref:r.orden_ref, cliente:r.cliente, saldo:Number(r.saldo), dias,
+      estatus: dias > 60 ? 'Vencido' : dias > 30 ? 'Por vencer' : 'Corriente'
+    };
+  });
+
+  const seen = {};
+  (saldosRows||[]).forEach(r=>{ if(!seen[r.cuenta]){ seen[r.cuenta]=true; SALDOS.push(r); } });
+}
+
+function availableMonths(bu){
+  if (bu === 'combinado') {
+    const keys = new Set();
+    Object.keys(RESUMEN.queretaro||{}).forEach(k=>keys.add(Number(k)));
+    Object.keys(RESUMEN.san_luis||{}).forEach(k=>keys.add(Number(k)));
+    keys.delete(0);
+    return [0, ...Array.from(keys).sort((a,b)=>a-b)];
+  }
+  const keys = Object.keys(RESUMEN[bu]||{}).map(Number).filter(k=>k!==0).sort((a,b)=>a-b);
+  return [0, ...keys];
+}
+
+function combineRow(mesN){
+  const q = RESUMEN.queretaro[mesN], s = RESUMEN.san_luis[mesN];
+  if (!q && !s) return null;
+  const add = (f) => (Number(q?.[f])||0) + (Number(s?.[f])||0);
+  const ventas = add('ventas'), egresos_total = add('egresos_total'), cobrado_total = add('cobrado_total');
+  const utilidad = add('utilidad'), cxc_saldo = add('cxc_saldo');
+  const ordenes_count = (q?.ordenes_count||s?.ordenes_count) ? add('ordenes_count') : null;
+  const clientes_count = (q?.clientes_count||s?.clientes_count) ? add('clientes_count') : null;
+  const margen = ventas > 0 ? (ventas-egresos_total)/ventas*100 : 0;
+  const mes_label = (q && q.mes_label) || (s && s.mes_label) || MES_NOMBRES[(q||s).mes] || 'Todos';
+  return { sucursal:'combinado', mes:mesN, mes_label, ventas, egresos_total, cobrado_total, utilidad, margen, cxc_saldo, ordenes_count, clientes_count, cobrado_mes:add('cobrado_mes'), recupero_ant:add('recupero_ant') };
+}
+
+function getRow(bu, mesN){
+  if (bu === 'combinado') return combineRow(mesN);
+  return RESUMEN[bu] ? RESUMEN[bu][mesN] : null;
+}
+
+function getEgresosCats(bu, mesN){
+  const busToUse = bu === 'combinado' ? ['queretaro','san_luis'] : [bu];
+  const agg = {};
+  busToUse.forEach(u=>{
+    const src = EGRESOS[u] || {};
+    const months = mesN === 0 ? Object.keys(src).map(Number) : [mesN];
+    months.forEach(m=>{
+      (src[m]||[]).forEach(row=>{ agg[row.categoria] = (agg[row.categoria]||0) + row.monto; });
+    });
+  });
+  return Object.entries(agg).sort((a,b)=>b[1]-a[1]);
+}
+
+// ============================================================
+// INSIGHTS CLAVE — reglas genéricas recalculadas con cada carga de datos
+// ============================================================
+function computeInsights(bu, mesN, months){
+  const insights = [];
+  const realMonths = months.filter(m=>m!==0).sort((a,b)=>a-b);
+  const row = getRow(bu, mesN);
+
+  if (row && row.ventas) {
+    const cats = getEgresosCats(bu, mesN);
+    if (cats.length) {
+      const [topCat, topMonto] = cats[0];
+      const pct = topMonto / row.ventas * 100;
+      insights.push({
+        tipo: pct > 25 ? 'warning' : 'neutral', icono: '💸',
+        texto: `<strong>${topCat}</strong> es la categoría de mayor gasto en ${mesLabel(bu, mesN)}: ${fmt(topMonto)} — equivale al <strong>${pct.toFixed(1)}%</strong> de las ventas de este período.`
+      });
+    }
+    if (cats.length >= 3 && row.egresos_total) {
+      const top3 = cats.slice(0, 3);
+      const top3sum = top3.reduce((a, c) => a + c[1], 0);
+      const pctOfEgresos = top3sum / row.egresos_total * 100;
+      if (pctOfEgresos > 60) {
+        insights.push({
+          tipo: 'neutral', icono: '🎯',
+          texto: `Las 3 categorías principales de gasto (${top3.map(c=>c[0]).join(', ')}) concentran el <strong>${pctOfEgresos.toFixed(0)}%</strong> del gasto operativo — poco margen de maniobra si alguna se dispara.`
+        });
+      }
+    }
+  }
+
+  if (realMonths.length >= 2) {
+    let best = null, worst = null;
+    realMonths.forEach(m => {
+      const r = getRow(bu, m);
+      if (!r || !r.ventas) return;
+      const mg = Number(r.margen) || 0;
+      if (!best || mg > best.mg) best = { m, mg };
+      if (!worst || mg < worst.mg) worst = { m, mg };
+    });
+    if (best && worst && best.m !== worst.m) {
+      insights.push({
+        tipo: 'positive', icono: '📈',
+        texto: `El mejor margen registrado fue en <strong>${mesLabel(bu, best.m)}</strong> (${best.mg.toFixed(1)}%); el más bajo fue en <strong>${mesLabel(bu, worst.m)}</strong> (${worst.mg.toFixed(1)}%).`
+      });
+    }
+  }
+
+  if (mesN !== 0) {
+    const idx = realMonths.indexOf(mesN);
+    if (idx > 0) {
+      const prevRow = getRow(bu, realMonths[idx - 1]);
+      if (prevRow && row && prevRow.ventas && row.ventas) {
+        const varVentas = (row.ventas - prevRow.ventas) / prevRow.ventas * 100;
+        const varMargen = (Number(row.margen) || 0) - (Number(prevRow.margen) || 0);
+        insights.push({
+          tipo: varVentas >= 0 ? 'positive' : 'negative', icono: varVentas >= 0 ? '⬆️' : '⬇️',
+          texto: `Las ventas ${varVentas >= 0 ? 'crecieron' : 'cayeron'} <strong>${Math.abs(varVentas).toFixed(1)}%</strong> vs ${mesLabel(bu, realMonths[idx-1])}, y el margen ${varMargen >= 0 ? 'mejoró' : 'se redujo'} ${Math.abs(varMargen).toFixed(1)} pts.`
+        });
+      }
+    }
+  }
+
+  const cxcAll = [...CXC_HIST, ...CXC_LIVE].filter(r => bu === 'combinado' ? true : r.sucursal === bu);
+  if (cxcAll.length) {
+    const total = cxcAll.reduce((a, b) => a + Number(b.saldo), 0);
+    const vencido = cxcAll.filter(r => r.estatus === 'Vencido');
+    const totalVencido = vencido.reduce((a, b) => a + Number(b.saldo), 0);
+    if (total > 0 && totalVencido > 0) {
+      const pctVenc = totalVencido / total * 100;
+      const diasProm = vencido.reduce((a, b) => a + Number(b.dias), 0) / vencido.length;
+      insights.push({
+        tipo: pctVenc > 15 ? 'negative' : 'neutral', icono: '⏰',
+        texto: `<strong>${pctVenc.toFixed(0)}%</strong> de la cartera por cobrar (${fmt(totalVencido)}) está vencida, con un promedio de <strong>${diasProm.toFixed(0)} días</strong> de atraso.`
+      });
+    }
+  }
+
+  if (realMonths.length >= 4) {
+    const last = realMonths.slice(-3);
+    const prev = realMonths.slice(-6, -3);
+    if (prev.length) {
+      const sum = arr => arr.reduce((a, m) => a + (getRow(bu, m)?.ventas || 0), 0);
+      const s1 = sum(last), s0 = sum(prev);
+      if (s0 > 0) {
+        const growth = (s1 - s0) / s0 * 100;
+        insights.push({
+          tipo: growth >= 0 ? 'positive' : 'negative', icono: growth >= 0 ? '🚀' : '📉',
+          texto: `Las ventas de los últimos ${last.length} meses (${fmt(s1)}) ${growth >= 0 ? 'crecieron' : 'cayeron'} <strong>${Math.abs(growth).toFixed(1)}%</strong> frente a los ${prev.length} meses previos.`
+        });
+      }
+    }
+  }
+
+  if (realMonths.length) {
+    const ultimo = realMonths[realMonths.length - 1];
+    const r = getRow(bu, ultimo);
+    if (r && r.ventas && Number(r.margen) < 0) {
+      insights.push({
+        tipo: 'negative', icono: '🚨',
+        texto: `${mesLabel(bu, ultimo)} cerró con <strong>margen negativo</strong> (${Number(r.margen).toFixed(1)}%) — los egresos superaron a las ventas del mes.`
+      });
+    }
+  }
+
+  return insights;
+}
+
+function renderInsights(bu, mesN, months){
+  const insights = computeInsights(bu, mesN, months);
+  if (!insights.length) return '';
+  const colorMap = { positive:C.verde, negative:C.rojo, warning:C.naranja, neutral:C.azul };
+  const bgMap = { positive:C.verdeL, negative:C.rojoL, warning:C.naranjaL, neutral:C.azulL };
+  return `<div class="card" style="margin-bottom:16px">
+    <h3>📊 Insights Clave</h3>
+    <div class="insights-grid">
+      ${insights.map(i=>`<div class="insight-item" style="border-left:3px solid ${colorMap[i.tipo]};background:${bgMap[i.tipo]}"><span class="insight-icon">${i.icono}</span><span class="insight-text">${i.texto}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderEgresosPctVentas(bu, mesN){
+  const row = getRow(bu, mesN);
+  const cats = getEgresosCats(bu, mesN);
+  if (!row || !row.ventas || !cats.length) return `<div class="empty-note" style="padding:14px">Sin datos suficientes para este período.</div>`;
+  const ventas = row.ventas;
+  const totalEgresos = cats.reduce((a, c) => a + c[1], 0);
+  const rows = cats.map(([cat, monto]) => ({ cat, monto, pctVenta: monto / ventas * 100, pctGasto: totalEgresos ? monto / totalEgresos * 100 : 0 }));
+  const maxPct = Math.max(...rows.map(r => r.pctVenta), 1);
+  const totalPct = totalEgresos / ventas * 100;
+  return `<div class="egr-pct-list">
+    <div class="egr-pct-head"><span>Categoría</span><span></span><span>% Venta</span><span>% Gasto</span></div>
+    ${rows.map((r, i) => `
+      <div class="egr-pct-row">
+        <div class="egr-pct-label">${r.cat}</div>
+        <div class="egr-pct-bar-wrap"><div class="egr-pct-bar" style="width:${(r.pctVenta/maxPct*100).toFixed(1)}%;background:${EGRESO_COLORS[i % EGRESO_COLORS.length]}"></div></div>
+        <div class="egr-pct-val">${r.pctVenta.toFixed(1)}%</div>
+        <div class="egr-pct-val-sub">${r.pctGasto.toFixed(1)}%</div>
+      </div>`).join('')}
+    <div class="egr-pct-total">Egresos totales del período: <strong>${totalPct.toFixed(1)}%</strong> de la venta neta (${fmt(ventas)}) · <strong>100%</strong> del gasto total (${fmt(totalEgresos)})</div>
+  </div>`;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render(){
+ try {
+  const meta = BU_META[state.bu];
+  const months = availableMonths(state.bu);
+  if (!months.includes(state.mes)) state.mes = 0;
+  const row = getRow(state.bu, state.mes);
+
+  let html = `
+  <div class="header" style="background:${meta.grad}">
+    <div>
+      <h1>${meta.label} — Tablero Cierre</h1>
+      <p>${meta.sub}</p>
+    </div>
+    <div class="bu-switch">
+      ${Object.keys(BU_META).map(k=>`<button class="bu-btn ${k===state.bu?'active':''}" data-bu="${k}">${BU_META[k].label.replace('GAMA ','')}</button>`).join('')}
+    </div>
+  </div>
+  <div class="tabbar">
+    <button class="tab-btn ${state.tab==='financiero'?'active':''}" data-tab="financiero">Financiero</button>
+    <button class="tab-btn ${state.tab==='desempeno'?'active':''}" data-tab="desempeno">Desempeño</button>
+  </div>
+  <div class="mes-nav">
+    ${months.map(m=>`<button class="mes-btn ${m===state.mes?'active':''}" data-mes="${m}">${mesLabel(state.bu, m)}</button>`).join('')}
+  </div>`;
+
+  if (!row) {
+    html += `<div class="empty-note">Sin datos para ${meta.label} en ${mesLabel(state.bu, state.mes)}.</div>`;
+    document.getElementById('app').innerHTML = html;
+    bindEvents();
+    return;
+  }
+
+  html += `<div class="kpi-grid">
+    <div class="kpi" style="--accent:${C.verde}"><div class="kpi-label">Ventas</div><div class="kpi-val">${fmt(row.ventas)}</div><div class="kpi-sub">${row.mes_label}</div></div>
+    <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">Cobrado Total</div><div class="kpi-val">${fmt(row.cobrado_total)}</div><div class="kpi-sub">Efectivo recibido</div></div>
+    <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Egresos</div><div class="kpi-val">${fmt(row.egresos_total)}</div><div class="kpi-sub">Gastos del período</div></div>
+    <div class="kpi" style="--accent:${row.utilidad>=0?C.verde:C.rojo}"><div class="kpi-label">Utilidad / Flujo</div><div class="kpi-val" style="color:${row.utilidad>=0?'var(--verde)':'var(--rojo)'}">${fmt(row.utilidad)}</div><div class="kpi-sub">Cobrado − Egresos</div></div>
+    <div class="kpi" style="--accent:${C.teal}"><div class="kpi-label">Margen</div><div class="kpi-val">${Number(row.margen||0).toFixed(1)}%</div><div class="kpi-sub">(Ventas − Egresos)/Ventas</div></div>
+    <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">CxC Pendiente</div><div class="kpi-val">${fmt(row.cxc_saldo)}</div><div class="kpi-sub">Cartera por cobrar</div></div>
+  </div>`;
+
+  html += renderInsights(state.bu, state.mes, months);
+
+  if (state.tab === 'financiero') {
+    html += renderFinanciero(row, months);
+  } else {
+    html += renderDesempeno(row, months);
+  }
+
+  html += `<div class="footer">GAMA — Tablero Cierre · Datos en vivo desde Supabase · Última carga: ${new Date().toLocaleString('es-MX')}</div>`;
+  document.getElementById('app').innerHTML = html;
+  bindEvents();
+  try { drawCharts(months); } catch(chartErr) { console.error('Error dibujando gráficas:', chartErr); }
+ } catch(e) {
+  console.error('Error en render():', e);
+  const appEl = document.getElementById('app');
+  appEl.innerHTML += `<div class="err">Ocurrió un error al mostrar esta vista: ${(e && e.message) || e}</div>`;
+  bindEvents();
+ }
+}
+
+function renderFinanciero(row, months){
+  let html = `<div class="grid-2">
+    <div class="card"><h3>Ventas, Cobrado y Egresos por Mes</h3><div class="chart-wrap"><canvas id="chartTendencia"></canvas></div></div>
+    <div class="card"><h3>Egresos por Categoría — ${mesLabel(state.bu, state.mes)}</h3><div class="chart-wrap" id="egresosWrap"><canvas id="chartEgresos"></canvas></div></div>
+  </div>`;
+
+  html += `<div class="card" style="margin-bottom:16px"><h3>Egresos como % de la Venta Neta — ${mesLabel(state.bu, state.mes)}</h3>${renderEgresosPctVentas(state.bu, state.mes)}</div>`;
+
+  html += `<div class="grid-2">
+    <div class="card"><h3>Estado de Resultados / Flujo</h3>
+      <div class="table-scroll"><table class="pnl-table"><thead><tr><th>Concepto</th>${months.filter(m=>m!==0).map(m=>`<th style="text-align:right">${mesLabel(state.bu,m).slice(0,3)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${pnlRow('Ventas', months, m=>getRow(state.bu,m)?.ventas)}
+        ${pnlRow('Cobrado Total', months, m=>getRow(state.bu,m)?.cobrado_total)}
+        ${pnlRow('Egresos', months, m=>getRow(state.bu,m)?.egresos_total)}
+        <tr class="total">${pnlRowInner('Utilidad/Flujo', months, m=>getRow(state.bu,m)?.utilidad)}</tr>
+        ${pnlRow('CxC al cierre', months, m=>getRow(state.bu,m)?.cxc_saldo)}
+      </tbody></table></div>
+    </div>
+    <div>
+      ${state.bu !== 'queretaro' ? renderSaldos() : `<div class="card"><div class="empty-note" style="padding:14px">Saldos bancarios solo disponibles para GAMA SLP.</div></div>`}
+    </div>
+  </div>`;
+
+  if (state.bu !== 'queretaro') {
+    html += `<div class="card" style="margin-bottom:16px"><h3>Cuentas por Cobrar — Cartera Activa</h3><div class="table-scroll">${renderCxcTable()}</div></div>`;
+  }
+  return html;
+}
+
+function pnlRowInner(label, months, getter){
+  return `<td>${label}</td>${months.filter(m=>m!==0).map(m=>{const v=getter(m); return `<td class="td-r ${v<0?'neg':'pos'}">${v==null?'—':fmt(v)}</td>`;}).join('')}`;
+}
+function pnlRow(label, months, getter){ return `<tr>${pnlRowInner(label, months, getter)}</tr>`; }
+
+function renderSaldos(){
+  if (!SALDOS.length) return `<div class="card"><div class="empty-note" style="padding:14px">Sin saldos bancarios cargados.</div></div>`;
+  const total = SALDOS.reduce((a,b)=>a+Number(b.monto),0);
+  return `<div class="card">
+    <h3>Saldos Bancarios — GAMA SLP</h3>
+    <div class="saldos-grid">
+      ${SALDOS.map(s=>`<div class="saldo-item"><div class="saldo-label">${s.cuenta}</div><div class="saldo-val">${fmt(Number(s.monto))}</div></div>`).join('')}
+    </div>
+    <div class="total-box"><div style="font-size:10px;font-weight:700;opacity:.85">TOTAL DISPONIBLE</div><div class="v">${fmt(total)}</div></div>
+  </div>`;
+}
+
+function renderCxcTable(){
+  const all = [...CXC_HIST, ...CXC_LIVE];
+  const list = state.bu === 'combinado' ? all : all.filter(r=>r.sucursal===state.bu);
+  if (!list.length) return `<div class="empty-note">Sin cartera pendiente registrada.</div>`;
+  const total = list.reduce((a,b)=>a+Number(b.saldo),0);
+  const badgeClass = e => e==='Vencido' ? 'badge-vencido' : e==='Por vencer' ? 'badge-porvencer' : 'badge-corriente';
+  return `<table><thead><tr><th>Orden</th><th>Cliente</th><th>Días</th><th>Estatus</th><th style="text-align:right">Saldo</th></tr></thead>
+    <tbody>${list.map(r=>`<tr><td style="color:var(--sub);font-size:11px">${r.orden_ref}</td><td style="font-weight:600">${r.cliente}</td><td>${r.dias}d</td><td><span class="badge ${badgeClass(r.estatus)}">${r.estatus}</span></td><td class="td-r">${fmt(Number(r.saldo))}</td></tr>`).join('')}</tbody>
+    <tfoot><tr style="font-weight:800;background:var(--gris)"><td colspan="4" style="padding:9px 10px">TOTAL PENDIENTE</td><td class="td-r" style="padding:9px 10px">${fmt(total)}</td></tr></tfoot></table>
+    <div style="font-size:10px;color:var(--sub);margin-top:8px">Incluye la foto de cartera pre-PWA (histórico) + órdenes reales pendientes de pago registradas en la PWA.</div>`;
+}
+
+function renderDesempeno(row, months){
+  let html = `<div class="grid-2">
+    <div class="card"><h3>Crecimiento de Ventas por Mes</h3><div class="chart-wrap"><canvas id="chartTendencia2"></canvas></div></div>
+    <div class="card"><h3>Mix de Servicios</h3><div class="chart-wrap" id="serviciosWrap">${row.servicios ? '<canvas id="chartServicios"></canvas>' : '<div class="empty-note">Solo disponible para GAMA SLP</div>'}</div></div>
+  </div>`;
+
+  html += `<div class="grid-eq">
+    <div class="card"><h3>Órdenes y Clientes por Mes</h3><div class="chart-wrap-sm" id="ordenesWrap">${(RESUMEN.san_luis && state.bu!=='queretaro') ? '<canvas id="chartOrdenes"></canvas>' : '<div class="empty-note">Solo disponible para GAMA SLP</div>'}</div></div>
+    <div class="card"><h3>Top Clientes — ${mesLabel(state.bu, state.mes)}</h3>${renderTopClientes(row)}</div>
+  </div>`;
+
+  html += `<div class="kpi-grid">
+    <div class="kpi" style="--accent:${C.azul}"><div class="kpi-label">Órdenes</div><div class="kpi-val">${row.ordenes_count ?? '—'}</div></div>
+    <div class="kpi" style="--accent:${C.verde}"><div class="kpi-label">Clientes Únicos</div><div class="kpi-val">${row.clientes_count ?? '—'}</div></div>
+    <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">Ventas Contado</div><div class="kpi-val">${fmt(row.ventas_contado)}</div></div>
+    <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Ventas Crédito</div><div class="kpi-val">${fmt(row.ventas_credito)}</div></div>
+  </div>`;
+  return html;
+}
+
+function renderTopClientes(row){
+  if (!row.top_clientes) return `<div class="empty-note">Solo disponible para GAMA SLP</div>`;
+  return row.top_clientes.map(([nombre,monto])=>`<div class="top-cliente-row"><span>${nombre}</span><strong>${fmt(monto)}</strong></div>`).join('');
+}
+
+function destroyChart(id){ if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function drawCharts(months){
+  const mesesReales = months.filter(m=>m!==0);
+  const ventasArr = mesesReales.map(m=>getRow(state.bu,m)?.ventas||0);
+  const egresosArr = mesesReales.map(m=>getRow(state.bu,m)?.egresos_total||0);
+  const utilArr = mesesReales.map(m=>getRow(state.bu,m)?.utilidad||0);
+  const labels = mesesReales.map(m=>mesLabel(state.bu, m));
+
+  const tCanvas = document.getElementById('chartTendencia') || document.getElementById('chartTendencia2');
+  if (tCanvas) {
+    destroyChart(tCanvas.id);
+    charts[tCanvas.id] = new Chart(tCanvas, {
+      data: { labels, datasets: [
+        { type:'bar', label:'Ventas', data:ventasArr, backgroundColor:C.azulL, borderColor:C.azul, borderWidth:2, borderRadius:6 },
+        { type:'bar', label:'Egresos', data:egresosArr, backgroundColor:C.naranjaL, borderColor:C.naranja, borderWidth:2, borderRadius:6 },
+        { type:'line', label:'Utilidad', data:utilArr, borderColor:C.verde, backgroundColor:C.verdeL, borderWidth:2.5, pointRadius:4, fill:false }
+      ]},
+      options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{labels:{font:{size:11},boxWidth:12}}, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.parsed.y.toLocaleString('es-MX')}} },
+        scales:{ y:{ ticks:{callback:v=>fmtK(v), font:{size:10}}, grid:{color:'#F1F5F9'} }, x:{ ticks:{font:{size:10}} } }
+      }
+    });
+  }
+
+  const egCanvas = document.getElementById('chartEgresos');
+  if (egCanvas) {
+    const cats = getEgresosCats(state.bu, state.mes);
+    destroyChart('chartEgresos');
+    if (cats.length) {
+      charts.chartEgresos = new Chart(egCanvas, {
+        type:'bar',
+        data:{ labels: cats.map(c=>c[0]), datasets:[{ label:'Monto', data:cats.map(c=>c[1]), backgroundColor:EGRESO_COLORS, borderRadius:5 }] },
+        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+          plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'$'+ctx.parsed.x.toLocaleString('es-MX')}} },
+          scales:{ x:{ ticks:{callback:v=>fmtK(v), font:{size:10}}, grid:{color:'#F1F5F9'} }, y:{ ticks:{font:{size:10}} } }
+        }
+      });
+    } else {
+      document.getElementById('egresosWrap').innerHTML = '<div class="empty-note">Sin desglose de egresos para este período.</div>';
+    }
+  }
+
+  const servCanvas = document.getElementById('chartServicios');
+  if (servCanvas) {
+    const row = getRow(state.bu, state.mes);
+    if (row && row.servicios) {
+      destroyChart('chartServicios');
+      charts.chartServicios = new Chart(servCanvas, {
+        type:'doughnut',
+        data:{ labels:row.servicios.labels, datasets:[{ data:row.servicios.data, backgroundColor:EGRESO_COLORS, borderWidth:2, borderColor:'#fff' }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'62%',
+          plugins:{ legend:{position:'bottom', labels:{font:{size:10},boxWidth:10}}, tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+' servicios'}} }
+        }
+      });
+    }
+  }
+
+  const ordCanvas = document.getElementById('chartOrdenes');
+  if (ordCanvas) {
+    const slpMonths = availableMonths('san_luis').filter(m=>m!==0);
+    const ord = slpMonths.map(m=>RESUMEN.san_luis[m]?.ordenes_count||0);
+    const cli = slpMonths.map(m=>RESUMEN.san_luis[m]?.clientes_count||0);
+    destroyChart('chartOrdenes');
+    charts.chartOrdenes = new Chart(ordCanvas, {
+      data:{ labels: slpMonths.map(m=>mesLabel('san_luis', m)), datasets:[
+        { type:'bar', label:'Órdenes', data:ord, backgroundColor:C.azul, borderRadius:6 },
+        { type:'line', label:'Clientes Únicos', data:cli, borderColor:C.verde, backgroundColor:C.verdeL, borderWidth:2.5, pointRadius:5, fill:false }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{labels:{font:{size:11},boxWidth:12}} },
+        scales:{ y:{ ticks:{font:{size:11}}, grid:{color:'#F1F5F9'} }, x:{ ticks:{font:{size:10}} } }
+      }
+    });
+  }
+}
+
+function bindEvents(){
+  document.querySelectorAll('[data-bu]').forEach(b=>b.addEventListener('click', ()=>{
+    try { state.bu = b.dataset.bu; safeSet('gama_bu', state.bu); } finally { render(); }
+  }));
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click', ()=>{
+    try { state.tab = b.dataset.tab; safeSet('gama_tab', state.tab); } finally { render(); }
+  }));
+  document.querySelectorAll('[data-mes]').forEach(b=>b.addEventListener('click', ()=>{
+    try { state.mes = parseInt(b.dataset.mes,10); safeSet('gama_mes', state.mes); } finally { render(); }
+  }));
+}
+
+async function boot(){
+  try {
+    await loadData();
+    render();
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="err">No se pudieron cargar los datos: ${(e && e.message) || e}</div>`;
+  }
+}
+</script>
+</body>
+</html>
