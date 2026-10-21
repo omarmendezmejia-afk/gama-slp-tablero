@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMA QRO — Reporte Semanal</title>
+<style>
+  :root{--azul:#1A3C6E;--azul2:#2563EB;--sub:#64748B;--borde:#E2E8F0;--rojo:#DC2626}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#1A3C6E 0%,#2563EB 100%);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .box{background:#fff;border-radius:16px;padding:36px 32px;max-width:380px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .box h1{font-size:20px;color:var(--azul);font-weight:800;margin-bottom:4px}
+  .box p{font-size:13px;color:var(--sub);margin-bottom:22px}
+  input[type=password]{width:100%;padding:12px 14px;border:2px solid var(--borde);border-radius:10px;font-size:15px;margin-bottom:12px;outline:none}
+  input[type=password]:focus{border-color:var(--azul2)}
+  button{display:block;width:100%;padding:12px 14px;border:none;border-radius:10px;background:var(--azul2);color:#fff;
+    font-size:15px;font-weight:700;cursor:pointer}
+  button:hover{background:var(--azul)}
+  .err{color:var(--rojo);font-size:12px;min-height:16px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>GAMA QRO</h1>
+  <p>Reporte Semanal de Ventas y Cobranza (viernes 6 pm) — acceso restringido</p>
+  <input type="password" id="pw" placeholder="Contraseña" autofocus>
+  <button onclick="checkPw()">Entrar</button>
+  <div class="err" id="err"></div>
+</div>
+<script>
+const PW = "Pegslp.2026";
+function go(){ location.href = 'reporte.html'; }
+function checkPw(){
+  if (document.getElementById('pw').value === PW) { localStorage.setItem('gama_qro_auth', '1'); go(); }
+  else document.getElementById('err').textContent = 'Contraseña incorrecta';
+}
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+if (localStorage.getItem('gama_qro_auth') === '1') go();
+</script>
+</body>
+</html>
