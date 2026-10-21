@@ -29,14 +29,14 @@
   <div class="err" id="err"></div>
 </div>
 <script>
-const PW = "Pegslp.2026";
+const PW = "Pegqro.2026";
 function go(){ location.href = 'reporte.html'; }
 function checkPw(){
-  if (document.getElementById('pw').value === PW) { localStorage.setItem('gama_qro_auth', '1'); go(); }
+  if (document.getElementById('pw').value === PW) { localStorage.setItem('gama_qro_auth2', '1'); go(); }
   else document.getElementById('err').textContent = 'Contraseña incorrecta';
 }
 document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
-if (localStorage.getItem('gama_qro_auth') === '1') go();
+if (localStorage.getItem('gama_qro_auth2') === '1') go();
 </script>
 </body>
 </html>
