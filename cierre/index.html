@@ -89,6 +89,12 @@
   .egr-pct-val{text-align:right;font-weight:800}
   .egr-pct-val-sub{text-align:right;font-weight:600;color:var(--sub)}
   .egr-pct-total{margin-top:8px;padding-top:9px;border-top:1px solid var(--borde);font-size:11.5px;color:var(--sub)}
+  .simple-bar-list{display:flex;flex-direction:column;gap:9px}
+  .simple-bar-row{display:grid;grid-template-columns:70px 1fr 84px;align-items:center;gap:8px;font-size:11.5px}
+  .simple-bar-label{color:var(--sub);font-weight:700}
+  .simple-bar-track{background:var(--gris);border-radius:6px;height:14px;overflow:hidden}
+  .simple-bar-fill{height:100%;border-radius:6px}
+  .simple-bar-val{text-align:right;font-weight:800}
   .lock-btn{position:fixed;bottom:14px;right:14px;background:#fff;border:1px solid var(--borde);border-radius:20px;
     padding:8px 14px;font-size:11px;color:var(--sub);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
   @media(max-width:480px){
@@ -159,11 +165,20 @@ if (trySession()) { setTimeout(unlock, 0); }
 // ============================================================
 const SUPABASE_URL = 'https://zveljbzgyumsvgkwjcqi.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_6ecWkQ8pQl3EdgqGbHb2GQ_ka3NsAMq';
+const RUTAS = {
+  'resumen-historico': ['resumen_historico_mensual', 'select=*&order=sucursal,mes'],
+  'egresos-categoria': ['public_egresos_categoria', 'select=*&order=sucursal,anio,mes'],
+  'cxc-historico':     ['cuentas_por_cobrar_historico', 'select=*&order=dias.desc'],
+  'saldos-actuales':   ['public_saldos_actuales', 'select=*'],
+  'resumen-vivo':      ['public_resumen_vivo', 'select=*&order=sucursal,anio,mes'],
+  'cxc-vivo':          ['public_cxc_vivo', 'select=*&order=dias.desc'],
+  'categorias':        ['catalogo_categorias_egreso', 'select=categoria,grupo']
+};
 
-async function pgFetch(path, params){
-  const url = `${SUPABASE_URL}/rest/v1/${path}${params ? '?' + params : ''}`;
-  const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
-  if (!res.ok) throw new Error(`Error consultando ${path} (${res.status})`);
+async function pgFetch(route){
+  const [path, params] = RUTAS[route];
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}?${params}`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+  if (!res.ok) throw new Error(`Error consultando ${route} (${res.status})`);
   return res.json();
 }
 
@@ -196,6 +211,7 @@ let EGRESOS = {queretaro:{}, san_luis:{}};
 let CXC_HIST = [];
 let CXC_LIVE = [];
 let SALDOS = [];
+let CATEGORIA_GRUPO = {};
 let charts = {};
 
 function safeGet(key, fallback){ try { return localStorage.getItem(key) ?? fallback; } catch(e){ return fallback; } }
@@ -211,23 +227,28 @@ function fmt(n){
   if (n == null) return '—';
   const abs = Math.abs(n);
   const s = n < 0 ? '-' : '';
-  if (abs >= 1000000) return s + '$' + (abs/1000000).toFixed(2) + 'M';
-  if (abs >= 1000) return s + '$' + Math.round(abs).toLocaleString('es-MX');
-  return s + '$' + abs.toLocaleString('es-MX');
+  return s + '$' + Math.round(abs).toLocaleString('es-MX');
 }
 function fmtK(n){ return '$' + (n/1000).toFixed(0) + 'K'; }
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
 
 async function loadData(){
-  const [histRows, egresosRows, cxcHistRows, saldosRows, liveRows, liveCxcRows] = await Promise.all([
-    pgFetch('resumen_historico_mensual', 'select=*&order=sucursal,mes'),
-    pgFetch('public_egresos_categoria', 'select=*&order=sucursal,anio,mes'),
-    pgFetch('cuentas_por_cobrar_historico', 'select=*&order=dias.desc'),
-    pgFetch('public_saldos_actuales', 'select=*'),
-    pgFetch('public_resumen_vivo', 'select=*&order=sucursal,anio,mes'),
-    pgFetch('public_cxc_vivo', 'select=*&order=dias.desc')
+  const [histRows, egresosRows, cxcHistRows, saldosRows, liveRows, liveCxcRows, categoriasRows] = await Promise.all([
+    pgFetch('resumen-historico'),
+    pgFetch('egresos-categoria'),
+    pgFetch('cxc-historico'),
+    pgFetch('saldos-actuales'),
+    pgFetch('resumen-vivo'),
+    pgFetch('cxc-vivo'),
+    pgFetch('categorias')
   ]);
 
-  const numFields = ['ventas','cobrado_mes','recupero_ant','cobrado_total','egresos_total','utilidad','margen','flujo_neto','cxc_saldo','ventas_contado','ventas_credito'];
+  CATEGORIA_GRUPO = {};
+  (categoriasRows||[]).forEach(r => { CATEGORIA_GRUPO[r.categoria] = r.grupo || r.categoria; });
+
+  const numFields = ['ventas','cobrado_mes','recupero_ant','cobrado_total','egresos_total','utilidad','margen','flujo_neto','cxc_saldo','ventas_contado','ventas_credito','iva_devengado','iva_cobrado'];
   const intFields = ['mes','anio','ordenes_count','clientes_count'];
   const coerce = (r) => {
     numFields.forEach(f=>{ if (f in r) r[f] = (r[f]===null||r[f]===undefined) ? null : Number(r[f]); });
@@ -471,6 +492,59 @@ function renderInsights(bu, mesN, months){
   </div>`;
 }
 
+// Agrupa el gasto de una sucursal por "grupo" compartido (catálogo unificado
+// QRO/SLP), no por categoría cruda — las categorías tienen nombres distintos
+// entre sucursales, pero el grupo (Combustible, Nómina, Operación, etc.) es
+// el mismo catálogo para ambas, por eso permite comparar de verdad.
+function getEgresosGrupos(bu, mesN){
+  const cats = getEgresosCats(bu, mesN);
+  const porGrupo = {};
+  cats.forEach(([cat, monto]) => {
+    const grupo = CATEGORIA_GRUPO[cat] || cat;
+    porGrupo[grupo] = (porGrupo[grupo] || 0) + monto;
+  });
+  return porGrupo;
+}
+
+function renderEgresosComparativo(mesN){
+  const rowQ = getRow('queretaro', mesN), rowS = getRow('san_luis', mesN);
+  const ventasQ = rowQ?.ventas, ventasS = rowS?.ventas;
+  if (!ventasQ && !ventasS) return `<div class="empty-note" style="padding:14px">Sin datos suficientes para este período.</div>`;
+
+  const gruposQ = ventasQ ? getEgresosGrupos('queretaro', mesN) : {};
+  const gruposS = ventasS ? getEgresosGrupos('san_luis', mesN) : {};
+  const todosGrupos = new Set([...Object.keys(gruposQ), ...Object.keys(gruposS)]);
+  if (!todosGrupos.size) return `<div class="empty-note" style="padding:14px">Sin datos suficientes para este período.</div>`;
+
+  const rows = [...todosGrupos].map(g => ({
+    grupo: g,
+    pctQ: ventasQ ? (gruposQ[g] || 0) / ventasQ * 100 : null,
+    pctS: ventasS ? (gruposS[g] || 0) / ventasS * 100 : null,
+  })).sort((a, b) => (Math.max(b.pctQ||0, b.pctS||0)) - (Math.max(a.pctQ||0, a.pctS||0)));
+  const maxPct = Math.max(...rows.map(r => Math.max(r.pctQ||0, r.pctS||0)), 1);
+
+  return `
+    <div style="display:flex;gap:14px;align-items:center;margin-bottom:10px;font-size:11px;color:var(--sub);font-weight:700;">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${C.azul};display:inline-block;"></span> QRO ${ventasQ ? '' : '(sin datos)'}</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${C.morado};display:inline-block;"></span> SLP ${ventasS ? '' : '(sin datos)'}</span>
+    </div>
+    <div class="egr-pct-list">
+      ${rows.map(r => `
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11.5px;font-weight:700;color:var(--sub);margin-bottom:3px;">${escapeHtml(r.grupo)}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+            <div style="width:34px;font-size:10px;color:${C.azul};font-weight:700;text-align:right;">${r.pctQ==null?'—':r.pctQ.toFixed(1)+'%'}</div>
+            <div class="egr-pct-bar-wrap" style="flex:1;"><div class="egr-pct-bar" style="width:${r.pctQ==null?0:(r.pctQ/maxPct*100).toFixed(1)}%;background:${C.azul}"></div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:34px;font-size:10px;color:${C.morado};font-weight:700;text-align:right;">${r.pctS==null?'—':r.pctS.toFixed(1)+'%'}</div>
+            <div class="egr-pct-bar-wrap" style="flex:1;"><div class="egr-pct-bar" style="width:${r.pctS==null?0:(r.pctS/maxPct*100).toFixed(1)}%;background:${C.morado}"></div></div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div style="font-size:10px;color:var(--sub);margin-top:4px;">% de la venta neta sin IVA de cada sucursal en el período, agrupado por el catálogo compartido de gasto (no por categoría exacta, ya que QRO y SLP usan nombres distintos).</div>`;
+}
+
 function renderEgresosPctVentas(bu, mesN){
   const row = getRow(bu, mesN);
   const cats = getEgresosCats(bu, mesN);
@@ -484,12 +558,50 @@ function renderEgresosPctVentas(bu, mesN){
     <div class="egr-pct-head"><span>Categoría</span><span></span><span>% Venta</span><span>% Gasto</span></div>
     ${rows.map((r, i) => `
       <div class="egr-pct-row">
-        <div class="egr-pct-label">${r.cat}</div>
+        <div class="egr-pct-label">${escapeHtml(r.cat)}</div>
         <div class="egr-pct-bar-wrap"><div class="egr-pct-bar" style="width:${(r.pctVenta/maxPct*100).toFixed(1)}%;background:${EGRESO_COLORS[i % EGRESO_COLORS.length]}"></div></div>
         <div class="egr-pct-val">${r.pctVenta.toFixed(1)}%</div>
         <div class="egr-pct-val-sub">${r.pctGasto.toFixed(1)}%</div>
       </div>`).join('')}
     <div class="egr-pct-total">Egresos totales del período: <strong>${totalPct.toFixed(1)}%</strong> de la venta neta (${fmt(ventas)}) · <strong>100%</strong> del gasto total (${fmt(totalEgresos)})</div>
+  </div>`;
+}
+
+// ---- CxC por mes de origen (solo SLP) ----
+function renderCxcPorMes(){
+  const list = [...CXC_HIST, ...CXC_LIVE].filter(r=>r.sucursal==='san_luis' && r.mes);
+  if (!list.length) return `<div class="empty-note" style="padding:14px">Sin cartera pendiente por mes.</div>`;
+  const agg = {};
+  list.forEach(r=>{ const m = Number(r.mes); agg[m] = (agg[m]||0) + Number(r.saldo||0); });
+  const entries = Object.entries(agg).map(([m,v])=>[Number(m),v]).sort((a,b)=>a[0]-b[0]);
+  const max = Math.max(...entries.map(e=>e[1]), 1);
+  const total = entries.reduce((a,e)=>a+e[1],0);
+  return `<div class="simple-bar-list">
+    ${entries.map(([m,v],i)=>`
+      <div class="simple-bar-row">
+        <div class="simple-bar-label">${MES_NOMBRES[m]}</div>
+        <div class="simple-bar-track"><div class="simple-bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${EGRESO_COLORS[i%EGRESO_COLORS.length]}"></div></div>
+        <div class="simple-bar-val">${fmt(v)}</div>
+      </div>`).join('')}
+    <div class="egr-pct-total">Total pendiente: <strong>${fmt(total)}</strong></div>
+  </div>`;
+}
+
+// ---- IVA devengado / cobrado por mes (solo SLP) ----
+function renderIvaPorMes(field, label){
+  const months = availableMonths('san_luis').filter(m=>m!==0);
+  const entries = months.map(m=>[m, Number(RESUMEN.san_luis[m]?.[field])||0]).filter(e=>e[1]>0);
+  if (!entries.length) return `<div class="empty-note" style="padding:14px">Sin datos de IVA.</div>`;
+  const max = Math.max(...entries.map(e=>e[1]), 1);
+  const total = entries.reduce((a,e)=>a+e[1],0);
+  return `<div class="simple-bar-list">
+    ${entries.map(([m,v],i)=>`
+      <div class="simple-bar-row">
+        <div class="simple-bar-label">${mesLabel('san_luis', m)}</div>
+        <div class="simple-bar-track"><div class="simple-bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${EGRESO_COLORS[i%EGRESO_COLORS.length]}"></div></div>
+        <div class="simple-bar-val">${fmt(v)}</div>
+      </div>`).join('')}
+    <div class="egr-pct-total">Total ${label}: <strong>${fmt(total)}</strong></div>
   </div>`;
 }
 
@@ -528,13 +640,26 @@ function render(){
     return;
   }
 
+  const utilidadFlujo = (row.cobrado_total!=null && row.egresos_total!=null) ? (row.cobrado_total - row.egresos_total) : null;
+  const utilidadOperativa = (row.ventas!=null && row.egresos_total!=null) ? (row.ventas - row.egresos_total) : null;
+
   html += `<div class="kpi-grid">
     <div class="kpi" style="--accent:${C.verde}"><div class="kpi-label">Ventas</div><div class="kpi-val">${fmt(row.ventas)}</div><div class="kpi-sub">${row.mes_label}</div></div>
-    <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">Cobrado Total</div><div class="kpi-val">${fmt(row.cobrado_total)}</div><div class="kpi-sub">Efectivo recibido</div></div>
+    <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">Cobrado Total</div><div class="kpi-val">${fmt(row.cobrado_total)}</div></div>
     <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Egresos</div><div class="kpi-val">${fmt(row.egresos_total)}</div><div class="kpi-sub">Gastos del período</div></div>
-    <div class="kpi" style="--accent:${row.utilidad>=0?C.verde:C.rojo}"><div class="kpi-label">Utilidad / Flujo</div><div class="kpi-val" style="color:${row.utilidad>=0?'var(--verde)':'var(--rojo)'}">${fmt(row.utilidad)}</div><div class="kpi-sub">Cobrado − Egresos</div></div>
+    <div class="kpi" style="--accent:${(utilidadFlujo??0)>=0?C.verde:C.rojo}"><div class="kpi-label">Utilidad / Flujo</div><div class="kpi-val" style="color:${(utilidadFlujo??0)>=0?'var(--verde)':'var(--rojo)'}">${fmt(utilidadFlujo)}</div><div class="kpi-sub">Cobrado − Egresos</div></div>
+    <div class="kpi" style="--accent:${(utilidadOperativa??0)>=0?C.verde:C.rojo}"><div class="kpi-label">Utilidad Operativa</div><div class="kpi-val" style="color:${(utilidadOperativa??0)>=0?'var(--verde)':'var(--rojo)'}">${fmt(utilidadOperativa)}</div><div class="kpi-sub">Ventas − Egresos</div></div>
     <div class="kpi" style="--accent:${C.teal}"><div class="kpi-label">Margen</div><div class="kpi-val">${Number(row.margen||0).toFixed(1)}%</div><div class="kpi-sub">(Ventas − Egresos)/Ventas</div></div>
-    <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">CxC Pendiente</div><div class="kpi-val">${fmt(row.cxc_saldo)}</div><div class="kpi-sub">Cartera por cobrar</div></div>
+    <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">CXC Arrastre</div><div class="kpi-val">${fmt(row.cxc_saldo)}</div><div class="kpi-sub">Cartera por cobrar</div></div>
+  </div>`;
+
+  const pctConversion = (row.ventas && row.cobrado_total!=null) ? (row.cobrado_total / row.ventas * 100) : null;
+  const dso = (state.mes !== 0 && row.ventas && row.cxc_saldo!=null) ? (row.cxc_saldo / (row.ventas / 30)) : null;
+  const pctVenc = pctCarteraVencida(state.bu);
+  html += `<div class="kpi-grid">
+    <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">% Conversión a Flujo</div><div class="kpi-val">${pctConversion==null?'—':pctConversion.toFixed(1)+'%'}</div><div class="kpi-sub">Cobrado / Ventas del período</div></div>
+    <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Días de Cartera (DSO)</div><div class="kpi-val">${dso==null?'—':Math.round(dso)+' d'}</div><div class="kpi-sub">${state.mes===0?'Solo por mes individual':'Cartera ÷ venta diaria promedio'}</div></div>
+    <div class="kpi" style="--accent:${(pctVenc??0)>15?C.rojo:C.verde}"><div class="kpi-label">% Cartera Vencida (+60 días)</div><div class="kpi-val" style="color:${pctVenc==null?'inherit':(pctVenc>15?'var(--rojo)':'var(--verde)')}">${pctVenc==null?'—':pctVenc.toFixed(1)+'%'}</div><div class="kpi-sub">Cartera activa hoy, ${state.bu==='combinado'?'ambas sucursales':BU_META[state.bu].label.replace('GAMA ','')}</div></div>
   </div>`;
 
   html += renderInsights(state.bu, state.mes, months);
@@ -565,6 +690,10 @@ function renderFinanciero(row, months){
 
   html += `<div class="card" style="margin-bottom:16px"><h3>Egresos como % de la Venta Neta — ${mesLabel(state.bu, state.mes)}</h3>${renderEgresosPctVentas(state.bu, state.mes)}</div>`;
 
+  html += `<div class="card" style="margin-bottom:16px"><h3>🆚 Estructura de Gasto — Comparativo QRO vs SLP · ${mesLabel(state.bu, state.mes)}</h3>${renderEgresosComparativo(state.mes)}</div>`;
+
+  html += `<div class="card" style="margin-bottom:16px"><h3>📈 Tendencia de Margen — Comparativo QRO vs SLP</h3><div class="chart-wrap"><canvas id="chartMargenComparativo"></canvas></div></div>`;
+
   html += `<div class="grid-2">
     <div class="card"><h3>Estado de Resultados / Flujo</h3>
       <div class="table-scroll"><table class="pnl-table"><thead><tr><th>Concepto</th>${months.filter(m=>m!==0).map(m=>`<th style="text-align:right">${mesLabel(state.bu,m).slice(0,3)}</th>`).join('')}</tr></thead>
@@ -572,8 +701,9 @@ function renderFinanciero(row, months){
         ${pnlRow('Ventas', months, m=>getRow(state.bu,m)?.ventas)}
         ${pnlRow('Cobrado Total', months, m=>getRow(state.bu,m)?.cobrado_total)}
         ${pnlRow('Egresos', months, m=>getRow(state.bu,m)?.egresos_total)}
-        <tr class="total">${pnlRowInner('Utilidad/Flujo', months, m=>getRow(state.bu,m)?.utilidad)}</tr>
-        ${pnlRow('CxC al cierre', months, m=>getRow(state.bu,m)?.cxc_saldo)}
+        <tr class="total">${pnlRowInner('Utilidad/Flujo', months, m=>{const r=getRow(state.bu,m); return (r&&r.cobrado_total!=null&&r.egresos_total!=null)?r.cobrado_total-r.egresos_total:null;})}</tr>
+        <tr class="total">${pnlRowInner('Utilidad Operativa', months, m=>{const r=getRow(state.bu,m); return (r&&r.ventas!=null&&r.egresos_total!=null)?r.ventas-r.egresos_total:null;})}</tr>
+        ${pnlRow('CXC Arrastre', months, m=>getRow(state.bu,m)?.cxc_saldo)}
       </tbody></table></div>
     </div>
     <div>
@@ -581,8 +711,14 @@ function renderFinanciero(row, months){
     </div>
   </div>`;
 
-  if (state.bu !== 'queretaro') {
-    html += `<div class="card" style="margin-bottom:16px"><h3>Cuentas por Cobrar — Cartera Activa</h3><div class="table-scroll">${renderCxcTable()}</div></div>`;
+  html += `<div class="card" style="margin-bottom:16px"><h3>Cuentas por Cobrar — Cartera Activa</h3><div class="table-scroll">${renderCxcTable()}</div></div>`;
+
+  if (state.bu === 'san_luis') {
+    html += `<div class="card" style="margin-bottom:16px"><h3>CxC Mes — Saldo Pendiente por Mes de Origen</h3>${renderCxcPorMes()}</div>`;
+    html += `<div class="grid-eq">
+      <div class="card"><h3>IVA Total Devengado</h3>${renderIvaPorMes('iva_devengado','IVA devengado')}</div>
+      <div class="card"><h3>IVA Cobrado</h3>${renderIvaPorMes('iva_cobrado','IVA cobrado')}</div>
+    </div>`;
   }
   return html;
 }
@@ -604,6 +740,18 @@ function renderSaldos(){
   </div>`;
 }
 
+// % de la cartera activa (histórica + en vivo) que está vencida (+60 días),
+// tomando la misma lista combinada que usa la tabla de Cartera Activa.
+function pctCarteraVencida(bu){
+  const all = [...CXC_HIST, ...CXC_LIVE];
+  const list = bu === 'combinado' ? all : all.filter(r=>r.sucursal===bu);
+  if (!list.length) return null;
+  const total = list.reduce((a,b)=>a+Number(b.saldo),0);
+  if (!total) return null;
+  const vencido = list.filter(r=>r.estatus==='Vencido').reduce((a,b)=>a+Number(b.saldo),0);
+  return vencido / total * 100;
+}
+
 function renderCxcTable(){
   const all = [...CXC_HIST, ...CXC_LIVE];
   const list = state.bu === 'combinado' ? all : all.filter(r=>r.sucursal===state.bu);
@@ -611,7 +759,7 @@ function renderCxcTable(){
   const total = list.reduce((a,b)=>a+Number(b.saldo),0);
   const badgeClass = e => e==='Vencido' ? 'badge-vencido' : e==='Por vencer' ? 'badge-porvencer' : 'badge-corriente';
   return `<table><thead><tr><th>Orden</th><th>Cliente</th><th>Días</th><th>Estatus</th><th style="text-align:right">Saldo</th></tr></thead>
-    <tbody>${list.map(r=>`<tr><td style="color:var(--sub);font-size:11px">${r.orden_ref}</td><td style="font-weight:600">${r.cliente}</td><td>${r.dias}d</td><td><span class="badge ${badgeClass(r.estatus)}">${r.estatus}</span></td><td class="td-r">${fmt(Number(r.saldo))}</td></tr>`).join('')}</tbody>
+    <tbody>${list.map(r=>`<tr><td style="color:var(--sub);font-size:11px">${escapeHtml(r.orden_ref)}</td><td style="font-weight:600">${escapeHtml(r.cliente)}</td><td>${r.dias}d</td><td><span class="badge ${badgeClass(r.estatus)}">${escapeHtml(r.estatus)}</span></td><td class="td-r">${fmt(Number(r.saldo))}</td></tr>`).join('')}</tbody>
     <tfoot><tr style="font-weight:800;background:var(--gris)"><td colspan="4" style="padding:9px 10px">TOTAL PENDIENTE</td><td class="td-r" style="padding:9px 10px">${fmt(total)}</td></tr></tfoot></table>
     <div style="font-size:10px;color:var(--sub);margin-top:8px">Incluye la foto de cartera pre-PWA (histórico) + órdenes reales pendientes de pago registradas en la PWA.</div>`;
 }
@@ -638,7 +786,7 @@ function renderDesempeno(row, months){
 
 function renderTopClientes(row){
   if (!row.top_clientes) return `<div class="empty-note">Solo disponible para GAMA SLP</div>`;
-  return row.top_clientes.map(([nombre,monto])=>`<div class="top-cliente-row"><span>${nombre}</span><strong>${fmt(monto)}</strong></div>`).join('');
+  return row.top_clientes.map(([nombre,monto])=>`<div class="top-cliente-row"><span>${escapeHtml(nombre)}</span><strong>${fmt(monto)}</strong></div>`).join('');
 }
 
 function destroyChart(id){ if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
@@ -647,7 +795,7 @@ function drawCharts(months){
   const mesesReales = months.filter(m=>m!==0);
   const ventasArr = mesesReales.map(m=>getRow(state.bu,m)?.ventas||0);
   const egresosArr = mesesReales.map(m=>getRow(state.bu,m)?.egresos_total||0);
-  const utilArr = mesesReales.map(m=>getRow(state.bu,m)?.utilidad||0);
+  const utilArr = mesesReales.map(m=>{ const r=getRow(state.bu,m); return (r&&r.cobrado_total!=null&&r.egresos_total!=null)?(r.cobrado_total-r.egresos_total):0; });
   const labels = mesesReales.map(m=>mesLabel(state.bu, m));
 
   const tCanvas = document.getElementById('chartTendencia') || document.getElementById('chartTendencia2');
@@ -697,6 +845,28 @@ function drawCharts(months){
         }
       });
     }
+  }
+
+  const margenCanvas = document.getElementById('chartMargenComparativo');
+  if (margenCanvas) {
+    destroyChart('chartMargenComparativo');
+    const mesesQ = availableMonths('queretaro').filter(m=>m!==0);
+    const mesesS = availableMonths('san_luis').filter(m=>m!==0);
+    const todosMeses = [...new Set([...mesesQ, ...mesesS])].sort((a,b)=>a-b);
+    const margenQ = todosMeses.map(m => { const r = RESUMEN.queretaro[m]; return r ? Number(r.margen) : null; });
+    const margenS = todosMeses.map(m => { const r = RESUMEN.san_luis[m]; return r ? Number(r.margen) : null; });
+    const labels = todosMeses.map(m => MES_NOMBRES[Math.floor(m/100) ? m%100 : m] || m);
+    charts.chartMargenComparativo = new Chart(margenCanvas, {
+      type: 'line',
+      data: { labels, datasets: [
+        { label: 'QRO', data: margenQ, borderColor: C.azul, backgroundColor: C.azulL, borderWidth: 2.5, pointRadius: 4, fill: false, spanGaps: true },
+        { label: 'SLP', data: margenS, borderColor: C.morado, backgroundColor: C.moradoL, borderWidth: 2.5, pointRadius: 4, fill: false, spanGaps: true }
+      ]},
+      options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{labels:{font:{size:11},boxWidth:12}}, tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.parsed.y==null?'—':ctx.parsed.y.toFixed(1)+'%')}} },
+        scales:{ y:{ ticks:{callback:v=>v+'%', font:{size:10}}, grid:{color:'#F1F5F9'} }, x:{ ticks:{font:{size:10}} } }
+      }
+    });
   }
 
   const ordCanvas = document.getElementById('chartOrdenes');
