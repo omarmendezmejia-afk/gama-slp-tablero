@@ -197,7 +197,7 @@
   </div>
 </div>
 
-<div class="mes-nav">
+<div class="mes-nav" style="display:none" data-oculto="reporte semanal: solo mes en curso">
   <span class="mes-nav-label">Período:</span>
   <button class="mes-btn active"      data-mes="todos"  onclick="setMes('todos')">📊 Todos</button>
   <button class="mes-btn mes-marzo"   data-mes="marzo"  onclick="setMes('marzo')">Marzo</button>
@@ -994,7 +994,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
   initMix();
   initOrdenes();
   initServiciosMes();
-  setMes('todos');
+  setMes(/* reporte semanal: mes en curso */ [...document.querySelectorAll('[onclick^="setMes"]')].map(b=>b.getAttribute('onclick').match(/'(\w+)'/)[1]).filter(m=>m!=='todos').pop());
 });
 </script>
 </body>

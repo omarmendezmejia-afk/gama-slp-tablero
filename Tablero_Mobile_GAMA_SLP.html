@@ -180,7 +180,7 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<div class="mes-nav">
+<div class="mes-nav" style="display:none" data-oculto="reporte semanal: solo mes en curso">
   <button class="mes-btn active" data-mes="todos"  onclick="setMes('todos')">📊 Todos</button>
   <button class="mes-btn"        data-mes="marzo"  onclick="setMes('marzo')">Marzo</button>
   <button class="mes-btn"        data-mes="abril"  onclick="setMes('abril')">Abril</button>
@@ -693,7 +693,7 @@ function setMes(mes) {
 }
 
 // Init
-setMes('todos');
+setMes(/* reporte semanal: mes en curso */ [...document.querySelectorAll('[onclick^="setMes"]')].map(b=>b.getAttribute('onclick').match(/'(\w+)'/)[1]).filter(m=>m!=='todos').pop());
 </script>
 </body>
 </html>

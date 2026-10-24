@@ -75,7 +75,7 @@
   </div>
   <div id="badgePeriodo" class="badge-periodo">ACUMULADO MAR–OCT 2026</div>
 </div>
-<div class="selector-bar">
+<div class="selector-bar" style="display:none" data-oculto="reporte semanal: solo mes en curso">
   <button class="tab active" onclick="setMes('todos')">Acumulado</button>
   <button class="tab" onclick="setMes('marzo')">Marzo 2026</button>
   <button class="tab" onclick="setMes('abril')">Abril 2026</button>
@@ -264,7 +264,7 @@ function setMes(mes){
   container.innerHTML=`<table class="cxc-table"><thead><tr><th>Orden</th><th>Cliente</th><th style="text-align:center">Días</th><th>Estado</th><th style="text-align:right">Saldo</th></tr></thead><tbody>${d.cxc.map(r=>`<tr><td style="font-size:11px;color:var(--sub)">${r.id}</td><td style="font-weight:600">${r.cliente}</td><td style="text-align:center">${r.dias}d</td><td><span class="est-tag ${r.est==='Vencido'?'est-vencido':r.est==='Por vencer'?'est-porvencer':'est-corriente'}">${r.est}</span></td><td class="td-monto">${fmt(r.saldo)}</td></tr>`).join('')}</tbody><tfoot><tr style="font-weight:800;background:var(--gris)"><td colspan="4" style="padding:9px 10px">TOTAL PENDIENTE</td><td class="td-monto" style="padding:9px 10px;font-size:14px">${fmt(total)}</td></tr></tfoot></table>`;
 }
 
-document.addEventListener('DOMContentLoaded',()=>{initCharts();setMes('todos');});
+document.addEventListener('DOMContentLoaded',()=>{initCharts();setMes(/* reporte semanal: mes en curso */ [...document.querySelectorAll('[onclick^="setMes"]')].map(b=>b.getAttribute('onclick').match(/'(\w+)'/)[1]).filter(m=>m!=='todos').pop());});
 </script>
 </body>
 </html>

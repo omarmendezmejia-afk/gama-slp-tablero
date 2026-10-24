@@ -70,7 +70,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--
   <div><h1>Reporte Semanal Financiero — GAMA SLP</h1><p>Saneamiento Industrial · SLP</p></div>
   <div id="badgePeriodo" class="badge">MAR–OCT 2026</div>
 </div>
-<div class="tabs">
+<div class="tabs" style="display:none" data-oculto="reporte semanal: solo mes en curso">
   <button class="tab active" onclick="setMes('todos')">Acumulado</button>
   <button class="tab" onclick="setMes('marzo')">Marzo</button>
   <button class="tab" onclick="setMes('abril')">Abril</button>
@@ -293,7 +293,7 @@ function setMes(mes){
     </div>`;
 }
 
-document.addEventListener('DOMContentLoaded',()=>{drawBars();setMes('todos');});
+document.addEventListener('DOMContentLoaded',()=>{drawBars();setMes(/* reporte semanal: mes en curso */ [...document.querySelectorAll('[onclick^="setMes"]')].map(b=>b.getAttribute('onclick').match(/'(\w+)'/)[1]).filter(m=>m!=='todos').pop());});
 </script>
 </body>
 </html>
