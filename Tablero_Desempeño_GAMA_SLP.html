@@ -224,7 +224,7 @@
     <div class="kpi azul">
       <div class="kpi-label">Cobrado / Recuperado</div>
       <div class="kpi-value azul" id="kCobrado">$970,398</div>
-      <div class="kpi-sub" id="kCobradoSub">Efectivo recibido acumulado</div>
+      <div class="kpi-sub" id="kCobradoSub">Flujo recibido en el periodo</div>
       <span class="kpi-badge warn" id="kCobradoBadge">$409,198 en cartera activa</span>
     </div>
     <div class="kpi rojo">
@@ -828,7 +828,7 @@ function updateKPIs(mes) {
   document.getElementById('kVentasSub').textContent   = d.ordenes+' órdenes · '+d.clientes+' clientes';
   document.getElementById('kVentasBadge').textContent = d.ventasBadge;
   document.getElementById('kCobrado').textContent     = fmt(d.cobrado);
-  document.getElementById('kCobradoSub').textContent  = d.pendiente>0?'Efectivo recibido en período':'Cobrado completo sin cartera';
+  document.getElementById('kCobradoSub').textContent  = 'Flujo recibido en el periodo';
   document.getElementById('kCobradoBadge').textContent= d.cobradoBadge;
   document.getElementById('kEgresos').textContent     = fmt(d.egresos);
   document.getElementById('kEgresosSub').textContent  = 'Gastos y costos del período';
