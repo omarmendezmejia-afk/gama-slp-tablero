@@ -1,0 +1,9 @@
+{
+ "_nota": "Lo escribe el reporte semanal de cada viernes (registrar_corte.py). Un registro por corte: ventas y cobrado acumulados del mes al corte.",
+ "queretaro": [
+  {"anio": 2026, "mes": 10, "corte": "2026-10-24", "ventas": 1207948.33, "cobrado": 631823.33}
+ ],
+ "san_luis": [
+  {"anio": 2026, "mes": 10, "corte": "2026-10-23", "ventas": 344500, "cobrado": 222250}
+ ]
+}

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAMA — Ventas, Cobranza y Metas</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<style>
+  :root{ color-scheme: light;
+    --gris:#F1F5F9;--borde:#E2E8F0;--sub:#64748B;--texto:#0F172A;--card:#FFFFFF;
+    --verde:#16A34A;--rojo:#DC2626;--naranja:#D97706;--morado:#7C3AED;--teal:#0D9488;--cian:#0891B2;--azul:#2563EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:var(--texto);}
+  .wrap{max-width:1200px;margin:0 auto;padding:14px}
+
+  .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:linear-gradient(135deg,#0D3B6E 0%,#1D4ED8 60%,#0D9488 100%);}
+  .gate-card{background:#fff;border-radius:16px;padding:32px 28px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .gate-card h1{font-size:18px;font-weight:800;margin-bottom:6px}
+  .gate-card p{font-size:12px;color:var(--sub);margin-bottom:18px;line-height:1.5}
+  .gate-card input{width:100%;padding:12px 14px;border:2px solid var(--borde);border-radius:10px;font-size:15px;margin-bottom:10px}
+  .gate-card input:focus{outline:none;border-color:var(--azul)}
+  .gate-card button{width:100%;padding:12px;border:none;border-radius:10px;background:var(--azul);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+  .gate-err{color:var(--rojo);font-size:12px;margin-top:8px;min-height:16px}
+
+  .header{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-radius:14px;color:#fff;margin-bottom:14px}
+  .header h1{font-size:17px;font-weight:800}
+  .header p{font-size:11px;opacity:.85;margin-top:2px}
+  .bu-switch{display:flex;gap:6px;background:rgba(255,255,255,.15);padding:4px;border-radius:12px;flex-wrap:wrap}
+  .bu-btn{padding:7px 12px;border-radius:9px;border:none;background:transparent;color:#fff;font-size:12px;font-weight:700;cursor:pointer;opacity:.75}
+  .bu-btn.active{background:rgba(255,255,255,.25);opacity:1}
+  .tabbar{display:flex;gap:4px;background:#fff;border:1px solid var(--borde);border-radius:12px;padding:4px;margin-bottom:14px;width:fit-content;max-width:100%;flex-wrap:wrap}
+  .tab-btn{padding:8px 16px;border-radius:8px;border:none;background:transparent;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer}
+  .tab-btn.active{background:var(--texto);color:#fff}
+  .sec-title{font-size:13px;font-weight:800;margin:6px 0 10px;color:var(--texto)}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+  .kpi{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--borde);position:relative;overflow:hidden}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--azul))}
+  .kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub)}
+  .kpi-val{font-size:19px;font-weight:800;margin-top:6px;word-break:break-word}
+  .kpi-sub{font-size:10.5px;color:var(--sub);margin-top:3px}
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:16px}
+  .grid-eq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:800px){.grid-2,.grid-eq{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid var(--borde);margin-bottom:16px}
+  .grid-2 .card,.grid-eq .card{margin-bottom:0}
+  .card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sub);margin-bottom:12px}
+  .card .note{font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5}
+  .chart-wrap{position:relative;height:250px}
+  .chart-wrap-sm{position:relative;height:200px}
+  .table-scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+  th{background:var(--gris);color:var(--sub);font-size:10px;font-weight:700;text-transform:uppercase;padding:8px 10px;text-align:left;white-space:nowrap}
+  th.r,td.r{text-align:right}
+  td{padding:8px 10px;border-bottom:1px solid var(--borde)}
+  td.b{font-weight:700}
+  .pos{color:var(--verde)}.neg{color:var(--rojo)}
+  .badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+  .b-ok{background:#DCFCE7;color:#16A34A}.b-warn{background:#FEF3C7;color:#B45309}.b-bad{background:#FEE2E2;color:#DC2626}.b-info{background:#EFF6FF;color:#2563EB}
+  .aging{display:flex;flex-direction:column;gap:10px}
+  .aging-row{display:grid;grid-template-columns:90px 1fr 92px 48px;align-items:center;gap:8px;font-size:12px}
+  .aging-label{color:var(--sub);font-weight:700}
+  .aging-track{background:var(--gris);border-radius:6px;height:16px;overflow:hidden}
+  .aging-fill{height:100%;border-radius:6px}
+  .aging-val{text-align:right;font-weight:800}
+  .aging-pct{text-align:right;color:var(--sub);font-weight:600}
+  .meta-input{width:120px;padding:6px 8px;border:2px solid var(--borde);border-radius:8px;font-size:13px;font-weight:700;text-align:right}
+  .meta-input:focus{outline:none;border-color:var(--azul)}
+  .meta-input.edited{border-color:var(--teal);background:#F0FDFA}
+  .btn{padding:7px 12px;border-radius:8px;border:1px solid var(--borde);background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--texto)}
+  .btn.primary{background:var(--azul);border-color:var(--azul);color:#fff}
+  .btn:disabled{opacity:.5;cursor:default}
+  .row-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .save-msg{font-size:11.5px;color:var(--sub)}
+  .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+  .method div{background:var(--gris);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5}
+  .method b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--sub);margin-bottom:2px}
+  .footer{text-align:center;padding:16px;font-size:10px;color:var(--sub)}
+  .loading{padding:60px 20px;text-align:center;color:var(--sub)}
+  .err{padding:16px;background:#FEE2E2;color:#DC2626;border-radius:10px;font-size:12px;margin-bottom:14px}
+  .lock-btn{position:fixed;bottom:14px;right:14px;background:#fff;border:1px solid var(--borde);border-radius:20px;
+    padding:8px 14px;font-size:11px;color:var(--sub);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  @media(max-width:480px){
+    .wrap{padding:10px}
+    .header h1{font-size:15px}
+    .kpi-val{font-size:17px}
+    .aging-row{grid-template-columns:70px 1fr 80px 40px;font-size:11px}
+    .meta-input{width:100px}
+    .tabbar{width:100%}
+    .tab-btn{flex:1;padding:8px 6px;font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <h1>GAMA — Ventas, Cobranza y Metas</h1>
+    <p>Acceso restringido. Ingresa la contraseña que te compartieron para ver el tablero de GAMA QRO y GAMA SLP.</p>
+    <input type="password" id="pwInput" placeholder="Contraseña" autocomplete="off">
+    <button id="pwBtn">Entrar</button>
+    <div class="gate-err" id="pwErr"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <div class="loading" id="loadingMsg">Cargando datos…</div>
+</div>
+
+<script>
+// ============================================================
+// ACCESO (misma contraseña que el Tablero Cierre — filtro simple)
+// ============================================================
+const PW_HASH = 'c301ec146e494e9917be95c0835b29cab1a7579566f12908a3d80418207169a3';
+const SESSION_KEY = 'gama_unlocked';
+
+async function sha256Hex(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function trySession(){ try { return sessionStorage.getItem(SESSION_KEY) === '1'; } catch(e){ return false; } }
+function markSession(){ try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e){} }
+
+async function attemptUnlock(){
+  const hash = await sha256Hex(document.getElementById('pwInput').value);
+  if (hash === PW_HASH) { markSession(); unlock(); }
+  else document.getElementById('pwErr').textContent = 'Contraseña incorrecta.';
+}
+function unlock(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  boot();
+}
+document.getElementById('pwBtn').addEventListener('click', attemptUnlock);
+document.getElementById('pwInput').addEventListener('keydown', e=>{ if (e.key === 'Enter') attemptUnlock(); });
+if (trySession()) { setTimeout(unlock, 0); }
+
+// ============================================================
+// DATOS (Supabase, API REST pública de solo lectura)
+// ============================================================
+const SUPABASE_URL = 'https://zveljbzgyumsvgkwjcqi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_6ecWkQ8pQl3EdgqGbHb2GQ_ka3NsAMq';
+const HEADERS = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
+
+async function pgFetch(path, params){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}?${params}`, { headers: HEADERS });
+  if (!res.ok) throw new Error(`Error consultando ${path} (${res.status})`);
+  return res.json();
+}
+// Tabla opcional de metas compartidas; si no existe se usa metas.json + este navegador
+async function fetchMetasDb(){
+  try { return await pgFetch('metas_ventas', 'select=*'); } catch(e){ return null; }
+}
+async function fetchJson(f){
+  try { const r = await fetch(f, {cache:'no-store'}); return r.ok ? r.json() : {}; } catch(e){ return {}; }
+}
+
+const BU_META = {
+  queretaro:{label:'GAMA QRO', semanal:'../qro/', sub:'Querétaro · mes comercial del 25 al 24', grad:'linear-gradient(135deg,#0D3B6E 0%,#0891B2 100%)', accent:'#0891B2'},
+  san_luis:{label:'GAMA SLP', semanal:'../', sub:'San Luis Potosí · mes calendario', grad:'linear-gradient(135deg,#1E3A8A 0%,#1D4ED8 100%)', accent:'#1D4ED8'}
+};
+const MES = ['', 'Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MES_LARGO = ['', 'Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const C = { azul:'#2563EB', verde:'#16A34A', naranja:'#D97706', rojo:'#DC2626', cian:'#0891B2', morado:'#7C3AED', teal:'#0D9488', gris:'#94A3B8' };
+
+let HIST = {queretaro:[], san_luis:[]};   // meses cerrados ordenados
+let CXC = {queretaro:[], san_luis:[]};
+let CXC_FUENTE = {queretaro:'', san_luis:''};
+let METAS_DB = null;                       // null = tabla no disponible
+let METAS_JSON = {};
+let SEMANAL = {};                          // avance del mes en curso, lo escribe el reporte semanal de cada viernes
+let charts = {};
+
+function safeGet(k, f){ try { return localStorage.getItem(k) ?? f; } catch(e){ return f; } }
+function safeSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+let state = { bu: safeGet('gama_vm_bu', 'queretaro'), tab: safeGet('gama_vm_tab', 'analisis') };
+
+function fmt(n){ if (n == null || isNaN(n)) return '—'; return (n<0?'-':'') + '$' + Math.round(Math.abs(n)).toLocaleString('es-MX'); }
+function fmtK(n){ if (n == null) return '—'; return Math.abs(n) >= 1e6 ? '$' + (n/1e6).toFixed(2) + 'M' : '$' + Math.round(n/1000) + 'K'; }
+function pct(n, d=1){ return (n == null || !isFinite(n)) ? '—' : (n>0?'+':'') + n.toFixed(d) + '%'; }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function key(a, m){ return a*100 + m; }
+function lbl(a, m){ return MES[m] + (a !== 2026 ? ' ' + String(a).slice(2) : ''); }
+function nextMonth(a, m){ return m === 12 ? [a+1, 1] : [a, m+1]; }
+
+async function loadData(){
+  const [hist, cxcHist, cxcVivo, metasDb, metasJson, semanal] = await Promise.all([
+    pgFetch('resumen_historico_mensual', 'select=*&order=sucursal,anio,mes'),
+    pgFetch('cuentas_por_cobrar_historico', 'select=*&order=saldo.desc'),
+    pgFetch('public_cxc_vivo', 'select=*&order=saldo.desc').catch(()=>[]),
+    fetchMetasDb(),
+    fetchJson('metas.json'),
+    fetchJson('semanal.json')
+  ]);
+  const num = v => v == null ? null : Number(v);
+  hist.forEach(r=>{
+    if (!HIST[r.sucursal] || Number(r.mes) === 0) return;
+    HIST[r.sucursal].push({
+      anio:Number(r.anio), mes:Number(r.mes), ventas:num(r.ventas), cobrado_total:num(r.cobrado_total),
+      cobrado_mes:num(r.cobrado_mes), recupero_ant:num(r.recupero_ant), cxc:num(r.cxc_saldo),
+      ordenes:num(r.ordenes_count), clientes:num(r.clientes_count),
+      contado:num(r.ventas_contado), credito:num(r.ventas_credito)
+    });
+  });
+  Object.values(HIST).forEach(a=>a.sort((x,y)=>key(x.anio,x.mes)-key(y.anio,y.mes)));
+
+  // CxC detalle: SLP = snapshot al cierre; QRO = detalle en vivo de la app (no hay snapshot de cierre)
+  ['queretaro','san_luis'].forEach(bu=>{
+    const h = cxcHist.filter(r=>r.sucursal===bu);
+    if (h.length){ CXC[bu] = h; CXC_FUENTE[bu] = 'Detalle al último cierre'; }
+    else { CXC[bu] = cxcVivo.filter(r=>r.sucursal===bu); CXC_FUENTE[bu] = 'Detalle en vivo desde la app (puede diferir del saldo al cierre)'; }
+    CXC[bu] = CXC[bu].map(r=>({cliente:r.cliente, orden:r.orden_ref, saldo:Number(r.saldo)||0, dias:parseInt(r.dias,10)||0}));
+  });
+
+  METAS_DB = metasDb;
+  METAS_JSON = metasJson || {};
+  ['queretaro','san_luis'].forEach(bu=>{
+    SEMANAL[bu] = ((semanal && semanal[bu]) || []).map(c=>({...c, anio:Number(c.anio), mes:Number(c.mes), ventas:Number(c.ventas)||0, cobrado:Number(c.cobrado)||0}))
+      .sort((x,y)=>x.corte.localeCompare(y.corte));
+  });
+}
+function cerrado(bu, a, m){ return HIST[bu].find(r=>r.anio===a && r.mes===m) || null; }
+// Mes en curso = el del último corte semanal que todavía no tiene cierre definitivo
+function enCurso(bu){
+  const c = SEMANAL[bu][SEMANAL[bu].length-1];
+  return c && !cerrado(bu, c.anio, c.mes) ? c : null;
+}
+
+// Avance del mes en curso: fracción de días transcurridos al corte (QRO: mes comercial del 25 al 24)
+function avance(bu, s){
+  const corte = new Date(s.corte + 'T12:00:00');
+  const ini = bu === 'queretaro' ? new Date(s.anio, s.mes-2, 25) : new Date(s.anio, s.mes-1, 1);
+  const fin = bu === 'queretaro' ? new Date(s.anio, s.mes-1, 24) : new Date(s.anio, s.mes, 0);
+  const total = Math.round((fin - ini)/864e5) + 1;
+  const trans = Math.min(total, Math.max(1, Math.round((corte - ini)/864e5) + 1));
+  return { ...s, frac: trans/total, dias: trans, total, ritmo: s.ventas * total / trans };
+}
+function fechaCorta(iso){ const d = new Date(iso + 'T12:00:00'); return d.getDate() + ' ' + MES[d.getMonth()+1].toLowerCase(); }
+
+// ============================================================
+// PRONÓSTICO
+// ============================================================
+// Tendencia lineal (mínimos cuadrados) sobre los últimos N meses cerrados
+function regresion(vals){
+  const n = vals.length, xs = vals.map((_,i)=>i);
+  const mx = xs.reduce((a,b)=>a+b,0)/n, my = vals.reduce((a,b)=>a+b,0)/n;
+  let sxy=0, sxx=0; xs.forEach((x,i)=>{ sxy += (x-mx)*(vals[i]-my); sxx += (x-mx)**2; });
+  const b = sxx ? sxy/sxx : 0;
+  return { a: my - b*mx, b, n };
+}
+const VENTANA = 6, HORIZONTE = 6, PREMIO_META = 0.05;
+function redondea(n, paso=5000){ return Math.round(n/paso)*paso; }
+
+function pronostico(bu, antesDe){
+  const h = HIST[bu].filter(r=>r.ventas != null && (!antesDe || key(r.anio,r.mes) < antesDe));
+  if (h.length < 3) return null;
+  const base = h.slice(-VENTANA);
+  const reg = regresion(base.map(r=>r.ventas));
+  const prom3 = h.slice(-3).reduce((a,r)=>a+r.ventas,0) / Math.min(3, h.length);
+  const ult = h[h.length-1];
+  const out = [];
+  let [a, m] = [ult.anio, ult.mes];
+  for (let i=1; i<=HORIZONTE; i++){
+    [a, m] = nextMonth(a, m);
+    const tendencia = Math.max(0, reg.a + reg.b*(base.length-1+i));
+    // la meta no baja del promedio de los últimos 3 meses y suma un 5% de reto sobre la tendencia
+    const sugerida = redondea(Math.max(tendencia, prom3) * (1 + PREMIO_META));
+    out.push({anio:a, mes:m, tendencia, sugerida});
+  }
+  return { reg, prom3, base, out };
+}
+
+function metaGuardada(bu, a, m){
+  const k = `${bu}-${a}-${m}`;
+  const local = safeGet('gama_meta_' + k, null);
+  if (METAS_DB){
+    const r = METAS_DB.find(x=>x.sucursal===bu && Number(x.anio)===a && Number(x.mes)===m);
+    if (r) return { valor:Number(r.meta), fuente:'compartida' };
+  }
+  if (local != null) return { valor:Number(local), fuente:'este navegador' };
+  const j = METAS_JSON[bu] && METAS_JSON[bu][`${a}-${String(m).padStart(2,'0')}`];
+  if (j != null) return { valor:Number(j), fuente:'fijada' };
+  return null;
+}
+
+// Meta de un mes: la guardada, o la sugerida con los cierres anteriores a ese mes
+function metaDe(bu, a, m){
+  const g = metaGuardada(bu, a, m);
+  if (g) return g;
+  const P = pronostico(bu, key(a, m));
+  const f = P && P.out.find(x=>x.anio===a && x.mes===m);
+  return f ? { valor:f.sugerida, fuente:'sugerida' } : null;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function destroyCharts(){ Object.values(charts).forEach(c=>c.destroy()); charts = {}; }
+function render(){
+  destroyCharts();
+  const bu = state.bu, M = BU_META[bu];
+  let html = `
+    <div class="header" style="background:${M.grad}">
+      <div><h1>${M.label} — Ventas, Cobranza y Metas</h1><p>${M.sub} · cierres mensuales + cortes del reporte semanal${SEMANAL[bu].length ? ' (último: ' + fechaCorta(SEMANAL[bu][SEMANAL[bu].length-1].corte) + ')' : ''} · <a href="${M.semanal}" style="color:#fff">ver reporte semanal ${M.label.replace('GAMA ','')} →</a></p></div>
+      <div class="bu-switch">
+        ${Object.keys(BU_META).map(b=>`<button class="bu-btn ${b===bu?'active':''}" data-bu="${b}">${BU_META[b].label}</button>`).join('')}
+      </div>
+    </div>
+    <div class="tabbar">
+      <button class="tab-btn ${state.tab==='analisis'?'active':''}" data-tab="analisis">📈 Ventas, cobranza y CxC</button>
+      <button class="tab-btn ${state.tab==='metas'?'active':''}" data-tab="metas">🎯 Metas y pronóstico</button>
+      <button class="tab-btn ${state.tab==='cumpl'?'active':''}" data-tab="cumpl">✅ Cumplimiento semanal</button>
+    </div>
+    <div id="tabBody"></div>
+    <div class="footer">GAMA — Ventas, Cobranza y Metas · Cierres en vivo desde Supabase · Avance semanal del reporte de cada viernes · Última carga: ${new Date().toLocaleString('es-MX')}</div>
+    <button class="lock-btn" id="lockBtn">🔒 Salir</button>`;
+  document.getElementById('app').innerHTML = html;
+  document.querySelectorAll('.bu-btn').forEach(b=>b.onclick=()=>{ state.bu=b.dataset.bu; safeSet('gama_vm_bu', state.bu); render(); });
+  document.querySelectorAll('.tab-btn').forEach(b=>b.onclick=()=>{ state.tab=b.dataset.tab; safeSet('gama_vm_tab', state.tab); render(); });
+  document.getElementById('lockBtn').onclick=()=>{ try{sessionStorage.removeItem(SESSION_KEY);}catch(e){} location.reload(); };
+  if (state.tab === 'metas') renderMetas(); else if (state.tab === 'cumpl') renderCumpl(); else renderAnalisis();
+}
+
+const baseOpts = (money=true) => ({
+  responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false},
+  plugins:{ legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}},
+    tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${money ? fmt(c.parsed.y) : (c.parsed.y==null?'—':c.parsed.y.toFixed(1)+'%')}`}} },
+  scales:{ y:{beginAtZero:true, ticks:{callback:v=>money?fmtK(v):v+'%', font:{size:10}}, grid:{color:'#EEF2F7'}}, x:{ticks:{font:{size:10}}, grid:{display:false}} }
+});
+
+function renderAnalisis(){
+  const bu = state.bu, h = HIST[bu];
+  const body = document.getElementById('tabBody');
+  if (!h.length){ body.innerHTML = '<div class="card"><div class="loading">Sin cierres cargados para esta sucursal.</div></div>'; return; }
+  const ult = h[h.length-1], prev = h[h.length-2];
+  const crec = (a,b) => (a!=null && b) ? (a/b-1)*100 : null;
+  const labels = h.map(r=>lbl(r.anio,r.mes));
+  const ventasAcum = h.reduce((a,r)=>a+(r.ventas||0),0);
+  const cobradoAcum = h.reduce((a,r)=>a+(r.cobrado_total||0),0);
+  const promMensual = ventasAcum / h.length;
+  const efCob = ult.ventas ? ult.cobrado_total/ult.ventas*100 : null;
+  const dso = ult.ventas ? ult.cxc/ult.ventas*30 : null;
+  const cxcTot = CXC[bu].reduce((a,r)=>a+r.saldo,0);
+  const vencido = CXC[bu].filter(r=>r.dias>60).reduce((a,r)=>a+r.saldo,0);
+
+  // mejor mes y crecimiento promedio
+  const best = h.reduce((a,r)=>r.ventas>(a?.ventas||0)?r:a, null);
+  const crecs = h.slice(1).map((r,i)=>crec(r.ventas, h[i].ventas)).filter(x=>x!=null);
+  const crecUlt6 = h.length >= 7 ? (Math.pow(ult.ventas/h[h.length-7].ventas, 1/6)-1)*100 : null;
+
+  body.innerHTML = `
+    <div class="sec-title">Ventas — crecimiento mes a mes</div>
+    <div class="kpi-grid">
+      <div class="kpi" style="--accent:${C.azul}"><div class="kpi-label">Ventas ${MES_LARGO[ult.mes]}</div><div class="kpi-val">${fmt(ult.ventas)}</div>
+        <div class="kpi-sub"><span class="${crec(ult.ventas,prev?.ventas)>=0?'pos':'neg'}">${pct(crec(ult.ventas,prev?.ventas))}</span> vs ${MES_LARGO[prev?.mes]||'—'}</div></div>
+      <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Ventas acumuladas ${lbl(h[0].anio,h[0].mes)}–${lbl(ult.anio,ult.mes)}</div><div class="kpi-val">${fmt(ventasAcum)}</div>
+        <div class="kpi-sub">Promedio mensual ${fmt(promMensual)}</div></div>
+      <div class="kpi" style="--accent:${C.verde}"><div class="kpi-label">Crecimiento mensual promedio</div><div class="kpi-val">${pct(crecUlt6)}</div>
+        <div class="kpi-sub">Compuesto, últimos 6 meses</div></div>
+      <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Mejor mes</div><div class="kpi-val">${fmt(best.ventas)}</div>
+        <div class="kpi-sub">${MES_LARGO[best.mes]} ${best.anio}</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>Ventas por mes y crecimiento vs mes anterior</h3><div class="chart-wrap"><canvas id="chVentas"></canvas></div></div>
+      <div class="card"><h3>Detalle mes a mes</h3><div class="table-scroll"><table style="min-width:0">
+        <thead><tr><th>Mes</th><th class="r">Ventas</th><th class="r">Crec.</th></tr></thead>
+        <tbody>${h.slice().reverse().map((r,i,arr)=>{ const p=arr[i+1]; const c=crec(r.ventas,p?.ventas);
+          return `<tr><td>${MES_LARGO[r.mes]}</td><td class="r b">${fmt(r.ventas)}</td><td class="r ${c==null?'':c>=0?'pos':'neg'}">${pct(c)}</td></tr>`; }).join('')}</tbody>
+      </table></div></div>
+    </div>
+
+    <div class="sec-title">Cobranza — ventas vs cobrado mes a mes</div>
+    <div class="kpi-grid">
+      <div class="kpi" style="--accent:${C.teal}"><div class="kpi-label">Cobrado ${MES_LARGO[ult.mes]}</div><div class="kpi-val">${fmt(ult.cobrado_total)}</div>
+        <div class="kpi-sub"><span class="${crec(ult.cobrado_total,prev?.cobrado_total)>=0?'pos':'neg'}">${pct(crec(ult.cobrado_total,prev?.cobrado_total))}</span> vs ${MES_LARGO[prev?.mes]||'—'}</div></div>
+      <div class="kpi" style="--accent:${C.cian}"><div class="kpi-label">Cobrado / ventas del mes</div><div class="kpi-val">${efCob==null?'—':efCob.toFixed(0)+'%'}</div>
+        <div class="kpi-sub">Incluye recuperación de meses anteriores</div></div>
+      <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Cobrado acumulado</div><div class="kpi-val">${fmt(cobradoAcum)}</div>
+        <div class="kpi-sub">${ventasAcum? (cobradoAcum/ventasAcum*100).toFixed(0)+'% de lo vendido':''}</div></div>
+      ${ult.recupero_ant!=null ? `<div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Recuperación meses ant.</div><div class="kpi-val">${fmt(ult.recupero_ant)}</div>
+        <div class="kpi-sub">Del mes: ${fmt(ult.cobrado_mes)}</div></div>` : ''}
+    </div>
+    <div class="grid-eq">
+      <div class="card"><h3>${h.some(r=>r.recupero_ant!=null)?'Cobrado del mes + recuperación vs ventas':'Ventas vs cobrado'}</h3><div class="chart-wrap"><canvas id="chCobranza"></canvas></div></div>
+      <div class="card"><h3>Eficiencia de cobranza (cobrado ÷ ventas)</h3><div class="chart-wrap"><canvas id="chEfic"></canvas></div>
+        <div class="note">Arriba de 100% significa que ese mes se cobró más de lo que se vendió (se recuperó cartera). Abajo de 100% la cartera crece.</div></div>
+    </div>
+
+    <div class="sec-title">Cuentas por cobrar</div>
+    <div class="kpi-grid">
+      <div class="kpi" style="--accent:${C.rojo}"><div class="kpi-label">CxC al cierre ${MES_LARGO[ult.mes]}</div><div class="kpi-val">${fmt(ult.cxc)}</div>
+        <div class="kpi-sub"><span class="${crec(ult.cxc,prev?.cxc)<=0?'pos':'neg'}">${pct(crec(ult.cxc,prev?.cxc))}</span> vs ${MES_LARGO[prev?.mes]||'—'}</div></div>
+      <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Días de cartera</div><div class="kpi-val">${dso==null?'—':Math.round(dso)+' días'}</div>
+        <div class="kpi-sub">CxC ÷ ventas del mes × 30</div></div>
+      <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Cuentas abiertas</div><div class="kpi-val">${CXC[bu].length}</div>
+        <div class="kpi-sub">Saldo ${fmt(cxcTot)}</div></div>
+      <div class="kpi" style="--accent:${C.rojo}"><div class="kpi-label">Vencido (+60 días)</div><div class="kpi-val">${fmt(vencido)}</div>
+        <div class="kpi-sub">${cxcTot? (vencido/cxcTot*100).toFixed(0)+'% de la cartera':''}</div></div>
+    </div>
+    <div class="grid-eq">
+      <div class="card"><h3>Evolución de la CxC y días de cartera</h3><div class="chart-wrap"><canvas id="chCxc"></canvas></div></div>
+      <div class="card"><h3>Antigüedad de saldos</h3><div id="aging"></div><div class="note">${esc(CXC_FUENTE[bu])}.</div></div>
+    </div>
+    <div class="card"><h3>Principales clientes con saldo</h3><div class="table-scroll"><table>
+      <thead><tr><th>Cliente</th><th class="r">Cuentas</th><th class="r">Saldo</th><th class="r">% cartera</th><th class="r">Días (máx)</th><th>Estatus</th></tr></thead>
+      <tbody id="topCxc"></tbody></table></div></div>`;
+
+  // Ventas
+  const crecSerie = h.map((r,i)=> i ? crec(r.ventas, h[i-1].ventas) : null);
+  charts.v = new Chart(document.getElementById('chVentas'), {
+    data:{ labels, datasets:[
+      {type:'bar', label:'Ventas', data:h.map(r=>r.ventas), backgroundColor:BU_META[bu].accent, borderRadius:6, yAxisID:'y', order:2},
+      {type:'line', label:'Crecimiento vs mes ant.', data:crecSerie, borderColor:C.naranja, backgroundColor:C.naranja, tension:.3, pointRadius:3, yAxisID:'y1', order:1}
+    ]},
+    options:{ ...baseOpts(), plugins:{ ...baseOpts().plugins, tooltip:{callbacks:{label:c=> c.dataset.yAxisID==='y1' ? `${c.dataset.label}: ${pct(c.parsed.y)}` : `${c.dataset.label}: ${fmt(c.parsed.y)}`}} },
+      scales:{ ...baseOpts().scales, y1:{position:'right', ticks:{callback:v=>v+'%', font:{size:10}}, grid:{display:false}} } }
+  });
+
+  // Cobranza
+  const split = h.some(r=>r.recupero_ant!=null);
+  const dsC = split ? [
+    {type:'bar', label:'Cobrado del mes', data:h.map(r=>r.cobrado_mes ?? (r.recupero_ant==null ? r.cobrado_total : null)), backgroundColor:C.teal, stack:'c', borderRadius:4},
+    {type:'bar', label:'Recuperación meses ant.', data:h.map(r=>r.recupero_ant), backgroundColor:'#5EEAD4', stack:'c', borderRadius:4},
+  ] : [ {type:'bar', label:'Cobrado', data:h.map(r=>r.cobrado_total), backgroundColor:C.teal, borderRadius:4} ];
+  charts.c = new Chart(document.getElementById('chCobranza'), {
+    data:{ labels, datasets:[ ...dsC, {type:'line', label:'Ventas', data:h.map(r=>r.ventas), borderColor:BU_META[bu].accent, backgroundColor:BU_META[bu].accent, tension:.3, pointRadius:3} ]},
+    options:{ ...baseOpts(), scales:{ ...baseOpts().scales, x:{stacked:true, ticks:{font:{size:10}}, grid:{display:false}}, y:{...baseOpts().scales.y, stacked:true} } }
+  });
+  charts.e = new Chart(document.getElementById('chEfic'), {
+    type:'bar', data:{ labels, datasets:[{label:'Cobrado ÷ ventas', data:h.map(r=>r.ventas? r.cobrado_total/r.ventas*100 : null),
+      backgroundColor:h.map(r=> r.ventas && r.cobrado_total/r.ventas >= 1 ? C.verde : C.naranja), borderRadius:6}]},
+    options:{ ...baseOpts(false), plugins:{...baseOpts(false).plugins, legend:{display:false}} }
+  });
+
+  // CxC
+  charts.x = new Chart(document.getElementById('chCxc'), {
+    data:{ labels, datasets:[
+      {type:'bar', label:'CxC al cierre', data:h.map(r=>r.cxc), backgroundColor:'#FCA5A5', borderRadius:6, yAxisID:'y', order:2},
+      {type:'line', label:'Días de cartera', data:h.map(r=> r.ventas ? r.cxc/r.ventas*30 : null), borderColor:C.rojo, backgroundColor:C.rojo, tension:.3, pointRadius:3, yAxisID:'y1', order:1}
+    ]},
+    options:{ ...baseOpts(), plugins:{ ...baseOpts().plugins, tooltip:{callbacks:{label:c=> c.dataset.yAxisID==='y1' ? `${c.dataset.label}: ${Math.round(c.parsed.y)} días` : `${c.dataset.label}: ${fmt(c.parsed.y)}`}} },
+      scales:{ ...baseOpts().scales, y1:{position:'right', beginAtZero:true, ticks:{callback:v=>v+' d', font:{size:10}}, grid:{display:false}} } }
+  });
+
+  const buckets = [['0–30 días',0,30,C.verde],['31–60 días',31,60,C.naranja],['61–90 días',61,90,'#F97316'],['+90 días',91,1e9,C.rojo]];
+  document.getElementById('aging').innerHTML = cxcTot ? `<div class="aging">${buckets.map(([n,lo,hi,col])=>{
+    const s = CXC[bu].filter(r=>r.dias>=lo && r.dias<=hi).reduce((a,r)=>a+r.saldo,0), p = s/cxcTot*100;
+    return `<div class="aging-row"><span class="aging-label">${n}</span><div class="aging-track"><div class="aging-fill" style="width:${p}%;background:${col}"></div></div><span class="aging-val">${fmt(s)}</span><span class="aging-pct">${p.toFixed(0)}%</span></div>`;
+  }).join('')}</div>` : '<div class="loading">Sin detalle de cuentas.</div>';
+
+  const porCliente = {};
+  CXC[bu].forEach(r=>{ const c = porCliente[r.cliente] = porCliente[r.cliente] || {n:0, saldo:0, dias:0}; c.n++; c.saldo += r.saldo; c.dias = Math.max(c.dias, r.dias); });
+  const top = Object.entries(porCliente).sort((a,b)=>b[1].saldo-a[1].saldo).slice(0,12);
+  document.getElementById('topCxc').innerHTML = top.map(([cl,v])=>{
+    const b = v.dias>60 ? ['b-bad','Vencido'] : v.dias>30 ? ['b-warn','Por vencer'] : ['b-ok','Corriente'];
+    return `<tr><td>${esc(cl)}</td><td class="r">${v.n}</td><td class="r b">${fmt(v.saldo)}</td><td class="r">${(v.saldo/cxcTot*100).toFixed(1)}%</td><td class="r">${v.dias}</td><td><span class="badge ${b[0]}">${b[1]}</span></td></tr>`;
+  }).join('') || '<tr><td colspan="6" class="loading">Sin cuentas abiertas.</td></tr>';
+}
+
+function renderMetas(){
+  const bu = state.bu, h = HIST[bu];
+  const body = document.getElementById('tabBody');
+  if (h.length < 3){ body.innerHTML = '<div class="card"><div class="loading">Se necesitan al menos 3 cierres para pronosticar.</div></div>'; return; }
+  const P = pronostico(bu);
+  const ult = h[h.length-1];
+  const filas = P.out.map(p=>{ const g = metaGuardada(bu, p.anio, p.mes); return {...p, meta: g ? g.valor : p.sugerida, fuente: g ? g.fuente : 'sugerida'}; });
+  // metas de meses ya cerrados (para cumplimiento)
+  const cumpl = h.map(r=>{ const g = metaGuardada(bu, r.anio, r.mes); return g ? {...r, meta:g.valor} : null; }).filter(Boolean);
+  const totMeta = filas.reduce((a,f)=>a+f.meta,0), totTend = filas.reduce((a,f)=>a+f.tendencia,0);
+  const sig = filas[0];
+  const compartida = !!METAS_DB;
+
+  body.innerHTML = `
+    <div class="kpi-grid">
+      <div class="kpi" style="--accent:${C.teal}"><div class="kpi-label">Meta ${MES_LARGO[sig.mes]} ${sig.anio}</div><div class="kpi-val">${fmt(sig.meta)}</div>
+        <div class="kpi-sub">${pct((sig.meta/ult.ventas-1)*100)} vs ${MES_LARGO[ult.mes]} (${fmt(ult.ventas)})</div></div>
+      <div class="kpi" style="--accent:${C.azul}"><div class="kpi-label">Pronóstico por tendencia ${MES[sig.mes]}</div><div class="kpi-val">${fmt(sig.tendencia)}</div>
+        <div class="kpi-sub">La tendencia sube ${fmt(P.reg.b)} por mes</div></div>
+      <div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Meta próximos ${HORIZONTE} meses</div><div class="kpi-val">${fmt(totMeta)}</div>
+        <div class="kpi-sub">Pronóstico: ${fmt(totTend)}</div></div>
+      <div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Promedio últimos 3 meses</div><div class="kpi-val">${fmt(P.prom3)}</div>
+        <div class="kpi-sub">Piso mínimo de la meta sugerida</div></div>
+    </div>
+    <div class="card"><h3>Ventas reales, tendencia y metas</h3><div class="chart-wrap"><canvas id="chMetas"></canvas></div></div>
+    <div class="card"><h3>Metas de venta por mes (editables)</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Mes</th><th class="r">Meta</th><th class="r">vs ${MES[ult.mes]}</th><th class="r">Meta sugerida</th><th class="r">Pronóstico tendencia</th><th>Origen</th></tr></thead>
+        <tbody>${filas.map((f,i)=>`<tr>
+          <td class="b">${MES_LARGO[f.mes]} ${f.anio}</td>
+          <td class="r"><input class="meta-input" data-i="${i}" inputmode="numeric" value="${Math.round(f.meta).toLocaleString('es-MX')}"></td>
+          <td class="r" id="vs${i}">${pct((f.meta/ult.ventas-1)*100)}</td>
+          <td class="r">${fmt(f.sugerida)}</td>
+          <td class="r">${fmt(f.tendencia)}</td>
+          <td><span class="badge ${f.fuente==='sugerida'?'b-info':'b-ok'}" id="src${i}">${f.fuente}</span></td></tr>`).join('')}</tbody>
+      </table></div>
+      <div class="row-actions">
+        <button class="btn primary" id="btnGuardar" disabled>Guardar metas</button>
+        <button class="btn" id="btnSugeridas">Volver a las sugeridas</button>
+        <span class="save-msg" id="saveMsg">${compartida ? 'Las metas que guardes se ven en todos los dispositivos.' : 'Por ahora las metas que guardes aquí se quedan en este navegador. Para fijarlas para todos, pídeselas a Claude en el chat.'}</span>
+      </div>
+    </div>
+    ${cumpl.length ? `<div class="card"><h3>Cumplimiento de metas en meses cerrados</h3><div class="table-scroll"><table>
+      <thead><tr><th>Mes</th><th class="r">Meta</th><th class="r">Real</th><th class="r">Cumplimiento</th></tr></thead>
+      <tbody>${cumpl.map(r=>{ const c=r.ventas/r.meta*100; return `<tr><td>${MES_LARGO[r.mes]} ${r.anio}</td><td class="r">${fmt(r.meta)}</td><td class="r b">${fmt(r.ventas)}</td><td class="r"><span class="badge ${c>=100?'b-ok':c>=90?'b-warn':'b-bad'}">${c.toFixed(0)}%</span></td></tr>`; }).join('')}</tbody>
+    </table></div></div>` : ''}
+    <div class="card"><h3>Cómo se calcula la meta sugerida</h3><div class="method">
+      <div><b>1. Tendencia</b>Línea recta ajustada a las ventas de los últimos ${P.base.length} cierres (${lbl(P.base[0].anio,P.base[0].mes)}–${lbl(ult.anio,ult.mes)}) y proyectada a los siguientes meses.</div>
+      <div><b>2. Piso</b>Si la tendencia queda por debajo del promedio de los últimos 3 meses (${fmt(P.prom3)}), se usa ese promedio.</div>
+      <div><b>3. Reto</b>Se suma ${Math.round(PREMIO_META*100)}% y se redondea a múltiplos de $5,000.</div>
+      <div><b>Ojo</b>Es una proyección estadística: no considera temporada (p. ej. diciembre), contratos nuevos ni pérdida de clientes. Ajusta la meta con lo que sabe el equipo comercial.</div>
+    </div></div>`;
+
+  const labels = [...h.map(r=>lbl(r.anio,r.mes)), ...filas.map(f=>lbl(f.anio,f.mes))];
+  const nH = h.length, pad = n => Array(n).fill(null);
+  const tendHist = h.map((_,i)=>{ const j = i-(nH-P.base.length); return j>=0 ? P.reg.a + P.reg.b*j : null; });
+  const metasHist = h.map(r=>{ const g = metaGuardada(bu, r.anio, r.mes); return g ? g.valor : null; });
+  charts.m = new Chart(document.getElementById('chMetas'), {
+    data:{ labels, datasets:[
+      {type:'bar', label:'Ventas reales', data:[...h.map(r=>r.ventas), ...pad(filas.length)], backgroundColor:BU_META[bu].accent, borderRadius:6, order:3},
+      {type:'bar', label:'Meta', data:[...metasHist, ...filas.map(f=>f.meta)], backgroundColor:'rgba(13,148,136,.35)', borderColor:C.teal, borderWidth:2, borderRadius:6, order:2},
+      {type:'line', label:'Tendencia', data:[...tendHist, ...filas.map(f=>f.tendencia)], borderColor:C.naranja, borderDash:[6,4], pointRadius:0, tension:0, order:1}
+    ]},
+    options: baseOpts()
+  });
+
+  const inputs = [...document.querySelectorAll('.meta-input')];
+  const parse = s => Number(String(s).replace(/[^\d.]/g,'')) || 0;
+  const btn = document.getElementById('btnGuardar');
+  inputs.forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      const i = +inp.dataset.i, v = parse(inp.value);
+      inp.classList.add('edited'); btn.disabled = false;
+      document.getElementById('vs'+i).textContent = pct((v/ult.ventas-1)*100);
+      charts.m.data.datasets[1].data[nH+i] = v; charts.m.update('none');
+    });
+    inp.addEventListener('blur', ()=>{ inp.value = parse(inp.value).toLocaleString('es-MX'); });
+  });
+  btn.onclick = async ()=>{
+    btn.disabled = true;
+    const msg = document.getElementById('saveMsg');
+    const rows = inputs.filter(inp=>inp.classList.contains('edited')).map(inp=>{ const f = filas[+inp.dataset.i]; return {sucursal:bu, anio:f.anio, mes:f.mes, meta:parse(inp.value)}; });
+    let ok = false;
+    if (compartida){
+      try {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/metas_ventas?on_conflict=sucursal,anio,mes`, { method:'POST',
+          headers:{...HEADERS, 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=representation'}, body:JSON.stringify(rows) });
+        if (r.ok){ const saved = await r.json(); saved.forEach(s=>{ METAS_DB = METAS_DB.filter(x=>!(x.sucursal===s.sucursal && x.anio===s.anio && x.mes===s.mes)); METAS_DB.push(s); }); ok = true; }
+      } catch(e){}
+    }
+    if (!ok) rows.forEach(r=>safeSet(`gama_meta_${r.sucursal}-${r.anio}-${r.mes}`, String(r.meta)));
+    render();
+    document.getElementById('saveMsg').textContent = ok ? '✓ Metas guardadas para todos.' : '✓ Metas guardadas en este navegador.';
+  };
+  document.getElementById('btnSugeridas').onclick = ()=>{
+    filas.forEach(f=>{ try{ localStorage.removeItem(`gama_meta_${bu}-${f.anio}-${f.mes}`); }catch(e){} });
+    inputs.forEach(inp=>{ const f = filas[+inp.dataset.i]; inp.value = Math.round(f.sugerida).toLocaleString('es-MX'); inp.classList.add('edited'); inp.dispatchEvent(new Event('input')); });
+  };
+}
+
+let mesCumpl = {};
+function renderCumpl(){
+  const bu = state.bu, cortes = SEMANAL[bu];
+  const body = document.getElementById('tabBody');
+  const meses = [...new Set(cortes.map(c=>key(c.anio,c.mes)))].sort((a,b)=>b-a);
+  const cur = enCurso(bu);
+  if (!meses.length){
+    body.innerHTML = `<div class="card"><div class="loading">Todavía no hay cortes semanales. Se agregan solos cada viernes al hacer el reporte semanal.</div></div>`;
+    return;
+  }
+  const sel = meses.includes(mesCumpl[bu]) ? mesCumpl[bu] : meses[0];
+  const a = Math.floor(sel/100), m = sel % 100;
+  const cs = cortes.filter(c=>c.anio===a && c.mes===m);
+  const ult = cs[cs.length-1], av = avance(bu, ult);
+  const meta = metaDe(bu, a, m);
+  const metaV = meta ? meta.valor : null;
+  const cierre = cerrado(bu, a, m);
+  const cumpl = metaV ? ult.ventas/metaV*100 : null;
+  const esperado = av.frac*100;
+  const proyCumpl = metaV ? av.ritmo/metaV*100 : null;
+  const falta = metaV ? Math.max(0, metaV - ult.ventas) : null;
+  const diasRest = av.total - av.dias;
+  const estado = cumpl==null ? null : cumpl >= esperado ? ['b-ok','Adelantado'] : cumpl >= esperado*0.9 ? ['b-warn','Ligeramente atrasado'] : ['b-bad','Atrasado'];
+  const nombreMes = `${MES_LARGO[m]} ${a}`;
+
+  body.innerHTML = `
+    <div class="tabbar" style="margin-bottom:12px">${meses.map(k=>`<button class="tab-btn ${k===sel?'active':''}" data-mes="${k}">${MES_LARGO[k%100]} ${Math.floor(k/100)}${cur && k===key(cur.anio,cur.mes)?' · en curso':''}</button>`).join('')}</div>
+    <div class="kpi-grid">
+      <div class="kpi" style="--accent:${C.teal}"><div class="kpi-label">Meta ${nombreMes}</div><div class="kpi-val">${fmt(metaV)}</div>
+        <div class="kpi-sub">${meta ? (meta.fuente==='sugerida' ? 'Meta sugerida (no se fijó una)' : 'Meta fijada') : 'Sin meta'}</div></div>
+      <div class="kpi" style="--accent:${C.azul}"><div class="kpi-label">Vendido al ${fechaCorta(ult.corte)}</div><div class="kpi-val">${fmt(ult.ventas)}</div>
+        <div class="kpi-sub">Cobrado: ${fmt(ult.cobrado)}</div></div>
+      <div class="kpi" style="--accent:${cumpl!=null && cumpl>=esperado?C.verde:C.rojo}"><div class="kpi-label">Cumplimiento</div><div class="kpi-val">${cumpl==null?'—':cumpl.toFixed(0)+'%'}</div>
+        <div class="kpi-sub">Esperado a esta fecha: ${esperado.toFixed(0)}% (día ${av.dias} de ${av.total}) ${estado?`<span class="badge ${estado[0]}">${estado[1]}</span>`:''}</div></div>
+      ${cierre ? `<div class="kpi" style="--accent:${C.morado}"><div class="kpi-label">Cierre definitivo</div><div class="kpi-val">${fmt(cierre.ventas)}</div>
+        <div class="kpi-sub">${metaV ? 'Cumplimiento final: <b>' + (cierre.ventas/metaV*100).toFixed(0) + '%</b>' : ''}</div></div>`
+      : `<div class="kpi" style="--accent:${C.naranja}"><div class="kpi-label">Proyección al cierre</div><div class="kpi-val">${fmt(av.ritmo)}</div>
+        <div class="kpi-sub">Al ritmo actual${proyCumpl!=null?' llegaría al ' + proyCumpl.toFixed(0) + '% de la meta':''}</div></div>`}
+      ${!cierre && falta!=null ? `<div class="kpi" style="--accent:${C.rojo}"><div class="kpi-label">Falta para la meta</div><div class="kpi-val">${fmt(falta)}</div>
+        <div class="kpi-sub">${diasRest>0 ? fmt(falta/diasRest) + ' por día en los ' + diasRest + ' días que quedan' : 'Último día del mes'}</div></div>` : ''}
+    </div>
+    <div class="grid-2">
+      <div class="card"><h3>Avance acumulado por corte semanal vs meta</h3><div class="chart-wrap"><canvas id="chCumpl"></canvas></div>
+        <div class="note">La línea punteada es lo que se esperaría llevar en cada corte para llegar a la meta vendiendo parejo todo el mes${bu==='queretaro'?' (mes comercial del 25 al 24)':''}.</div></div>
+      <div class="card"><h3>Barra de cumplimiento</h3>
+        <div style="margin:18px 0 8px;font-size:12px;color:var(--sub)">Vendido vs meta</div>
+        <div class="aging-track" style="height:26px;position:relative">
+          <div class="aging-fill" style="width:${Math.min(100,cumpl||0)}%;background:${cumpl!=null && cumpl>=esperado?C.verde:C.naranja}"></div>
+          <div style="position:absolute;top:-4px;bottom:-4px;left:${Math.min(100,esperado)}%;width:2px;background:var(--texto)" title="Esperado a la fecha"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-top:6px"><span>$0</span><span>▲ esperado ${esperado.toFixed(0)}%</span><span>${fmt(metaV)}</span></div>
+        <div style="font-size:28px;font-weight:900;margin-top:16px">${cumpl==null?'—':cumpl.toFixed(1)+'%'}</div>
+        <div style="font-size:12px;color:var(--sub)">de la meta al corte del ${fechaCorta(ult.corte)}</div>
+      </div>
+    </div>
+    <div class="card"><h3>Cortes semanales de ${nombreMes}</h3><div class="table-scroll"><table>
+      <thead><tr><th>Corte</th><th class="r">Vendido acumulado</th><th class="r">Venta de la semana</th><th class="r">Cobrado acumulado</th><th class="r">Cumplimiento</th><th class="r">Esperado</th><th>Estatus</th></tr></thead>
+      <tbody>${cs.map((c,i)=>{ const v = avance(bu,c), cu = metaV ? c.ventas/metaV*100 : null, e = v.frac*100;
+        const st = cu==null ? '' : cu>=e ? '<span class="badge b-ok">Adelantado</span>' : cu>=e*0.9 ? '<span class="badge b-warn">Ligeramente atrasado</span>' : '<span class="badge b-bad">Atrasado</span>';
+        return `<tr><td class="b">${fechaCorta(c.corte)}</td><td class="r b">${fmt(c.ventas)}</td><td class="r">${fmt(c.ventas - (i?cs[i-1].ventas:0))}</td><td class="r">${fmt(c.cobrado)}</td><td class="r">${cu==null?'—':cu.toFixed(0)+'%'}</td><td class="r">${e.toFixed(0)}%</td><td>${st}</td></tr>`; }).join('')}
+      ${cierre ? `<tr><td class="b">Cierre</td><td class="r b">${fmt(cierre.ventas)}</td><td class="r">${fmt(cierre.ventas - ult.ventas)}</td><td class="r">${fmt(cierre.cobrado_total)}</td><td class="r">${metaV?(cierre.ventas/metaV*100).toFixed(0)+'%':'—'}</td><td class="r">100%</td><td>${metaV ? (cierre.ventas>=metaV?'<span class="badge b-ok">Meta cumplida</span>':'<span class="badge b-bad">No se llegó</span>') : ''}</td></tr>` : ''}
+      </tbody></table></div>
+      <div class="note">Los cortes salen del reporte semanal de cada viernes${bu==='queretaro'?' (ventas de los Excel de servicios y sanitarios)':' (Excel CONTROL FINANCIERO GAMA SLP)'}; el cierre definitivo sale del Tablero Cierre. Para cambiar la meta, ve a la pestaña Metas y pronóstico.</div></div>`;
+
+  body.querySelectorAll('[data-mes]').forEach(b=>b.onclick=()=>{ mesCumpl[bu] = Number(b.dataset.mes); renderCumpl(); });
+
+  const pts = [{c:{corte:null, ventas:0}, v:{frac:0}, l:'Inicio'}, ...cs.map(c=>({c, v:avance(bu,c), l:fechaCorta(c.corte)}))];
+  if (cierre) pts.push({c:{corte:null, ventas:cierre.ventas}, v:{frac:1}, l:'Cierre'});
+  charts.cu = new Chart(document.getElementById('chCumpl'), {
+    data:{ labels: pts.map(p=>p.l), datasets:[
+      {type:'bar', label:'Vendido acumulado', data:pts.map(p=>p.c.ventas), backgroundColor:pts.map(p=> metaV && p.c.ventas >= metaV*p.v.frac ? C.verde : BU_META[bu].accent), borderRadius:6, order:2},
+      ...(metaV ? [
+        {type:'line', label:'Esperado a la fecha', data:pts.map(p=>metaV*p.v.frac), borderColor:C.naranja, borderDash:[6,4], pointRadius:3, tension:0, order:1},
+        {type:'line', label:'Meta del mes', data:pts.map(()=>metaV), borderColor:C.teal, pointRadius:0, borderWidth:2, order:1}
+      ] : [])
+    ]},
+    options: baseOpts()
+  });
+}
+
+async function boot(){
+  try { await loadData(); render(); }
+  catch(e){ document.getElementById('app').innerHTML = `<div class="err">No se pudieron cargar los datos: ${esc(e.message)}</div>`; }
+}
+</script>
+</body>
+</html>
