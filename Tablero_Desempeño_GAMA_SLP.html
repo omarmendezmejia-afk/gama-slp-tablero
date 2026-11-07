@@ -227,7 +227,7 @@
       <div class="kpi-label">Cobrado / Recuperado</div>
       <div class="kpi-value azul" id="kCobrado">$970,398</div>
       <div class="kpi-sub" id="kCobradoSub">Flujo recibido en el periodo</div>
-      <span class="kpi-badge warn" id="kCobradoBadge">$296,435 en cartera activa</span>
+      <span class="kpi-badge warn" id="kCobradoBadge">$326,943 en cartera activa</span>
     </div>
     <div class="kpi rojo">
       <div class="kpi-label">Utilidad Operativa</div>
@@ -257,7 +257,7 @@
     </div>
     <div class="stat-item">
       <div class="stat-label">Clientes Únicos</div>
-      <div class="stat-value" id="sClientes">104</div>
+      <div class="stat-value" id="sClientes">105</div>
       <div class="stat-sub" id="sClientesSub">Cartera activa</div>
     </div>
     <div class="stat-item">
@@ -339,9 +339,9 @@
       </div>
       <div class="growth-item">
         <div class="growth-mes">Noviembre</div>
-        <div class="growth-val">$29,500</div>
+        <div class="growth-val">$64,000</div>
         <div class="growth-pct base">En curso</div>
-        <div class="growth-note">10 órdenes, 9 clientes — mes en curso (al 5-nov)</div>
+        <div class="growth-note">17 órdenes, 14 clientes — mes en curso (al 7-nov)</div>
       </div>
       <div class="growth-item proy">
         <div class="growth-mes">Proyección Nov.</div>
@@ -354,7 +354,7 @@
         <div class="proyeccion-label">📊 Proyección Noviembre 2026</div>
         <div class="proyeccion-val">$284,400</div>
       </div>
-      <div class="proyeccion-desc">Promedio de agosto, septiembre y octubre (los tres meses más recientes, ya completos): $229,100, $246,800 y $377,300. Noviembre lleva $29,500 al 5 de noviembre (mes en curso), 90% por debajo de la proyección. La prioridad sigue siendo la cobranza de la cartera activa ($296,435); la liquidez bancaria total es de $49,260, positiva y sin saldo bancario nuevo capturado.</div>
+      <div class="proyeccion-desc">Promedio de agosto, septiembre y octubre (los tres meses más recientes, ya completos): $229,100, $246,800 y $377,300. Noviembre lleva $64,000 al 7 de noviembre (mes en curso), 77% por debajo de la proyección. La prioridad sigue siendo la cobranza de la cartera activa ($326,943); la liquidez bancaria total es de $62,244, positiva y sin saldo bancario nuevo capturado.</div>
     </div>
   </div>
 
@@ -388,7 +388,7 @@
       <div style="border-top:1px solid var(--borde); padding-top:14px">
         <div class="kpi-label" style="margin-bottom:6px">LIQUIDEZ TOTAL DISPONIBLE</div>
         <div style="font-size:28px; font-weight:800; color:var(--verde)">$49,260</div>
-        <div style="font-size:12px; color:var(--sub); margin-top:6px">🟢 Liquidez sin cambio respecto a la actualización anterior — cartera activa de $296,435 aún pendiente de cobro</div>
+        <div style="font-size:12px; color:var(--sub); margin-top:6px">🟢 Liquidez sin cambio respecto a la actualización anterior — cartera activa de $326,943 aún pendiente de cobro</div>
       </div>
     </div>
   </div>
@@ -430,17 +430,17 @@
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; text-align:center;">
       <div>
         <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Ventas Acumuladas</div>
-        <div style="font-size:26px;font-weight:800;color:var(--azul)">$1,629,802</div>
+        <div style="font-size:26px;font-weight:800;color:var(--azul)">$1,664,302</div>
         <div style="font-size:12px;color:var(--sub)">Mar–Nov 2026</div>
       </div>
       <div>
         <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Total Órdenes</div>
-        <div style="font-size:26px;font-weight:800;color:var(--azul2)">309</div>
-        <div style="font-size:12px;color:var(--sub)">9→22→38→37→51→47→42→53→10</div>
+        <div style="font-size:26px;font-weight:800;color:var(--azul2)">316</div>
+        <div style="font-size:12px;color:var(--sub)">9→22→38→37→51→47→42→53→17</div>
       </div>
       <div>
         <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Clientes Únicos</div>
-        <div style="font-size:26px;font-weight:800;color:var(--verde)">104</div>
+        <div style="font-size:26px;font-weight:800;color:var(--verde)">105</div>
         <div style="font-size:12px;color:var(--sub)">Base sólida y creciente</div>
       </div>
       <div>
@@ -462,25 +462,25 @@
 const MDATA = {
   todos: {
     label:'Acumulado Mar–Nov 2026', periodo:'Acumulado Mar – Nov 2026', badge:'MAR – NOV 2026',
-    ventas:1629802, egresos:1177578, ordenes:309, clientes:104,
-    cobrado:1375847, pendiente:296435,
-    contado:300900, credito:1328902,
-    utilidad:452224, margen:27.7,
+    ventas:1664302, egresos:1249791, ordenes:316, clientes:105,
+    cobrado:1384047, pendiente:326943,
+    contado:309100, credito:1355202,
+    utilidad:414511, margen:24.9,
     utilLabel:'Ventas netas (sin IVA) − Egresos',
-    utilBadge:'27.7% margen neto (facturado)',
+    utilBadge:'24.9% margen neto (facturado)',
     ventasBadge:'Acumulado 9 meses',
-    cobradoBadge:'$296,435 en cartera (sin IVA)',
-    egresosBadge:'72.3% de ventas netas',
-    egCats:[['Nómina',411277],['Combustible',288655],['Servicios/Admin',238860],['Infraestructura/Renta',149695],['Herramienta',37935],['Comisiones/Otros',36052],['Viáticos',10696],['Otros',4408]],
+    cobradoBadge:'$326,943 en cartera (sin IVA)',
+    egresosBadge:'75.1% de ventas netas',
+    egCats:[['Nómina',445856],['Combustible',301327],['Servicios/Admin',263158],['Infraestructura/Renta',149695],['Herramienta',37935],['Comisiones/Otros',36487],['Viáticos',10925],['Otros',4408]],
     servLabels:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
-    servData:[129,65,48,52,15],
+    servData:[130,68,48,55,15],
     topClientes:[['HEB (todas sucursales)',454800],['GRUPO ACERERO',140750],['ASOCIACION DE COLONOS ALQUERIAS',60000],['ENERGIA AMBIENTAL VEHICULAR',48000],['PIE EDIFICACIONES',46400],['CERVECERIA VILLACASTEL',44000]],
-    cxc:[{id:'GPE-0069',cliente:'McDONALD\'S TANGAMANGA',saldo:15660,dias:164,est:'Vencido'},{id:'GPE-0111',cliente:'VYNMSA',saldo:1800,dias:127,est:'Vencido'},{id:'GPE-0113',cliente:'McDONALD\'S CHALITA',saldo:15660,dias:125,est:'Vencido'},{id:'GPE-0130',cliente:'DEACERO RECYCLING',saldo:3480,dias:113,est:'Vencido'},{id:'GPE-0179',cliente:'LLANTAS Y SERVICIOS MAZA',saldo:5220,dias:80,est:'Vencido'},{id:'GPE-0212',cliente:'AUTOTRANSPORTES EL BISONTE',saldo:5800,dias:65,est:'Vencido'},{id:'GPE-0214',cliente:'GRUPO ACERERO',saldo:27840,dias:65,est:'Vencido'},{id:'GPE-0224',cliente:'HEB HIMNO NACIONAL',saldo:8903,dias:51,est:'Por vencer'},{id:'GPE-0225',cliente:'HEB HIMNO NACIONAL',saldo:7100,dias:51,est:'Por vencer'},{id:'GPE-0226',cliente:'HEB LOMAS',saldo:15400,dias:49,est:'Por vencer'},{id:'GPE-0227',cliente:'HEB LOMAS',saldo:7100,dias:49,est:'Por vencer'},{id:'GPE-0251',cliente:'GRUPO ACERERO',saldo:11600,dias:37,est:'Por vencer'},{id:'GPE-0252',cliente:'GRUPO ACERERO',saldo:11600,dias:37,est:'Por vencer'},{id:'GPE-0254',cliente:'DEPORTIVO 2000',saldo:10440,dias:36,est:'Por vencer'},{id:'GPE-0273',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0274',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0275',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0276',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0277',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0266',cliente:'CERVECERIA VILLACASTEL',saldo:3480,dias:32,est:'Por vencer'},{id:'GPE-0268',cliente:'AUTOTRANSPORTES EL BISONTE',saldo:5800,dias:29,est:'Corriente'},{id:'GPE-0291',cliente:'KOMATSU',saldo:3480,dias:28,est:'Corriente'},{id:'GPE-0283',cliente:'HEB PINOS',saldo:15400,dias:27,est:'Corriente'},{id:'GPE-0282',cliente:'HEB CARRETERA 57',saldo:15400,dias:23,est:'Corriente'},{id:'GPE-0287',cliente:'WINDOW SEAT (CASA PREMIER)',saldo:6960,dias:23,est:'Corriente'},{id:'GPE-0284',cliente:'HEB',saldo:15400,dias:22,est:'Corriente'},{id:'GPE-0285',cliente:'HEB',saldo:15400,dias:17,est:'Corriente'},{id:'GPE-0290',cliente:'CERVECERIA VILLACASTEL',saldo:4640,dias:17,est:'Corriente'},{id:'GPE-0292',cliente:'KOMATSU',saldo:3480,dias:17,est:'Corriente'},{id:'GPE-0293',cliente:'KOMATSU',saldo:1972,dias:17,est:'Corriente'},{id:'GPE-0294',cliente:'TRATADO DE AGUAS MACRO',saldo:5568,dias:16,est:'Corriente'},{id:'GPE-0295',cliente:'GRUPO ACERERO',saldo:6960,dias:16,est:'Corriente'},{id:'GPE-0303',cliente:'PAILERIA Y ESTRUCTURA D TORRES',saldo:4872,dias:6,est:'Corriente'},{id:'GPE-0304',cliente:'DEACERO RECYCLING',saldo:3480,dias:6,est:'Corriente'},{id:'GPE-0305',cliente:'RED AMBIENTAL CIPRES',saldo:2552,dias:6,est:'Corriente'},{id:'GPE-0306',cliente:'PIE EDIFICACIONES',saldo:5568,dias:5,est:'Corriente'},{id:'GPE-0307',cliente:'ENERGIA AMBIENTAL VEHICULAR',saldo:4060,dias:5,est:'Corriente'},{id:'GPE-0308',cliente:'CONSORCIO ANMARJO',saldo:5220,dias:4,est:'Corriente'}],
+    cxc:[{id:'GPE-0069',cliente:'McDONALD\'S TANGAMANGA',saldo:15660,dias:164,est:'Vencido'},{id:'GPE-0111',cliente:'VYNMSA',saldo:1800,dias:127,est:'Vencido'},{id:'GPE-0113',cliente:'McDONALD\'S CHALITA',saldo:15660,dias:125,est:'Vencido'},{id:'GPE-0130',cliente:'DEACERO RECYCLING',saldo:3480,dias:113,est:'Vencido'},{id:'GPE-0179',cliente:'LLANTAS Y SERVICIOS MAZA',saldo:5220,dias:80,est:'Vencido'},{id:'GPE-0212',cliente:'AUTOTRANSPORTES EL BISONTE',saldo:5800,dias:65,est:'Vencido'},{id:'GPE-0214',cliente:'GRUPO ACERERO',saldo:27840,dias:65,est:'Vencido'},{id:'GPE-0224',cliente:'HEB HIMNO NACIONAL',saldo:8903,dias:51,est:'Por vencer'},{id:'GPE-0225',cliente:'HEB HIMNO NACIONAL',saldo:7100,dias:51,est:'Por vencer'},{id:'GPE-0226',cliente:'HEB LOMAS',saldo:15400,dias:49,est:'Por vencer'},{id:'GPE-0227',cliente:'HEB LOMAS',saldo:7100,dias:49,est:'Por vencer'},{id:'GPE-0251',cliente:'GRUPO ACERERO',saldo:11600,dias:37,est:'Por vencer'},{id:'GPE-0252',cliente:'GRUPO ACERERO',saldo:11600,dias:37,est:'Por vencer'},{id:'GPE-0254',cliente:'DEPORTIVO 2000',saldo:10440,dias:36,est:'Por vencer'},{id:'GPE-0273',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0274',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0275',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0276',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0277',cliente:'CAFENNIO (LIMSY)',saldo:3828,dias:33,est:'Por vencer'},{id:'GPE-0266',cliente:'CERVECERIA VILLACASTEL',saldo:3480,dias:32,est:'Por vencer'},{id:'GPE-0268',cliente:'AUTOTRANSPORTES EL BISONTE',saldo:5800,dias:29,est:'Corriente'},{id:'GPE-0291',cliente:'KOMATSU',saldo:3480,dias:28,est:'Corriente'},{id:'GPE-0283',cliente:'HEB PINOS',saldo:15400,dias:27,est:'Corriente'},{id:'GPE-0282',cliente:'HEB CARRETERA 57',saldo:15400,dias:23,est:'Corriente'},{id:'GPE-0287',cliente:'WINDOW SEAT (CASA PREMIER)',saldo:6960,dias:23,est:'Corriente'},{id:'GPE-0284',cliente:'HEB',saldo:15400,dias:22,est:'Corriente'},{id:'GPE-0285',cliente:'HEB',saldo:15400,dias:17,est:'Corriente'},{id:'GPE-0290',cliente:'CERVECERIA VILLACASTEL',saldo:4640,dias:17,est:'Corriente'},{id:'GPE-0292',cliente:'KOMATSU',saldo:3480,dias:17,est:'Corriente'},{id:'GPE-0293',cliente:'KOMATSU',saldo:1972,dias:17,est:'Corriente'},{id:'GPE-0294',cliente:'TRATADO DE AGUAS MACRO',saldo:5568,dias:16,est:'Corriente'},{id:'GPE-0295',cliente:'GRUPO ACERERO',saldo:6960,dias:16,est:'Corriente'},{id:'GPE-0303',cliente:'PAILERIA Y ESTRUCTURA D TORRES',saldo:4872,dias:6,est:'Corriente'},{id:'GPE-0304',cliente:'DEACERO RECYCLING',saldo:3480,dias:6,est:'Corriente'},{id:'GPE-0305',cliente:'RED AMBIENTAL CIPRES',saldo:2552,dias:6,est:'Corriente'},{id:'GPE-0306',cliente:'PIE EDIFICACIONES',saldo:5568,dias:5,est:'Corriente'},{id:'GPE-0307',cliente:'ENERGIA AMBIENTAL VEHICULAR',saldo:4060,dias:5,est:'Corriente'},{id:'GPE-0308',cliente:'CONSORCIO ANMARJO',saldo:5220,dias:4,est:'Corriente'},{id:'GPE-0309',cliente:'JOSE ALFREDO RIVERA MENDEZ (SUMINISTROS)',saldo:19140,dias:4,est:'Corriente'},{id:'GPE-0310',cliente:'KEY QUIMICA',saldo:928,dias:3,est:'Corriente'},{id:'GPE-0311',cliente:'JOHNY ROCKET (STAL ALIMENTOS)',saldo:5800,dias:2,est:'Corriente'},{id:'GPE-0312',cliente:'JOHNY ROCKET (STAL ALIMENTOS)',saldo:4640,dias:2,est:'Corriente'}],
     insights:[
-      {cls:'verde',icon:'📈',tit:'Ventas Netas Acumuladas $1,629,802 — 309 Órdenes en 9 Meses',desc:'La empresa generó $1,629,802 en ventas netas (sin IVA) desde su arranque en marzo, con 104 clientes únicos atendidos en el período (noviembre en curso al 5 de noviembre).'},
-      {cls:'verde',icon:'✅',tit:'Liquidez Bancaria Positiva',desc:'El saldo bancario total es positivo, $49,260 (fiscal $36,917, no fiscal $11,223, efectivo $1,121); corresponde al último saldo bancario capturado (corte de septiembre). Octubre aún no tiene saldo al corte; el flujo del Excel estima un cierre calculado de $99,144.'},
-      {cls:'naranja',icon:'📋',tit:'$296,435 en Cartera Activa — 38 Órdenes Pendientes',desc:'La cartera por cobrar es de $296,435, con 7 vencidas, 13 por vencer, 18 corrientes. Requiere seguimiento activo de cobranza, sobre todo en las cuentas vencidas.'},
-      {cls:'azul2',icon:'🏬',tit:'HEB: Cliente Ancla con $454,800 en Ventas (27.9%)',desc:'Las sucursales de HEB representan el mayor cliente del período. La relación es sólida pero concentra una parte relevante de la facturación.'},
+      {cls:'verde',icon:'📈',tit:'Ventas Netas Acumuladas $1,664,302 — 316 Órdenes en 9 Meses',desc:'La empresa generó $1,664,302 en ventas netas (sin IVA) desde su arranque en marzo, con 105 clientes únicos atendidos en el período (noviembre en curso al 7 de noviembre).'},
+      {cls:'verde',icon:'✅',tit:'Liquidez Bancaria Positiva',desc:'El saldo bancario total es positivo, $62,244 (fiscal $49,901, no fiscal $11,223, efectivo $1,121); corresponde al último saldo bancario capturado (corte de septiembre). Noviembre aún no tiene saldo al corte; el flujo del Excel estima un cierre calculado de $79,839.'},
+      {cls:'naranja',icon:'📋',tit:'$326,943 en Cartera Activa — 42 Órdenes Pendientes',desc:'La cartera por cobrar es de $326,943, con 7 vencidas, 13 por vencer, 22 corrientes. Requiere seguimiento activo de cobranza, sobre todo en las cuentas vencidas.'},
+      {cls:'azul2',icon:'🏬',tit:'HEB: Cliente Ancla con $454,800 en Ventas (27.3%)',desc:'Las sucursales de HEB representan el mayor cliente del período. La relación es sólida pero concentra una parte relevante de la facturación.'},
       {cls:'morado',icon:'🚗',tit:'GRUPO ACERERO se Consolida como Segundo Cliente ($140,750)',desc:'GRUPO ACERERO acumula $140,750 en el período, confirmando la diversificación de la cartera de clientes más allá de HEB.'}
     ]
   },
@@ -670,25 +670,25 @@ const MDATA = {
   },
   noviembre: {
     label:'Noviembre 2026', periodo:'Noviembre 2026', badge:'NOVIEMBRE 2026',
-    ventas:29500, egresos:0, ordenes:10, clientes:9,
-    cobrado:70300, pendiente:4872,
-    contado:7300, credito:22200,
-    utilidad:29500, margen:100.0,
+    ventas:64000, egresos:72213, ordenes:17, clientes:14,
+    cobrado:78500, pendiente:4872,
+    contado:15500, credito:48500,
+    utilidad:-8213, margen:-12.8,
     utilLabel:'Ventas netas (sin IVA) − Egresos',
-    utilBadge:'Sin egresos capturados aún',
-    ventasBadge:'10 órdenes en el mes (al 5-nov)',
+    utilBadge:'-12.8% margen neto',
+    ventasBadge:'17 órdenes en el mes (al 7-nov)',
     cobradoBadge:'$4,872 en cartera (sin IVA)',
-    egresosBadge:'Sin egresos capturados aún',
-    egCats:[],
+    egresosBadge:'112.8% de ventas netas',
+    egCats:[['Nómina',34579],['Servicios/Admin',24298],['Combustible',12672],['Comisiones/Otros',435],['Viáticos',229]],
     servLabels:['Desazolve', 'Trampa Grasa', 'Renta Sanitario', 'Sondeo/Otros', 'Destape'],
-    servData:[6,0,3,1,0],
-    topClientes:[['CONXA',5500],['PIE EDIFICACIONES',4800],['CONSORCIO ANMARJO',4500],['PAILERIA Y ESTRUCTURA D TORRES',4200],['ENERGIA AMBIENTAL VEHICULAR',3500]],
+    servData:[7,3,3,4,0],
+    topClientes:[['JOSE ALFREDO RIVERA MENDEZ (SUMINISTROS)',16500],['JOHNY ROCKET (STAL ALIMENTOS)',9000],['CONXA',5500],['MINERVA COLONIA MARAVILLAS',5000],['PIE EDIFICACIONES',4800]],
     cxc:[{id:'GPE-0303',cliente:'PAILERIA Y ESTRUCTURA D TORRES',saldo:4872,dias:6,est:'Corriente'}],
     insights:[
-      {cls:'verde',icon:'📊',tit:'Noviembre: 10 Órdenes, $29,500 en Ventas Netas (mes en curso, al 5 de noviembre)',desc:'9 clientes atendidos en el mes; 75% facturado a crédito ($22,200 de $29,500). Aún no hay egresos de noviembre capturados, así que la utilidad del mes no es representativa todavía.'},
-      {cls:'naranja',icon:'💸',tit:'Egresos del Mes Pendientes de Captura',desc:'Todavía no hay egresos registrados para noviembre en el control financiero.'},
+      {cls:'rojo',icon:'📊',tit:'Noviembre: 17 Órdenes, $64,000 en Ventas Netas (mes en curso, al 7 de noviembre)',desc:'14 clientes atendidos en el mes; 76% facturado a crédito ($48,500 de $64,000). Con egresos capturados al 7 de noviembre, el margen parcial es de -12.8%.'},
+      {cls:'naranja',icon:'💸',tit:'Nómina: 48% de los Egresos del Mes',desc:'Egresos totales de $72,213, liderados por Nómina ($34,579).'},
       {cls:'naranja',icon:'📋',tit:'Cartera de Noviembre: $4,872 en 1 Órdenes',desc:'Cartera activa de noviembre: 1 corriente. Conviene priorizar la cobranza antes de que las cuentas envejezcan más.'},
-      {cls:'azul2',icon:'🏆',tit:'CONXA: Cliente Principal del Mes ($5,500)',desc:'CONXA lideró las ventas de noviembre con $5,500.'}
+      {cls:'azul2',icon:'🏆',tit:'JOSE ALFREDO RIVERA MENDEZ (SUMINISTROS): Cliente Principal del Mes ($16,500)',desc:'JOSE ALFREDO RIVERA MENDEZ (SUMINISTROS) lideró las ventas de noviembre con $16,500.'}
     ]
   }
 };
@@ -719,15 +719,15 @@ function initTendencia() {
     data:{
       labels: LABELS4,
       datasets:[
-        { label:'Ventas', data:[30500,75300,220800,184400,236102,229100,246800,377300,29500],
+        { label:'Ventas', data:[30500,75300,220800,184400,236102,229100,246800,377300,64000],
           backgroundColor:[C.azulL,C.azulL,C.azulL,C.azulL,C.cian,C.azulL,C.azulL,C.azulL,C.azulL],
           borderColor:[C.azul,C.azul,C.azul,C.azul,C.cian,C.azul,C.azul,C.azul,C.azul],
           borderWidth:2, borderRadius:6, order:2 },
-        { label:'Egresos', data:[35431,108258,123023,154447,173629,187016,167615,228158,0],
+        { label:'Egresos', data:[35431,108258,123023,154447,173629,187016,167615,228158,72213],
           backgroundColor:[C.naranjaL,C.naranjaL,C.naranja,C.naranjaL,C.naranjaL,C.naranjaL,C.naranjaL,C.naranjaL,C.naranjaL],
           borderColor:C.naranja, borderWidth:2, borderRadius:6, order:2 },
         { type:'line', label:'Utilidad (V-E)',
-          data:[-4931,-32958,97777,29953,62473,42084,79185,149142,29500],
+          data:[-4931,-32958,97777,29953,62473,42084,79185,149142,-8213],
           borderColor:C.verde, backgroundColor:C.verdeL,
           borderWidth:2.5, pointRadius:5, fill:false, order:1 }
       ]
@@ -785,9 +785,9 @@ function initMix() {
     data:{
       labels: LABELS4,
       datasets:[
-        { label:'Contado', data:[12400,51800,56800,42900,41900,44200,29000,14600,7300],
+        { label:'Contado', data:[12400,51800,56800,42900,41900,44200,29000,14600,15500],
           backgroundColor:[C.verdeL,C.verdeL,C.verde,C.verdeL,C.verdeL,C.verdeL,C.verdeL,C.verdeL,C.verdeL], borderRadius:6 },
-        { label:'Crédito', data:[18100,23500,164000,141500,194202,184900,217800,362700,22200],
+        { label:'Crédito', data:[18100,23500,164000,141500,194202,184900,217800,362700,48500],
           backgroundColor:[C.rojoL,C.rojoL,C.rojo,C.rojoL,C.rojoL,C.rojoL,C.rojoL,C.rojoL,C.rojoL], borderRadius:6 }
       ]
     },
@@ -807,8 +807,8 @@ function initOrdenes() {
     data:{
       labels: LABELS4,
       datasets:[
-        { label:'Órdenes', data:[9,22,38,37,51,47,42,53,10], backgroundColor:C.azul, borderRadius:6 },
-        { type:'line', label:'Clientes Únicos', data:[9,19,26,29,39,30,27,33,9],
+        { label:'Órdenes', data:[9,22,38,37,51,47,42,53,17], backgroundColor:C.azul, borderRadius:6 },
+        { type:'line', label:'Clientes Únicos', data:[9,19,26,29,39,30,27,33,14],
           borderColor:C.verde, backgroundColor:C.verdeL,
           borderWidth:2.5, pointRadius:6, fill:false }
       ]
@@ -828,11 +828,11 @@ function initServiciosMes() {
     data:{
       labels: LABELS4,
       datasets:[
-        { label:'Desazolve',       data:[5,15,17,15,18,16,14,23,6], backgroundColor:C.azul,    borderRadius:4 },
-        { label:'Trampa Grasa',    data:[1,0,9,7,10,17,8,13,0], backgroundColor:C.verde,   borderRadius:4 },
+        { label:'Desazolve',       data:[5,15,17,15,18,16,14,23,7], backgroundColor:C.azul,    borderRadius:4 },
+        { label:'Trampa Grasa',    data:[1,0,9,7,10,17,8,13,3], backgroundColor:C.verde,   borderRadius:4 },
         { label:'Renta Sanitario', data:[2,4,4,5,9,7,8,6,3], backgroundColor:C.naranja, borderRadius:4 },
         { label:'Destape',         data:[0,2,2,4,3,0,1,3,0], backgroundColor:'#8B5CF6', borderRadius:4 },
-        { label:'Sondeo/Otros',    data:[1,1,6,6,11,7,11,8,1], backgroundColor:C.gris,    borderRadius:4 }
+        { label:'Sondeo/Otros',    data:[1,1,6,6,11,7,11,8,4], backgroundColor:C.gris,    borderRadius:4 }
       ]
     },
     options:{ ...defOpts,
