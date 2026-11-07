@@ -268,5 +268,48 @@ function setMes(mes){
 
 document.addEventListener('DOMContentLoaded',()=>{initCharts();setMes(/* reporte semanal: mes en curso */ [...document.querySelectorAll('[onclick^="setMes"]')].map(b=>b.getAttribute('onclick').match(/'(\w+)'/)[1]).filter(m=>m!=='todos').pop());});
 </script>
+<!-- editar-tarjetas: mover/ocultar tarjetas KPI solo en esta vista; al recargar o cerrar vuelve al original (no guarda nada) -->
+<style>
+.et-bar{display:flex;justify-content:flex-end;gap:8px;margin:0 0 8px}
+.et-btn{font:600 12px 'Segoe UI',Arial,sans-serif;border:1px solid #CBD5E1;background:#fff;color:#334155;border-radius:8px;padding:6px 12px;cursor:pointer}
+.et-btn:hover{background:#F1F5F9}
+.et-on .kpi{position:relative;outline:2px dashed #93C5FD;outline-offset:2px;padding-top:42px}
+.et-on .kpi.et-off{opacity:.35}
+.et-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;z-index:5}
+.et-tools button{width:28px;height:28px;border:1px solid #CBD5E1;border-radius:6px;background:#fff;cursor:pointer;font-size:14px;line-height:1;padding:0}
+</style>
+<script>
+(function(){
+  const g=document.querySelector('.kpi-grid'); if(!g) return;
+  const bar=document.createElement('div'); bar.className='et-bar';
+  bar.innerHTML='<button class="et-btn" id="etReset" style="display:none">Vista original</button><button class="et-btn" id="etEdit">✎ Editar tarjetas</button>';
+  g.parentNode.insertBefore(bar,g);
+  const cards=()=>[...g.children].filter(c=>c.classList.contains('kpi'));
+  cards().forEach((c,i)=>{c.dataset.etPos=i; if(c.style.display==='none') c.classList.add('et-off','et-off0');});
+  let on=false;
+  function tools(c){
+    const t=document.createElement('div'); t.className='et-tools';
+    t.innerHTML='<button title="Mover a la izquierda">◀</button><button title="Mostrar / ocultar">👁</button><button title="Mover a la derecha">▶</button>';
+    const [l,o,r]=t.children;
+    l.onclick=e=>{e.stopPropagation(); const p=c.previousElementSibling; if(p) g.insertBefore(c,p);};
+    r.onclick=e=>{e.stopPropagation(); const n=c.nextElementSibling; if(n) g.insertBefore(n,c);};
+    o.onclick=e=>{e.stopPropagation(); c.classList.toggle('et-off');};
+    c.appendChild(t);
+  }
+  function aplicar(){ cards().forEach(c=>{c.style.display=(!on&&c.classList.contains('et-off'))?'none':'';}); }
+  document.getElementById('etEdit').onclick=function(){
+    on=!on; g.classList.toggle('et-on',on);
+    if(on) cards().forEach(tools); else g.querySelectorAll('.et-tools').forEach(t=>t.remove());
+    this.textContent=on?'✓ Listo':'✎ Editar tarjetas';
+    document.getElementById('etReset').style.display=on?'':'none';
+    aplicar();
+  };
+  document.getElementById('etReset').onclick=function(){
+    cards().sort((a,b)=>a.dataset.etPos-b.dataset.etPos).forEach(c=>{g.appendChild(c); c.classList.toggle('et-off',c.classList.contains('et-off0'));});
+    aplicar();
+  };
+})();
+</script>
+<!-- /editar-tarjetas -->
 </body>
 </html>
