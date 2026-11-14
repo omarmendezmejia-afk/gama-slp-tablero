@@ -322,6 +322,7 @@ function render(){
   document.querySelectorAll('.tab-btn').forEach(b=>b.onclick=()=>{ state.tab=b.dataset.tab; safeSet('gama_vm_tab', state.tab); render(); });
   document.getElementById('lockBtn').onclick=()=>{ try{sessionStorage.removeItem(SESSION_KEY);}catch(e){} location.reload(); };
   if (state.tab === 'metas') renderMetas(); else if (state.tab === 'cumpl') renderCumpl(); else renderAnalisis();
+  if (window.etMount) etMount();
 }
 
 const baseOpts = (money=true) => ({
@@ -645,5 +646,43 @@ async function boot(){
   catch(e){ document.getElementById('app').innerHTML = `<div class="err">No se pudieron cargar los datos: ${esc(e.message)}</div>`; }
 }
 </script>
+<!-- editar-tarjetas: mover/ocultar tarjetas KPI solo en esta vista; al recargar, cambiar de pestaña/sucursal o cerrar vuelve al original (no guarda nada) -->
+<style>
+.et-btn{font:600 12px 'Segoe UI',Arial,sans-serif;border:1px solid #CBD5E1;background:#fff;color:#334155;border-radius:8px;padding:6px 12px;cursor:pointer;margin-left:6px}
+.et-btn:hover{background:#F1F5F9}
+.et-wrap{margin-left:auto;display:flex;align-items:center}
+.et-on .kpi{outline:2px dashed #93C5FD;outline-offset:2px;padding-top:42px}
+.et-on .kpi.et-off{opacity:.35}
+.et-tools{position:absolute;top:6px;right:6px;display:flex;gap:4px;z-index:5}
+.et-tools button{width:28px;height:28px;border:1px solid #CBD5E1;border-radius:6px;background:#fff;cursor:pointer;font-size:14px;line-height:1;padding:0}
+</style>
+<script>
+function etMount(){
+  const bar=document.querySelector('.tabbar'), body=document.getElementById('tabBody'); if(!bar||!body) return;
+  const w=document.createElement('div'); w.className='et-wrap';
+  w.innerHTML='<button class="et-btn" id="etReset" style="display:none">Vista original</button><button class="et-btn" id="etEdit">✎ Editar tarjetas</button>';
+  bar.appendChild(w);
+  let on=false;
+  const cards=()=>[...body.querySelectorAll('.kpi-grid>.kpi')];
+  function tools(c){
+    const t=document.createElement('div'); t.className='et-tools';
+    t.innerHTML='<button title="Mover a la izquierda">◀</button><button title="Mostrar / ocultar">👁</button><button title="Mover a la derecha">▶</button>';
+    const [l,o,r]=t.children, g=c.parentNode;
+    l.onclick=e=>{e.stopPropagation(); const p=c.previousElementSibling; if(p) g.insertBefore(c,p);};
+    r.onclick=e=>{e.stopPropagation(); const n=c.nextElementSibling; if(n) g.insertBefore(n,c);};
+    o.onclick=e=>{e.stopPropagation(); c.classList.toggle('et-off');};
+    c.appendChild(t);
+  }
+  document.getElementById('etEdit').onclick=function(){
+    on=!on; body.classList.toggle('et-on',on);
+    if(on) cards().forEach(tools); else body.querySelectorAll('.et-tools').forEach(t=>t.remove());
+    cards().forEach(c=>{c.style.display=(!on&&c.classList.contains('et-off'))?'none':'';});
+    this.textContent=on?'✓ Listo':'✎ Editar tarjetas';
+    document.getElementById('etReset').style.display=on?'':'none';
+  };
+  document.getElementById('etReset').onclick=()=>render();
+}
+</script>
+<!-- /editar-tarjetas -->
 </body>
 </html>
