@@ -315,7 +315,9 @@ async function loadData(){
     EGRESOS[r.sucursal][key].push({categoria:r.categoria, monto:Number(r.monto)});
   });
 
-  CXC_HIST = cxcHistRows || [];
+  // SLP: HEB y McDonald's van a otra cuenta y flujo; cuentan como venta pero no como cartera por cobrar (Omar, 2026-11-28)
+  const EXCLUIR_CXC_SLP = /^\s*(HEB|MC ?DONALD)/i;
+  CXC_HIST = (cxcHistRows || []).filter(r => !(r.sucursal === 'san_luis' && EXCLUIR_CXC_SLP.test(r.cliente || '')));
   CXC_LIVE = (SOLO_CIERRES ? [] : (liveCxcRows||[])).map(r=>{
     const dias = parseInt(r.dias,10) || 0;
     return {
